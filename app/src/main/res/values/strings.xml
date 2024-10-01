@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">LoginRelative</string>
+    <string name="signin_text">
+        Sudah punya akun?  <font color="#FF9228"><b>MASUK</b></font>
+    </string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="description_arrow">Tanda panah untuk kembali</string>
+</resources>
