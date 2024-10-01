@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FragmentLogin"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/image_logo"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="App Logo"
+        android:src="@drawable/image_login" />
+
+    <TextView
+        android:id="@+id/text_welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Selamat Datang"
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/inter_bold"
+        android:layout_marginTop="24dp"
+        android:gravity="center" />
+
+    <EditText
+        android:id="@+id/emailEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/rounded_edittext"
+        android:fontFamily="@font/inter_regular"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:padding="16dp"
+        android:textColor="@color/black" />
+
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/rounded_edittext"
+        android:fontFamily="@font/inter_regular"
+        android:hint="Kata Sandi"
+        android:inputType="textPassword"
+        android:padding="16dp"
+        android:textColor="@color/black"
+        android:drawableEnd="@drawable/baseline_remove_red_eye_24" />
+
+    <TextView
+        android:id="@+id/text_forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lupa Kata Sandi?"
+        android:textColor="@color/orange"
+        android:fontFamily="@font/inter_semibold"
+        android:layout_gravity="end"
+        android:layout_marginTop="8dp"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/button_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Masuk"
+        android:layout_marginTop="24dp"
+        android:padding="16dp"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:fontFamily="@font/inter_bold"
+        android:backgroundTint="@color/orange"/>
+
+    <TextView
+        android:id="@+id/text_or"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="atau lanjut dengan"
+        android:textSize="14sp"
+        android:textColor="@color/gray"
+        android:fontFamily="@font/inter_regular"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:padding="16dp"
+        android:background="@drawable/rounded_button_white">
+
+        <ImageView
+            android:id="@+id/google_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/google"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="Google icon" />
+
+        <TextView
+            android:id="@+id/text_google"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Google"
+            android:textSize="20sp"
+            android:layout_marginStart="12dp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/inter_semibold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="24dp">
+
+        <TextView
+            android:id="@+id/text_belum_punya_akun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Belum memiliki akun?"
+            android:fontFamily="@font/inter_regular"
+            android:textSize="14sp"
+            android:textColor="@color/gray" />
+
+        <TextView
+            android:id="@+id/text_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DAFTAR"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="14sp"
+            android:textColor="@color/orange"
+            android:layout_marginStart="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="16dp"
+            android:gravity="center" />
+    </LinearLayout>
+</LinearLayout>
