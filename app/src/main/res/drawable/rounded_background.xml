@@ -1,0 +1,11 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <!-- Bagian dalam transparan -->
+    <solid android:color="@android:color/transparent" />
+
+    <!-- Garis tepi lingkaran -->
+    <stroke
+        android:width="2dp"
+        android:color="@android:color/black"/> <!-- Ganti warna sesuai kebutuhan -->
+</shape>

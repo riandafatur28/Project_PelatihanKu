@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="text_register" type="id" />
+    <item name="text_belum_punya_akun" type="id" />
+    <item name="google_icon" type="id" />
+</resources>
