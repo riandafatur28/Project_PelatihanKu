@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/path"
+        android:title=""
+        />
+
+    <item
+        android:id="@+id/institusi"
+        android:icon="@drawable/departmentt"
+        android:title=""
+        />
+
+    <item
+        android:id="@+id/notifikasi"
+        android:icon="@drawable/combined"
+        android:title=""
+        />
+
+
+
+    <item
+        android:id="@+id/user"
+        android:icon="@drawable/user1"
+        android:title=""
+        />
+</menu>
