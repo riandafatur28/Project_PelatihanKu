@@ -24,7 +24,7 @@
         android:id="@+id/bottomview"
         android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:background="@drawable/rounded_profil"
         app:itemIconTint="@color/icon_selector"
         app:itemTextColor="@color/icon_selector"
