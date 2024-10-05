@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="12dp"
     android:background="@color/white"
     android:id="@+id/containerProfil"
     tools:context=".FragmentProfil">
@@ -25,7 +26,7 @@
             android:layout_marginStart="12dp"
             android:fontFamily="@font/inter_medium"
             android:text="Profil"
-            android:textSize="24sp" />
+            android:textSize="28sp" />
 
         <!-- Garis Horizontal -->
         <TextView
