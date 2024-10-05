@@ -13,18 +13,22 @@ public class FragmentNotifikasiBelumDibaca extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_notifikasi_belum_dibaca, container, false);
 
-        // Inisialisasi ListView
-        ListView listView = view.findViewById(R.id.listViewNotifikasiBelumDibaca);
+        ListView listViewNotifikasiBelumDibaca = view.findViewById(R.id.listViewNotifikasiBelumDibaca);
 
-        // Data dummy untuk notifikasi belum dibaca
-        String[] notifikasiBelumDibaca = {"Notifikasi Belum Dibaca 1", "Notifikasi Belum Dibaca 2"};
+        // Example unread notifications data
+        String[] unreadNotifications = {
+                "Unread Notification 1",
+                "Unread Notification 2",
+                "Unread Notification 3"
+        };
 
-        // Menggunakan ArrayAdapter untuk menampilkan list
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_list_item_1, notifikasiBelumDibaca);
-        listView.setAdapter(adapter);
+        // Create an ArrayAdapter to display the unread notifications in the ListView
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_list_item_1, unreadNotifications);
+        listViewNotifikasiBelumDibaca.setAdapter(adapter);
 
         return view;
     }
