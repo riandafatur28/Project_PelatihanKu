@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import androidx.core.content.ContextCompat; // Import ContextCompat untuk penanganan warna
+import androidx.core.content.ContextCompat;
 
 public class FragmentNotifikasi extends Fragment {
 
@@ -49,10 +49,12 @@ public class FragmentNotifikasi extends Fragment {
 
     // Helper method to change the active button's color
     private void setActiveButton(Button activeButton, Button inactiveButton) {
-        // Set the active button to orange
+        // Set the active button to orange with white text
         activeButton.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.orange));
+        activeButton.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white));
 
-        // Set the inactive button to transparent
+        // Set the inactive button to transparent with orange text
         inactiveButton.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), android.R.color.transparent));
+        inactiveButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.orange));
     }
 }
