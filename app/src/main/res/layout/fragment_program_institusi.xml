@@ -6,8 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:padding="12dp"
     android:id="@+id/fragmenttentang"
-    tools:context=".FragmentTentang">
+    tools:context=".FragmentProgramInstitusi">
 
     <LinearLayout
         android:id="@+id/layertentang"
@@ -40,7 +41,7 @@
                 android:layout_marginStart="12dp"
                 android:fontFamily="@font/inter_medium"
                 android:text="Program Kejuruan Bangunan"
-                android:textSize="16sp" />
+                android:textSize="24sp" />
         </LinearLayout>
 
         <!-- Garis Horizontal -->
@@ -68,13 +69,13 @@
                     android:id="@+id/buttonInstitusi1"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
-                    android:layout_marginStart="24dp"
+                    android:layout_marginStart="12dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="24dp"
+                    android:layout_marginEnd="12dp"
                     android:layout_marginBottom="8dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="6dp"
-                    app:cardBackgroundColor="@android:color/white">
+                    app:cardBackgroundColor="@color/white_bg">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -102,12 +103,12 @@
                                 android:id="@+id/text_line_buttonInstitusi1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
+                                android:layout_marginTop="15dp"
                                 android:layout_marginEnd="5dp"
                                 android:fontFamily="@font/inter_bold"
                                 android:text="Balai Latihan Kerja"
                                 android:textColor="@color/font_black"
-                                android:textSize="15sp" />
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/text_line2_buttonInstitusi1"
@@ -118,7 +119,7 @@
                                 android:fontFamily="@font/inter_regular"
                                 android:text="Unit pelaksanaan teknis dari pemerintah daerah di Indonesia yang bertugas melaksanakan pelatihan kerja."
                                 android:textColor="@color/font_black"
-                                android:textSize="10sp" />
+                                android:textSize="12sp" />
 
                             <TextView
                                 android:id="@+id/btn_detail"
@@ -127,7 +128,9 @@
                                 android:layout_marginTop="8dp"
                                 android:text="Detail"
                                 android:textColor="@color/blue"
-                                android:textSize="12sp" />
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" /> <!-- Menambahkan atribut ini agar terlihat dapat ditekan -->
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
