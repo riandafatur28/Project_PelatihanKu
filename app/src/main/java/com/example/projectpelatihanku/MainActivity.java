@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import androidx.appcompat.app.AppCompatDelegate;
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
 
@@ -17,13 +18,21 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     private FragmentNotifikasi fragmentNotifikasi = new FragmentNotifikasi();
     private FragmentProfil fragmentProfil = new FragmentProfil();
     private FragmentLogin fragmentLogin = new FragmentLogin();
+    private FragmentTentang fragmentTentang = new FragmentTentang();
     private FragmentProgramInstitusi fragmentProgramInstitusi = new FragmentProgramInstitusi();
     private FragmentSplash splashFragment = new FragmentSplash();
+    private FragmentRegister fragmentRegister = new FragmentRegister();
+    private FragmentLupaSandi fragmentLupaSandi = new FragmentLupaSandi();
+    private FragmentDetailProgram fragmentDetailProgram = new FragmentDetailProgram();
+    private FragmentPendaftaran fragmentPendaftaran = new FragmentPendaftaran(); // Perbaikan nama variabel
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Mengatur agar aplikasi tidak menggunakan tema gelap
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         // Inisialisasi BottomNavigationView
         bottomNavigationView = findViewById(R.id.bottomview);
@@ -31,11 +40,23 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
 
         // Tampilkan SplashFragment sebagai fragment awal
         if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.navActivity, splashFragment)
-                    .commit();
-            bottomNavigationView.setVisibility(View.GONE); // Sembunyikan BottomNavigationView saat splash aktif
+            navigateToFragment(splashFragment, false); // Sembunyikan BottomNavigationView saat splash aktif
+        } else {
+            // Ambil fragment yang aktif dari back stack
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.navActivity);
+
+            // Cek apakah fragment yang aktif adalah salah satu dari fragment utama
+            if (currentFragment instanceof DashboardFragment ||
+                    currentFragment instanceof FragmentInstitusi ||
+                    currentFragment instanceof FragmentNotifikasi ||
+                    currentFragment instanceof FragmentProfil) {
+
+                // Tampilkan BottomNavigationView
+                bottomNavigationView.setVisibility(View.VISIBLE);
+            } else {
+                // Sembunyikan BottomNavigationView
+                bottomNavigationView.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -56,47 +77,86 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
 
         // Mengganti fragment jika tidak null
         if (selectedFragment != null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.navActivity, selectedFragment)
-                    .commit();
+            navigateToFragment(selectedFragment, true);
             return true;
         }
         return false;
     }
 
-    // Metode untuk navigasi ke FragmentProgramInstitusi
-    public void navigateToProgramInstitusi() {
+    // Method umum untuk navigasi antar fragment
+    private void navigateToFragment(Fragment fragment, boolean showBottomNav) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.navActivity, fragmentProgramInstitusi)
-                .addToBackStack(null)
+                .replace(R.id.navActivity, fragment)
+                .addToBackStack(null) // Menyimpan transaksi dalam back stack
                 .commit();
+
+        // Tampilkan atau sembunyikan BottomNavigationView berdasarkan parameter
+        bottomNavigationView.setVisibility(showBottomNav ? View.VISIBLE : View.GONE);
     }
 
-    // Metode untuk navigasi dari FragmentLogin ke Dashboard
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        // Ambil fragment yang saat ini aktif
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.navActivity);
+
+        // Cek apakah fragment yang sedang aktif adalah salah satu dari fragment yang butuh menampilkan BottomNavigationView
+        if (currentFragment instanceof DashboardFragment ||
+                currentFragment instanceof FragmentInstitusi ||
+                currentFragment instanceof FragmentNotifikasi ||
+                currentFragment instanceof FragmentProfil) {
+
+            // Tampilkan BottomNavigationView
+            bottomNavigationView.setVisibility(View.VISIBLE);
+        } else {
+            // Sembunyikan BottomNavigationView untuk fragment lainnya
+            bottomNavigationView.setVisibility(View.GONE);
+        }
+    }
+
+    public void hideBottomNavigation() {
+        bottomNavigationView.setVisibility(View.GONE);
+    }
+
+    // Method untuk navigasi dari FragmentLogin ke Dashboard
     public void navigateToDashboard() {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.navActivity, dashboardFragment)
-                .commit();
-        bottomNavigationView.setVisibility(View.VISIBLE); // Tampilkan BottomNavigationView setelah navigasi
+        navigateToFragment(dashboardFragment, true);
     }
 
-    // Metode untuk navigasi ke FragmentInstitusi
-    public void navigateToInstitusi() {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.navActivity, fragmentInstitusi)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    // Metode untuk navigasi ke FragmentLogin
+    // Method untuk navigasi dari SplashFragment ke FragmentLogin
     public void navigateToLogin() {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.navActivity, fragmentLogin)
-                .commit();
+        navigateToFragment(fragmentLogin, false);
+    }
+
+    // Method lain untuk navigasi ke fragment yang berbeda
+    public void navigateToInstitusi() {
+        navigateToFragment(fragmentInstitusi, true);
+    }
+
+    public void navigateToRegister() {
+        navigateToFragment(fragmentRegister, false);
+    }
+
+    public void navigateToLupaSandi() {
+        navigateToFragment(fragmentLupaSandi, false);
+    }
+
+    public void navigateToDetailProgram() {
+        navigateToFragment(fragmentDetailProgram, false); // Sembunyikan BottomNavigationView saat di FragmentDetailProgram
+    }
+
+    public void navigateToTentang() {
+        navigateToFragment(fragmentTentang, false);
+    }
+
+    public void navigateToProgramInstitusi() {
+        navigateToFragment(fragmentProgramInstitusi, false);
+    }
+
+    // Navigasi ke FragmentPendaftaran
+    public void navigateToPendaftaran() {
+        navigateToFragment(fragmentPendaftaran, false);
     }
 }
