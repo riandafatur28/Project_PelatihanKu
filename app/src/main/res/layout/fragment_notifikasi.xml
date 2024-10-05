@@ -4,6 +4,7 @@
     android:id="@+id/layerNotifikasi"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="12dp"
     tools:context=".FragmentNotifikasi">
 
     <LinearLayout
@@ -40,24 +41,24 @@
             <Button
                 android:id="@+id/buttonSemuaNotifikasi"
                 android:layout_width="0dp"
-                android:layout_height="52dp"
+                android:layout_height="60dp"
                 android:layout_marginStart="12dp"
                 android:layout_weight="1"
                 android:backgroundTint="@android:color/transparent"
                 android:text="Semua Notifikasi"
                 android:textColor="@color/font_black"
-                android:textSize="12sp" />
+                android:textSize="16sp" />
 
             <Button
                 android:id="@+id/buttonNotifikasiBelumDibaca"
                 android:layout_width="0dp"
-                android:layout_height="52dp"
+                android:layout_height="60dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
                 android:layout_weight="1"
-                android:layout_marginEnd="12dp"
                 android:backgroundTint="@android:color/transparent"
+                android:text="Belum Dibaca"
                 android:textColor="@color/font_black"
-                android:text="Notifikasi Belum Dibaca"
                 android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
