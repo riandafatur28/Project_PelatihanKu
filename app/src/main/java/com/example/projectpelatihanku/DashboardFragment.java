@@ -29,7 +29,7 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     private OnDashboardVisibleListener listener; // Tambahkan listener
 
     private GoogleMap mMap;
-    private LatLng initialLocation = new LatLng(-7.60067, 111.88837); // Lokasi Balai Latihan Kerja Nganjuk
+    private LatLng initialLocation = new LatLng(-7.600671315258253, 111.88837430296729); // Lokasi Balai Latihan Kerja Nganjuk
     private ImageView imageView;
     private int[] images = {R.drawable.slide_1, R.drawable.slide_2, R.drawable.slide_3}; // Array gambar
     private int currentIndex = 0;
@@ -157,8 +157,10 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
 
         // Menangani event tekan dan tahan pada peta
         mMap.setOnMapLongClickListener(latLng -> {
-            // Membuka Google Maps pada lokasi yang diinginkan
-            String uri = String.format("geo:%f,%f?q=%f,%f(Balai+Latihan+Kerja+Nganjuk)", latLng.latitude, latLng.longitude, latLng.latitude, latLng.longitude);
+            // Membuka Google Maps menuju Balai Latihan Kerja Nganjuk
+            String uri = String.format("geo:%f,%f?q=%f,%f(Balai+Latihan+Kerja+Nganjuk)",
+                    initialLocation.latitude, initialLocation.longitude,
+                    initialLocation.latitude, initialLocation.longitude);
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
             intent.setPackage("com.google.android.apps.maps");
             startActivity(intent);
