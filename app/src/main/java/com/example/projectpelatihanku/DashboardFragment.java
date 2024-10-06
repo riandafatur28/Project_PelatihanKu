@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -15,6 +14,8 @@ public class DashboardFragment extends Fragment {
 
     private static final String PREFS_NAME = "UserPrefs";
     static final String KEY_USER_NAME = "username";
+
+    private OnDashboardVisibleListener listener; // Tambahkan listener
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -34,12 +35,31 @@ public class DashboardFragment extends Fragment {
         salamText.setText("Halo, " + userName);
 
         // Set up button to navigate to FragmentTentang
-        Button lebihBanyakButton = view.findViewById(R.id.btn_lebihBanyak);
+        TextView lebihBanyakButton = view.findViewById(R.id.btn_lebihBanyak);
         lebihBanyakButton.setOnClickListener(v -> {
             // Navigasi ke FragmentTentang
             ((MainActivity) requireActivity()).navigateToTentang();
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Panggil listener saat fragment sudah muncul
+        if (listener != null) {
+            listener.onDashboardVisible();
+        }
+    }
+
+    // Method untuk mengatur listener dari MainActivity
+    public void setOnDashboardVisibleListener(OnDashboardVisibleListener listener) {
+        this.listener = listener;
+    }
+
+    // Interface untuk listener
+    public interface OnDashboardVisibleListener {
+        void onDashboardVisible();
     }
 }
