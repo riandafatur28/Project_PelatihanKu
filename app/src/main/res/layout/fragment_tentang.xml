@@ -74,7 +74,7 @@
                         android:layout_width="180dp"
                         android:layout_height="180dp"
                         android:scaleType="fitXY"
-                        android:layout_marginStart="12dp"
+                        android:layout_marginStart="8dp"
                         android:src="@drawable/balai_img"
                         android:padding="8dp"/>
 
