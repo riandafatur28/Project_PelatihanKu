@@ -3,14 +3,16 @@ package com.example.projectpelatihanku;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import androidx.appcompat.app.AppCompatDelegate;
 
-public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener, DashboardFragment.OnDashboardVisibleListener {
 
     private BottomNavigationView bottomNavigationView;
     private DashboardFragment dashboardFragment = new DashboardFragment();
@@ -25,6 +27,8 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     private FragmentLupaSandi fragmentLupaSandi = new FragmentLupaSandi();
     private FragmentDetailProgram fragmentDetailProgram = new FragmentDetailProgram();
     private FragmentPendaftaran fragmentPendaftaran = new FragmentPendaftaran(); // Perbaikan nama variabel
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.navActivity);
 
             // Cek apakah fragment yang aktif adalah salah satu dari fragment utama
-            if (currentFragment instanceof DashboardFragment ||
-                    currentFragment instanceof FragmentInstitusi ||
-                    currentFragment instanceof FragmentNotifikasi ||
-                    currentFragment instanceof FragmentProfil) {
-
+            if (isMainFragment(currentFragment)) {
                 // Tampilkan BottomNavigationView
                 bottomNavigationView.setVisibility(View.VISIBLE);
             } else {
@@ -92,7 +92,11 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
                 .commit();
 
         // Tampilkan atau sembunyikan BottomNavigationView berdasarkan parameter
-        bottomNavigationView.setVisibility(showBottomNav ? View.VISIBLE : View.GONE);
+        if (showBottomNav) {
+            bottomNavigationView.setVisibility(View.VISIBLE);
+        } else {
+            bottomNavigationView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -103,11 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.navActivity);
 
         // Cek apakah fragment yang sedang aktif adalah salah satu dari fragment yang butuh menampilkan BottomNavigationView
-        if (currentFragment instanceof DashboardFragment ||
-                currentFragment instanceof FragmentInstitusi ||
-                currentFragment instanceof FragmentNotifikasi ||
-                currentFragment instanceof FragmentProfil) {
-
+        if (isMainFragment(currentFragment)) {
             // Tampilkan BottomNavigationView
             bottomNavigationView.setVisibility(View.VISIBLE);
         } else {
@@ -116,13 +116,37 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         }
     }
 
+    // Method ini akan memeriksa apakah fragment saat ini adalah salah satu dari fragment utama
+    private boolean isMainFragment(Fragment fragment) {
+        return fragment instanceof DashboardFragment ||
+                fragment instanceof FragmentInstitusi ||
+                fragment instanceof FragmentNotifikasi ||
+                fragment instanceof FragmentProfil;
+    }
+
     public void hideBottomNavigation() {
         bottomNavigationView.setVisibility(View.GONE);
     }
 
     // Method untuk navigasi dari FragmentLogin ke Dashboard
     public void navigateToDashboard() {
-        navigateToFragment(dashboardFragment, true);
+        // Sembunyikan BottomNavigationView sebelum proses login selesai
+        hideBottomNavigation();
+
+        // Pindah ke DashboardFragment setelah login selesai
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.navActivity, dashboardFragment)
+                .addToBackStack(null)
+                .commit();
+
+        // Tampilkan BottomNavigationView segera setelah dashboard tampil
+        dashboardFragment.setOnDashboardVisibleListener(new DashboardFragment.OnDashboardVisibleListener() {
+            @Override
+            public void onDashboardVisible() {
+                bottomNavigationView.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     // Method untuk navigasi dari SplashFragment ke FragmentLogin
@@ -158,5 +182,11 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     // Navigasi ke FragmentPendaftaran
     public void navigateToPendaftaran() {
         navigateToFragment(fragmentPendaftaran, false);
+    }
+
+    @Override
+    public void onDashboardVisible() {
+        // Tampilkan BottomNavigationView setelah DashboardFragment terlihat
+        bottomNavigationView.setVisibility(View.VISIBLE);
     }
 }
