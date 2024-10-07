@@ -1,7 +1,5 @@
 package com.example.projectpelatihanku;
 
-
-
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,18 +13,24 @@ public class FragmentSemuaNotifikasi extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_semua_notifikasi, container, false);
 
-        // Inisialisasi ListView
-        ListView listView = view.findViewById(R.id.listViewSemuaNotifikasi);
+        ListView listViewSemuaNotifikasi = view.findViewById(R.id.listViewSemuaNotifikasi);
 
-        // Data dummy untuk notifikasi
-        String[] notifikasi = {"Notifikasi 1", "Notifikasi 2", "Notifikasi 3", "Notifikasi 4"};
+        // Example notifications data
+        String[] notifications = {
+                "Notification 1",
+                "Notification 2",
+                "Notification 3",
+                "Notification 4",
+                "Notification 5"
+        };
 
-        // Menggunakan ArrayAdapter untuk menampilkan list
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_list_item_1, notifikasi);
-        listView.setAdapter(adapter);
+        // Create an ArrayAdapter to display the notifications in the ListView
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_list_item_1, notifications);
+        listViewSemuaNotifikasi.setAdapter(adapter);
 
         return view;
     }
