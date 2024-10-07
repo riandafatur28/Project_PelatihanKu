@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="@color/white"
+        android:id="@+id/lupa_sandi">
+
+        <!-- LinearLayout untuk teks Lupa Kata Sandi -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp">
+
+            <!-- Text Lupa Kata Sandi -->
+            <TextView
+                android:id="@+id/textUbahPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ubah"
+                android:fontFamily="@font/inter_bold"
+                android:textStyle="bold"
+                android:textSize="28sp"
+                android:textColor="@color/font_black"
+                android:layout_marginTop="72dp"
+                android:gravity="center" />
+
+            <!-- Text Kata Sandi? -->
+            <TextView
+                android:id="@+id/textKataSandi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kata Sandi?"
+                android:fontFamily="@font/inter_bold"
+                android:textStyle="bold"
+                android:textSize="28sp"
+                android:textColor="@color/font_black"
+                android:layout_marginTop="4dp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- FrameLayout untuk EditText dan Ikon Mata -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:paddingEnd="8dp">
+
+            <!-- EditText Kata Sandi -->
+            <EditText
+                android:id="@+id/inputpassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Kata Sandi"
+                android:inputType="textPassword"
+                android:paddingEnd="48dp"
+                android:textColor="@color/font_black"
+                android:backgroundTint="@color/font_tint"
+                android:padding="12dp"
+                android:focusable="true" />
+
+            <!-- Ikon Visibilitas untuk Password -->
+            <ImageView
+                android:id="@+id/iconinputpassword"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/eye_icon"
+                android:contentDescription="Toggle Password Visibility"
+                android:clickable="true"
+                app:tint="@color/font_tint" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="* Masukkan Kata Sandi Baru Anda"
+            android:layout_marginStart="12dp"
+            android:textColor="@color/font_tint"/>
+
+        <!-- FrameLayout untuk Konfirmasi Password -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:paddingEnd="8dp">
+
+            <!-- EditText Konfirmasi Kata Sandi -->
+            <EditText
+                android:id="@+id/konfirmSandiBaru"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Konfirmasi Kata Sandi Baru"
+                android:inputType="textPassword"
+                android:paddingEnd="48dp"
+                android:textColor="@color/font_black"
+                android:backgroundTint="@color/font_tint"
+                android:padding="12dp"
+                android:focusable="true" />
+
+            <!-- Ikon Visibilitas untuk Konfirmasi Password -->
+            <ImageView
+                android:id="@+id/iconkonfirmpassword"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/eye_icon"
+                android:contentDescription="Toggle Confirm Password Visibility"
+                android:clickable="true"
+                app:tint="@color/font_tint" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="* Konfirmasikan Kata Sandi Baru Anda"
+            android:layout_marginStart="12dp"
+            android:textColor="@color/font_tint"/>
+
+        <!-- LinearLayout untuk Button Kirim -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="48dp"
+            android:orientation="vertical"
+            android:layout_marginTop="36dp"
+            android:paddingStart="16dp">
+
+            <!-- Button Kirim -->
+            <Button
+                android:id="@+id/button_kirim"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="@color/orange"
+                android:fontFamily="@font/inter_bold"
+                android:text="Kirim"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <!-- Button Kembali -->
+            <LinearLayout
+                android:id="@+id/txtKembali"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/rounded_button_white"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/text_kembali"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:fontFamily="@font/inter_semibold"
+                    android:text="Kembali"
+                    android:textColor="@color/orange"
+                    android:textSize="16sp"
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="8dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

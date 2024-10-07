@@ -1,64 +1,158 @@
 package com.example.projectpelatihanku;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+import androidx.fragment.app.Fragment;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentOTP#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragmentOTP extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private TextView textKembali, timerText, textKirimUlang;
+    private Button sendButton;
+    private EditText[] otpFields;
+    private final String generatedOTP = "123456";
+    private CountDownTimer countDownTimer;
+    private boolean isNavigating = false;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public FragmentOTP() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentOTP.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragmentOTP newInstance(String param1, String param2) {
-        FragmentOTP fragment = new FragmentOTP();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @SuppressLint("MissingInflatedId")
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_otp, container, false);
+
+        sendButton = view.findViewById(R.id.button_kirim);
+        textKembali = view.findViewById(R.id.text_Kembali);
+        timerText = view.findViewById(R.id.timer_text);
+        textKirimUlang = view.findViewById(R.id.kirimUlang);
+
+        otpFields = new EditText[]{
+                view.findViewById(R.id.kodeOtp1),
+                view.findViewById(R.id.kodeOtp2),
+                view.findViewById(R.id.kodeOtp3),
+                view.findViewById(R.id.kodeOtp4),
+                view.findViewById(R.id.kodeOtp5),
+                view.findViewById(R.id.kodeOtp6)
+        };
+
+        for (EditText otpField : otpFields) {
+            otpField.setText("");
+            otpField.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+        }
+
+        sendButton.setOnClickListener(v -> {
+            String inputOTP = getInputOTP();
+
+            // Validasi input OTP
+            if (inputOTP.isEmpty()) {
+                showToastWithDelay("OTP tidak boleh kosong.", 1000);
+            } else if (inputOTP.length() < 6) {
+                showToastWithDelay("OTP harus terdiri dari 6 digit.", 1000);
+            } else if (!validateOTP(inputOTP)) {
+                showToastWithDelay("OTP tidak valid. Silakan coba lagi.", 1000);
+            } else {
+
+                isNavigating = true;
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) requireActivity()).navigateToUbahSandi();
+                } else {
+                    Log.e("FragmentOTP", "MainActivity not found");
+                }
+            }
+        });
+
+        textKembali.setOnClickListener(v -> {
+            isNavigating = true;
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).navigateToLupaSandi();
+            } else {
+                Log.e("FragmentOTP", "MainActivity not found");
+            }
+        });
+
+        startTimer();
+
+        setOTPInputListeners();
+
+        textKirimUlang.setOnClickListener(v -> {
+            showToastWithDelay("Kode OTP telah dikirim ulang ke email.", 1000); // Tampilkan toast dengan delay
+            startTimer();
+        });
+
+        return view;
+    }
+
+    private String getInputOTP() {
+        StringBuilder otpBuilder = new StringBuilder();
+        for (EditText otpField : otpFields) {
+            otpBuilder.append(otpField.getText().toString().trim());
+        }
+        return otpBuilder.toString();
+    }
+
+    private boolean validateOTP(String inputOTP) {
+        return inputOTP.equals(generatedOTP);
+    }
+
+    private void setOTPInputListeners() {
+        for (int i = 0; i < otpFields.length; i++) {
+            final int index = i;
+            otpFields[i].addTextChangedListener(new android.text.TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.length() == 1 && index < otpFields.length - 1) {
+                        otpFields[index + 1].requestFocus();
+                    } else if (s.length() == 0 && index > 0) {
+                        otpFields[index - 1].requestFocus();
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(android.text.Editable s) {
+                }
+            });
         }
     }
 
+    private void showToastWithDelay(String message, long delayMillis) {
+        if (!isNavigating) {
+            new Handler().postDelayed(() -> Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show(), delayMillis);
+        }
+    }
+
+    private void startTimer() {
+        timerText.setVisibility(View.VISIBLE);
+        countDownTimer = new CountDownTimer(60000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timerText.setText("Sisa waktu: " + millisUntilFinished / 1000 + " detik");
+            }
+
+            @Override
+            public void onFinish() {
+                timerText.setText("Waktu habis!");
+                showToastWithDelay("Waktu OTP habis. Kode OTP baru telah dikirim.", 1000);
+                startTimer(); // Reset timer
+            }
+        }.start();
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_otp, container, false);
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
     }
 }

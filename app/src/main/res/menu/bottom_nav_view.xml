@@ -3,19 +3,19 @@
 
     <item
         android:id="@+id/home"
-        android:icon="@drawable/path"
+        android:icon="@drawable/home"
         android:title=""
         />
 
     <item
         android:id="@+id/institusi"
-        android:icon="@drawable/departmentt"
+        android:icon="@drawable/institusii"
         android:title=""
         />
 
     <item
         android:id="@+id/notifikasi"
-        android:icon="@drawable/combined"
+        android:icon="@drawable/notif"
         android:title=""
         />
 
@@ -23,7 +23,7 @@
 
     <item
         android:id="@+id/user"
-        android:icon="@drawable/user1"
+        android:icon="@drawable/user"
         android:title=""
         />
 </menu>

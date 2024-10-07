@@ -1,9 +1,23 @@
 <resources>
-    <string name="app_name">LoginRelative</string>
+    <string name="app_name">pelatihanKu</string>
     <string name="signin_text">
         Sudah punya akun?  <font color="#FF9228"><b>MASUK</b></font>
     </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="description_arrow">Tanda panah untuk kembali</string>
+    <string name="kirim_ulang"><u>Kirim Ulang</u></string>
+    <string name="lebih_banyak"><u>Lebih Banyak</u></string>
+    <string name="lihat_program"><u>Lihat Program</u></string>
+    <string name="detail"><u>Detail</u></string>
+    <string name="unduh_bukti"><u>Unduh Bukti Pendaftaran</u></string>
+    <string-array name="jenis_kelamin_array">
+        <item>Jenis Kelamin</item>
+        <item>Laki-laki</item>
+        <item>Perempuan</item>
+    </string-array>
+    <style name="CircleImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

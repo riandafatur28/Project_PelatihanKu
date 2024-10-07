@@ -1,68 +1,67 @@
 package com.example.projectpelatihanku;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
-import android.content.SharedPreferences;
-import android.widget.EditText;
+import java.util.Arrays;
+import java.util.List;
 
 public class FragmentLupaSandi extends Fragment {
+
     private Button buttonKirim;
     private LinearLayout txtKembali;
+    private EditText editTextEmail;
 
-    // Simpan key untuk SharedPreferences
-    private static final String PREFS_NAME = "UserPrefs";
-    private static final String KEY_EMAIL = "email"; // Kunci untuk email
+    private List<String> registeredEmails = Arrays.asList(
+            "user1@gmail.com",
+            "user2@gmail.com",
+            "user3@gmail.com"
+    );
 
-    @SuppressLint("MissingInflatedId")
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lupa_sandi, container, false);
 
         buttonKirim = view.findViewById(R.id.button_kirim);
         txtKembali = view.findViewById(R.id.txtKembali);
+        editTextEmail = view.findViewById(R.id.inputEmail);
 
-        // Set listener untuk Button Kirim
         buttonKirim.setOnClickListener(v -> {
-            String email = ((EditText) view.findViewById(R.id.inputEmail)).getText().toString();
-            // Kirim OTP ke email acak
-            sendOtpToEmail(email);
-            navigateToOtpFragment(); // Navigasi ke fragment OTP
+            String email = editTextEmail.getText().toString().trim();
+
+            // Validasi email
+            if (email.isEmpty()) {
+                Toast.makeText(getActivity(), "Email tidak boleh kosong.", Toast.LENGTH_LONG).show();
+            } else if (!email.endsWith("@gmail.com")) {
+                Toast.makeText(getActivity(), "Masukkan email yang valid dengan domain @gmail.com", Toast.LENGTH_LONG).show();
+            } else if (!checkEmailInRegisteredAccounts(email)) {
+                Toast.makeText(getActivity(), "Email tidak terdaftar. Silakan gunakan email yang sudah terdaftar.", Toast.LENGTH_LONG).show();
+            } else {
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) getActivity()).navigateToOTP();
+                } else {
+                    Log.e("FragmentLupaSandi", "MainActivity not found");
+                }
+            }
         });
 
-        // Set listener untuk TextView Kembali
         txtKembali.setOnClickListener(v -> {
-            // Kembali ke Fragment Login
             if (getActivity() instanceof MainActivity) {
                 ((MainActivity) getActivity()).navigateToLogin();
-            } else {
-                System.out.println("MainActivity not found");
             }
         });
 
         return view;
     }
 
-    private void sendOtpToEmail(String email) {
-        // Logika untuk mengirim OTP ke email
-        // Misalnya, menggunakan API atau server backend Anda
-        Toast.makeText(getContext(), "OTP telah dikirim ke " + email, Toast.LENGTH_SHORT).show();
-    }
-
-    private void navigateToOtpFragment() {
-        // Navigasi ke Fragment OTP
-        requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new FragmentOTP()) // Ganti dengan nama fragment OTP Anda
-                .addToBackStack(null)
-                .commit();
+    private boolean checkEmailInRegisteredAccounts(String email) {
+        return registeredEmails.contains(email);
     }
 }

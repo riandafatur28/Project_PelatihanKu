@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,6 @@ public class FragmentPendaftaran extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pendaftaran, container, false);
 
-        // Initialize components
         inputNamaDaftar = view.findViewById(R.id.inputNamaDaftar);
         inputKejuruanDaftar = view.findViewById(R.id.inputKejuruanDaftar);
         inputProgramDaftar = view.findViewById(R.id.inputProgramDaftar);
@@ -50,11 +50,13 @@ public class FragmentPendaftaran extends Fragment {
         CardView cardViewUploadKK = view.findViewById(R.id.cardViewUploadKK);
         CardView cardViewUploadIjazah = view.findViewById(R.id.cardViewUploadIjazah);
 
-        // Back navigation
-        ImageView imageArrow = view.findViewById(R.id.imageArrow);
-        imageArrow.setOnClickListener(v -> navigateBackDetailProgram());
+        if (getArguments() != null) {
+            String kejuruan = getArguments().getString("kejuruan");
+            String program = getArguments().getString("program");
+            inputKejuruanDaftar.setText(kejuruan != null ? kejuruan : "Teknik Komputer");
+            inputProgramDaftar.setText(program != null ? program : "Pemrograman Android");
+        }
 
-        // Registration logic
         buttonDaftar.setOnClickListener(v -> {
             String nama = inputNamaDaftar.getText().toString();
             String kejuruan = inputKejuruanDaftar.getText().toString();
@@ -62,14 +64,17 @@ public class FragmentPendaftaran extends Fragment {
 
             if (!nama.isEmpty() && !kejuruan.isEmpty() && !program.isEmpty() && uriKtp != null && uriKk != null && uriIjazah != null) {
                 textUnduhBukti.setVisibility(View.VISIBLE);
+                showToastWithDelay("Pendaftaran berhasil!", 2000);
+            } else {
+                showToastWithDelay("Semua field harus diisi!", 2000);
             }
         });
 
-        // Upload buttons
         cardViewUploadKTP.setOnClickListener(v -> requestStoragePermission("KTP"));
         cardViewUploadKK.setOnClickListener(v -> requestStoragePermission("KK"));
         cardViewUploadIjazah.setOnClickListener(v -> requestStoragePermission("Ijazah"));
-
+        ImageView imageArrow = view.findViewById(R.id.imageArrow);
+        imageArrow.setOnClickListener(v -> navigateBackDetailProgram());
         return view;
     }
 
@@ -93,9 +98,9 @@ public class FragmentPendaftaran extends Fragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == STORAGE_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getActivity(), "Izin akses diberikan", Toast.LENGTH_SHORT).show();
+                showToastWithDelay("Izin akses diberikan", 2000);
             } else {
-                Toast.makeText(getActivity(), "Izin akses ditolak", Toast.LENGTH_SHORT).show();
+                showToastWithDelay("Izin akses ditolak", 2000);
             }
         }
     }
@@ -128,17 +133,21 @@ public class FragmentPendaftaran extends Fragment {
     }
 
     private void handleFileUpload(Uri uri, String dataString) {
-        String fileName = uri.getLastPathSegment(); // Extract file name
+        String fileName = uri.getLastPathSegment();
 
         if (dataString.contains("KTP")) {
             uriKtp = uri;
-            textViewKTPFileName.setText(fileName); // Show file name for KTP
+            textViewKTPFileName.setText(fileName);
         } else if (dataString.contains("KK")) {
             uriKk = uri;
-            textViewKKFileName.setText(fileName); // Show file name for KK
+            textViewKKFileName.setText(fileName);
         } else if (dataString.contains("Ijazah")) {
             uriIjazah = uri;
-            textViewIjazahFileName.setText(fileName); // Show file name for Ijazah
+            textViewIjazahFileName.setText(fileName);
         }
+    }
+
+    private void showToastWithDelay(String message, long delay) {
+        new Handler().postDelayed(() -> Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show(), delay);
     }
 }

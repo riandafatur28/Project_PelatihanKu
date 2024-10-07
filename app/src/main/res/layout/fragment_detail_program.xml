@@ -32,8 +32,6 @@
                 android:focusable="true"
                 android:contentDescription="@string/description_arrow" />
 
-
-
             <TextView
                 android:id="@+id/texttentang"
                 android:layout_width="wrap_content"
@@ -182,6 +180,7 @@
                         android:fontFamily="@font/inter_regular"
                         android:text="Berdirinya UPT Balai Latihan Kerja (BLK) Nganjuk pada tanggal 07 Juli 1983 dengan nama KLK (Kursus Latihan Kerja). Pada tahun 1985 berubah menjadi BLKIP LLK-UKM (Lokal Latihan Kerja Usaha Kecil, Menengah). Pada era otonomi daerah tahun 2000 menjadi BLKUKM Disnaker Provinsi Jawa Timur berdasarkan perda No. 35/2000. Berdasarkan Peraturan Gubernur No. 62/2018 berganti nama menjadi Unit Pelaksana Teknis Balai Latihan Kerja (BLK) Nganjuk Disnakertrans Provinsi Jawa Timur."
                         android:layout_marginEnd="12dp"
+                        android:justificationMode="inter_word"
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -283,8 +282,6 @@
                                 android:textSize="12sp" />
                         </LinearLayout>
                     </LinearLayout>
-
-
                 </LinearLayout>
 
                 <!-- Garis Horizontal -->
@@ -356,6 +353,7 @@
                             android:textSize="12sp" />
                     </LinearLayout>
                 </LinearLayout>
+
                 <!-- Garis Horizontal -->
                 <TextView
                     android:layout_width="match_parent"

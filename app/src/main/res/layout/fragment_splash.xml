@@ -10,16 +10,17 @@
 
     <ImageView
         android:id="@+id/gambarAwal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/image_awal_splash_layout"
-        android:layout_gravity="center" />
+        android:layout_width="200dp"
+        android:layout_marginTop="-15dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:src="@drawable/pelatihankuu" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pelatihanku"
-        android:textColor="@color/white"
+        android:textColor="@color/white_bg"
         android:fontFamily="@font/inter_medium"
         android:textSize="44sp"
         android:layout_gravity="center"

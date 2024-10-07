@@ -1,10 +1,14 @@
 package com.example.projectpelatihanku;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -13,113 +17,117 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.fragment.app.Fragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.imageview.ShapeableImageView;
 
 public class DashboardFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String PREFS_NAME = "UserPrefs";
-    static final String KEY_USER_NAME = "username";
-
-    private OnDashboardVisibleListener listener; // Tambahkan listener
-
+    static final String KEY_USER_NAME = "user_name";
+    private ShapeableImageView imageUser;
     private GoogleMap mMap;
-    private LatLng initialLocation = new LatLng(-7.600671315258253, 111.88837430296729); // Lokasi Balai Latihan Kerja Nganjuk
+    private LatLng initialLocation = new LatLng(-7.600671315258253, 111.88837430296729);
     private ImageView imageView;
-    private int[] images = {R.drawable.slide_1, R.drawable.slide_2, R.drawable.slide_3}; // Array gambar
+    private int[] images = {R.drawable.slide_1, R.drawable.slide_2, R.drawable.slide_3};
     private int currentIndex = 0;
-
-    private GestureDetector gestureDetector; // Tambahkan GestureDetector
+    private GestureDetector gestureDetector;
+    private OnDashboardVisibleListener listener;
 
     public DashboardFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof OnDashboardVisibleListener) {
+            listener = (OnDashboardVisibleListener) context;
+        } else {
+            throw new ClassCastException(context.toString() + " must implement OnDashboardVisibleListener");
+        }
+    }
+
+    @SuppressLint({"WrongViewCast", "MissingInflatedId"})
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        // Retrieve the user's name from shared preferences
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String userName = sharedPreferences.getString(KEY_USER_NAME, "User"); // Default to "User" if not found
-
-        // Set the greeting text
+        // Inisialisasi komponen UI
+        imageUser = view.findViewById(R.id.imageUser);
         TextView salamText = view.findViewById(R.id.salamText);
-        salamText.setText("Halo, " + userName);
-
-        // Initialize ImageView
         imageView = view.findViewById(R.id.imagepage);
-        imageView.setImageResource(images[currentIndex]); // Set gambar pertama
 
-        // Inisialisasi SupportMapFragment
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-                .findFragmentById(R.id.map);
+        // Mengambil data pengguna dari SharedPreferences
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String userName = sharedPreferences.getString(KEY_USER_NAME, "User");  // "User" adalah default jika nama tidak ditemukan
+        salamText.setText("Halo, " + userName);  // Menampilkan nama pengguna
+
+
+        // Mengambil URI gambar profil dari SharedPreferences
+        String imageUriString = sharedPreferences.getString("image_uri", null);
+        if (imageUriString != null) {
+            Uri imageUri = Uri.parse(imageUriString);
+            try {
+                imageUser.setImageURI(imageUri);  // Set gambar profil menggunakan URI
+            } catch (Exception e) {
+                imageUser.setImageResource(R.drawable.gambar_user);  // Set gambar default jika terjadi kesalahan
+                e.printStackTrace();
+            }
+        } else {
+            // Jika tidak ada gambar yang disimpan, gunakan gambar default
+            imageUser.setImageResource(R.drawable.gambar_user);
+        }
+
+        // Inisialisasi peta
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
 
-        // Set up button for left navigation
+        // Tombol untuk berpindah gambar carousel
         ImageButton btnLeft = view.findViewById(R.id.btn_left);
         btnLeft.setOnClickListener(v -> {
-            currentIndex--; // Kurangi index
+            currentIndex--;
             if (currentIndex < 0) {
-                currentIndex = images.length - 1; // Kembali ke gambar terakhir jika sudah di gambar pertama
+                currentIndex = images.length - 1;
             }
             imageView.setImageResource(images[currentIndex]);
         });
 
-        // Set up button for right navigation
         ImageButton btnRight = view.findViewById(R.id.btn_right);
         btnRight.setOnClickListener(v -> {
-            currentIndex++; // Tambah index
+            currentIndex++;
             if (currentIndex >= images.length) {
-                currentIndex = 0; // Kembali ke gambar pertama jika sudah di gambar terakhir
+                currentIndex = 0;
             }
             imageView.setImageResource(images[currentIndex]);
         });
 
-        // Set up button to navigate to FragmentTentang
-        TextView lebihBanyakButton = view.findViewById(R.id.btn_lebihBanyak);
-        lebihBanyakButton.setOnClickListener(v -> {
-            // Navigasi ke FragmentTentang
-            ((MainActivity) requireActivity()).navigateToTentang();
-        });
-
-        // Initialize GestureDetector
+        // Gesture untuk mengaktifkan scroll pada peta
         gestureDetector = new GestureDetector(requireContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                // Enable ScrollView hanya jika scrolling vertikal
-                if (Math.abs(distanceY) > Math.abs(distanceX)) {
-                    requireActivity().findViewById(R.id.scroll_view).setEnabled(true);
-                } else {
-                    requireActivity().findViewById(R.id.scroll_view).setEnabled(false);
-                }
+                requireActivity().findViewById(R.id.scroll_view).setEnabled(Math.abs(distanceY) > Math.abs(distanceX));
                 return super.onScroll(e1, e2, distanceX, distanceY);
             }
         });
 
-        // Mengatur touch listener pada layout utama
         view.setOnTouchListener((v, event) -> {
             gestureDetector.onTouchEvent(event);
-            return false; // Kembalikan false agar event dilanjutkan
+            return false;
         });
 
-        // Mengatur touch listener pada peta
-        mapFragment.getView().setOnTouchListener((v, event) -> {
-            // Menonaktifkan ScrollView saat peta disentuh
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                requireActivity().findViewById(R.id.scroll_view).setEnabled(false);
-            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
-                requireActivity().findViewById(R.id.scroll_view).setEnabled(true);
+        // Tombol "Lebih Banyak"
+        TextView btn_LebihBanyak = view.findViewById(R.id.btn_lebihBanyak);
+        btn_LebihBanyak.setOnClickListener(v -> {
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).navigateToTentang();
             }
-            return false; // Kembalikan false agar event dilanjutkan
         });
 
         return view;
@@ -128,36 +136,11 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Atur posisi kamera ke lokasi awal
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, 15)); // Zoom level 15
-
-        // Tambahkan penanda lokasi
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, 15));
         mMap.addMarker(new MarkerOptions()
                 .position(initialLocation)
-                .title("Balai Latihan Kerja Nganjuk")); // Nama lokasi
-
-        // Set listener untuk marker
-        mMap.setOnMarkerClickListener(marker -> {
-            // Tindakan saat marker ditekan dan ditahan
-            return false; // Kembalikan false agar event dilanjutkan
-        });
-
-        // Menyimpan posisi kamera
-        mMap.setOnCameraChangeListener(cameraPosition -> {
-            // Simpan posisi kamera setelah perubahan
-            LatLng target = cameraPosition.target;
-            float zoom = cameraPosition.zoom;
-
-            // Jika zoom level lebih kecil dari level minimum, kembalikan ke posisi awal
-            if (zoom < 10) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, 15));
-            }
-        });
-
-        // Menangani event tekan dan tahan pada peta
+                .title("Balai Latihan Kerja Nganjuk"));
         mMap.setOnMapLongClickListener(latLng -> {
-            // Membuka Google Maps menuju Balai Latihan Kerja Nganjuk
             String uri = String.format("geo:%f,%f?q=%f,%f(Balai+Latihan+Kerja+Nganjuk)",
                     initialLocation.latitude, initialLocation.longitude,
                     initialLocation.latitude, initialLocation.longitude);
@@ -167,22 +150,21 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    public interface OnDashboardVisibleListener {
+        void onDashboardVisible();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        // Panggil listener saat fragment sudah muncul
         if (listener != null) {
             listener.onDashboardVisible();
         }
     }
 
-    // Method untuk mengatur listener dari MainActivity
-    public void setOnDashboardVisibleListener(OnDashboardVisibleListener listener) {
-        this.listener = listener;
-    }
-
-    // Interface untuk listener
-    public interface OnDashboardVisibleListener {
-        void onDashboardVisible();
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 }

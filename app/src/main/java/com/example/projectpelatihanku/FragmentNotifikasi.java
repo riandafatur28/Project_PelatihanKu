@@ -6,55 +6,104 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
-import androidx.core.content.ContextCompat;
+import android.widget.ListView;
 
-public class FragmentNotifikasi extends Fragment {
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-    private Button buttonSemuaNotifikasi, buttonNotifikasiBelumDibaca;
+public class FragmentNotifikasi extends Fragment implements OnNotificationCheckedChangeListener {
+
+    private NotificationAdapter adapter; // Menambahkan referensi adapter
+    private List<MyNotification> notifications; // Menyimpan daftar notifikasi
+    private Button buttonHapus; // Tombol untuk menghapus notifikasi
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_notifikasi, container, false);
 
-        buttonSemuaNotifikasi = view.findViewById(R.id.buttonSemuaNotifikasi);
-        buttonNotifikasiBelumDibaca = view.findViewById(R.id.buttonNotifikasiBelumDibaca);
+        ListView listViewNotifikasi = view.findViewById(R.id.listViewNotifikasi);
+        buttonHapus = view.findViewById(R.id.buttonHapus);
 
-        // Load default view (Semua Notifikasi)
-        loadFragment(new FragmentSemuaNotifikasi());
-        setActiveButton(buttonSemuaNotifikasi, buttonNotifikasiBelumDibaca); // Set default active button
+        // Membuat daftar notifikasi menggunakan objek Notification
+        notifications = new ArrayList<>();
+        notifications.add(new MyNotification("Pendaftaran telah dibuka!", false)); // belum dibaca
+        notifications.add(new MyNotification("Jadwal kelas telah diperbarui.", false)); // sudah dibaca
+        notifications.add(new MyNotification("Event baru akan segera berlangsung.", false));
+        notifications.add(new MyNotification("Pengumuman hasil seleksi.", false)); // sudah dibaca
+        notifications.add(new MyNotification("Sistem akan diperbarui malam ini.", false));
 
-        // Set click listeners for both buttons
-        buttonSemuaNotifikasi.setOnClickListener(v -> {
-            loadFragment(new FragmentSemuaNotifikasi());
-            setActiveButton(buttonSemuaNotifikasi, buttonNotifikasiBelumDibaca);
+        // Inisialisasi adapter dan set ke ListView
+        adapter = new NotificationAdapter(requireContext(), notifications, this); // Meneruskan listener
+        listViewNotifikasi.setAdapter(adapter);
+
+        // Set OnItemClickListener untuk membuka FragmentDetailNotifikasi
+        listViewNotifikasi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MyNotification selectedNotification = notifications.get(position);
+                selectedNotification.markAsRead(); // Menandai sebagai sudah dibaca
+
+                // Memperbarui tampilan adapter
+                adapter.notifyDataSetChanged(); // Memanggil notifyDataSetChanged() untuk memperbarui tampilan
+
+                String notificationDetail = "Detail untuk notifikasi: " + selectedNotification.getTitle();
+
+                // Buat FragmentDetailNotifikasi dan kirimkan data
+                FragmentDetailNotifikasi detailFragment = FragmentDetailNotifikasi.newInstance(selectedNotification.getTitle(), notificationDetail);
+                FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.layerNotifikasi, detailFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
         });
 
-        buttonNotifikasiBelumDibaca.setOnClickListener(v -> {
-            loadFragment(new FragmentNotifikasiBelumDibaca());
-            setActiveButton(buttonNotifikasiBelumDibaca, buttonSemuaNotifikasi);
-        });
+        // Tombol Hapus Notifikasi
+        buttonHapus.setOnClickListener(v -> deleteSelectedNotifications());
+
+        // Update visibility of the delete button based on checkbox state
+        updateDeleteButtonVisibility();
 
         return view;
     }
 
-    // Helper method to load the selected fragment
-    private void loadFragment(Fragment fragment) {
-        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.layerNotifikasi, fragment);
-        transaction.commit();
+    @Override
+    public void onNotificationCheckedChange() {
+        updateDeleteButtonVisibility(); // Memperbarui visibilitas tombol hapus
     }
 
-    // Helper method to change the active button's color
-    private void setActiveButton(Button activeButton, Button inactiveButton) {
-        // Set the active button to orange with white text
-        activeButton.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.orange));
-        activeButton.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white));
+    private void deleteSelectedNotifications() {
+        // Menghapus notifikasi yang tercentang
+        Iterator<MyNotification> iterator = notifications.iterator();
+        while (iterator.hasNext()) {
+            MyNotification notification = iterator.next();
+            if (notification.isChecked()) {
+                iterator.remove(); // Hapus notifikasi dari daftar
+            }
+        }
+        adapter.notifyDataSetChanged(); // Memperbarui tampilan adapter
 
-        // Set the inactive button to transparent with orange text
-        inactiveButton.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), android.R.color.transparent));
-        inactiveButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.orange));
+        // Perbarui visibilitas tombol hapus setelah penghapusan
+        updateDeleteButtonVisibility();
     }
+
+    private void updateDeleteButtonVisibility() {
+        boolean anyChecked = false;
+        for (MyNotification notification : notifications) {
+            if (notification.isChecked()) {
+                anyChecked = true;
+                break;
+            }
+        }
+        if (anyChecked) {
+            buttonHapus.setVisibility(View.VISIBLE);
+            buttonHapus.setBackgroundColor(getResources().getColor(R.color.red));
+        } else {
+            buttonHapus.setVisibility(View.GONE);
+        }
+    }
+
 }

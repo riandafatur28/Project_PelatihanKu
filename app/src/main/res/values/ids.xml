@@ -6,4 +6,6 @@
     <item name="apakahpunyaakun" type="id" />
     <item name="logindengangoogle" type="id" />
     <item name="iconkonfirmpassword" type="id" />
+    <item name="bottomView" type="id" />
+    <item name="container" type="id" />
 </resources>

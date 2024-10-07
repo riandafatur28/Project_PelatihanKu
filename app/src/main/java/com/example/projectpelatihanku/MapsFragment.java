@@ -18,7 +18,6 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_maps);
 
-        // Inisialisasi SupportMapFragment dan mendapatkan notifikasi ketika peta siap digunakan
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) {
@@ -29,21 +28,10 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Mengizinkan zoom controls di peta
         mMap.getUiSettings().setZoomControlsEnabled(true);
-
-        // Lokasi Balai Latihan Kerja Nganjuk
         LatLng targetLocation = new LatLng(-7.605396, 111.568613);
-
-        // Menambahkan marker di Balai Latihan Kerja Nganjuk
         mMap.addMarker(new MarkerOptions().position(targetLocation).title("Gedung Balai Latihan Kerja Nganjuk"));
-
-        // Memindahkan kamera ke lokasi Balai Latihan Kerja dengan zoom level 15
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(targetLocation, 15)); // Zoom level diset ke 15
-
-        // Cek apakah kamera berhasil dipindahkan
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(targetLocation, 7));
         System.out.println("Camera moved to target location.");
     }
-
 }

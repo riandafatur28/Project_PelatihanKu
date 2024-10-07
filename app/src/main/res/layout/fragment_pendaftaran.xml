@@ -97,9 +97,12 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginStart="12dp"
                 android:layout_height="wrap_content"
-                android:hint="Masukkan Kejuruan yang anda pilih"
                 android:padding="10dp"
-                android:background="@drawable/rounded_daftar" />
+                android:background="@drawable/rounded_daftar"
+                android:enabled="false"
+                android:text="Detail Program"
+                android:textColor="@color/black" />
+
 
             <TextView
                 android:id="@+id/textProgram"
@@ -117,9 +120,12 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginStart="12dp"
                 android:layout_height="wrap_content"
-                android:hint="Masukkan Program yang anda pilih"
                 android:padding="10dp"
-                android:background="@drawable/rounded_daftar" />
+                android:background="@drawable/rounded_daftar"
+                android:enabled="false"
+                android:text="Detail Program"
+                android:textColor="@color/black" />
+
 
             <TextView
                 android:layout_width="wrap_content"
@@ -333,12 +339,12 @@
                     android:id="@+id/textUnduhBukti"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="115dp"
+                    android:layout_marginStart="95dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="12dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:text="Unduh Bukti Pendaftaran"
+                    android:text="@string/unduh_bukti"
                     android:textColor="@color/orange"
                     android:textStyle="bold"
                     android:visibility="gone" />

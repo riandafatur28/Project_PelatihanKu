@@ -2,7 +2,7 @@
 <resources>
     <!-- Style untuk Background Tombol -->
     <style name="buttonBg" parent="ThemeOverlay.AppCompat">
-        <item name="colorAccent">@android:color/white</item>
+        <item name="colorAccent">@color/icon_selector</item>
     </style>
 
     <!-- Style untuk Gambar dengan Rounded Corners -->
@@ -16,4 +16,10 @@
         <item name="itemIconTint">@color/bottom_nav_icon_color</item>
         <item name="itemBackground">@color/white</item>
     </style>
+
+    <style name="CircleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">100%</item>
+    </style>
+
 </resources>

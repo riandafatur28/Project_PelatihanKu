@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-
     <FrameLayout
         android:id="@+id/navActivity"
         android:layout_width="match_parent"
@@ -27,14 +26,10 @@
         android:layout_height="60dp"
         android:background="@drawable/rounded_profil"
         app:itemIconTint="@color/icon_selector"
-        app:itemTextColor="@color/icon_selector"
         app:itemIconSize="24dp"
         app:menu="@menu/bottom_nav_view"
         app:labelVisibilityMode="labeled"
-        app:itemRippleColor="@android:color/transparent"
+        app:itemRippleColor="@drawable/ic_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:ignore="MissingConstraints" />
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

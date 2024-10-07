@@ -1,11 +1,232 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="12dp"
-    tools:context=".FragmentOTP">
+    android:background="@color/white">
 
-    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        tools:context=".FragmentOTP"
+        android:id="@+id/otpFragment">
 
-</FrameLayout>
+        <!-- LinearLayout untuk teks Lupa Kata Sandi -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp">
+
+            <!-- Text Verifikasi Kode OTP -->
+            <TextView
+                android:id="@+id/textverifikasi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Verifikasi"
+                android:fontFamily="@font/inter_bold"
+                android:textStyle="bold"
+                android:textSize="28sp"
+                android:textColor="@color/font_black"
+                android:layout_marginTop="72dp"
+                android:gravity="center" />
+
+            <!-- Text Kode OTP -->
+            <TextView
+                android:id="@+id/textKodeOTP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kode OTP"
+                android:fontFamily="@font/inter_bold"
+                android:textStyle="bold"
+                android:textSize="28sp"
+                android:textColor="@color/font_black"
+                android:layout_marginTop="4dp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="72dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/kodeOtp1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:hint="*"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:maxLength="1"
+                android:textColor="@color/gray"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+            <EditText
+                android:id="@+id/kodeOtp2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:hint="*"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:maxLength="1"
+                android:textColor="@color/gray"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+            <EditText
+                android:id="@+id/kodeOtp3"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:hint="*"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:maxLength="1"
+                android:textColor="@color/gray"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+            <EditText
+                android:id="@+id/kodeOtp4"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:hint="*"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:maxLength="1"
+                android:textColor="@color/gray"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+            <EditText
+                android:id="@+id/kodeOtp5"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:hint="*"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:maxLength="1"
+                android:textColor="@color/gray"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+            <EditText
+                android:id="@+id/kodeOtp6"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:hint="*"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:maxLength="1"
+                android:textColor="@color/gray"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp">
+
+            <!-- Opsi Lain -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="* Anda Belum Menerima email?"
+                android:textColor="@color/font_tint"
+                android:paddingVertical="16dp"
+                android:textSize="14sp"
+                android:layout_marginStart="6dp" />
+
+            <TextView
+                android:id="@+id/kirimUlang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/kirim_ulang"
+                android:textColor="@color/orange"
+                android:paddingVertical="16dp"
+                android:textSize="16sp"
+                android:layout_marginStart="6dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- LinearLayout untuk Button Kirim -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="48dp"
+            android:layout_marginTop="32dp"
+            android:orientation="vertical"
+            android:paddingStart="16dp">
+
+            <!-- Button Kirim -->
+            <Button
+                android:id="@+id/button_kirim"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="@color/orange"
+                android:text="Kirim"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <!-- Text Timer -->
+            <TextView
+                android:id="@+id/timer_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Sisa waktu: 60 detik"
+                android:textColor="@color/font_black"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp" />
+
+            <LinearLayout
+                android:id="@+id/txtKembali"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/rounded_button_white"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/text_Kembali"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:fontFamily="@font/inter_semibold"
+                    android:text="Kembali"
+                    android:textColor="@color/orange"
+                    android:textSize="16sp"
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="8dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

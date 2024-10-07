@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@color/white"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="207dp"
+                android:background="@color/orange"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginBottom="0dp"
+                    android:background="@color/orange"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="5dp"
+                    android:src="@drawable/logo_jatim" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/orange"
+                    android:fontFamily="@font/inter_bold"
+                    android:gravity="center"
+                    android:text="PEMERINTAH PROVINSI JAWA TIMUR"
+                    android:textColor="@color/white_bg"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/orange"
+                    android:fontFamily="@font/inter_bold"
+                    android:gravity="center"
+                    android:text="DINAS TENAGA KERJA DAN TRANSMIGRASI"
+                    android:textColor="@color/white_bg"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/orange"
+                    android:fontFamily="@font/inter_bold"
+                    android:gravity="center"
+                    android:text="UNIT PELAKSANA TEKNIS BALAI LATIHAN KERJA"
+                    android:textColor="@color/white_bg"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginBottom="24dp"
+                    android:background="@color/orange"
+                    android:fontFamily="@font/inter_bold"
+                    android:gravity="center"
+                    android:paddingBottom="8dp"
+                    android:text="NGANJUK"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Judul Halaman -->
+        <TextView
+            android:id="@+id/tvJudul"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="BUKTI PENDAFTARAN"
+            android:layout_marginTop="12dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="2dp"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/tvdatadiri"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Data Diri"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="14sp"
+            android:gravity="left"/>
+
+        <!-- ID Peserta -->
+        <TextView
+            android:id="@+id/tvidpeserta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="ID Pendaftar"
+            android:layout_marginStart="14dp"
+            android:textColor="@color/black"
+            android:padding="6dp"/>
+
+        <!-- Nama Lengkap -->
+        <TextView
+            android:id="@+id/tvNamaLengkap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nama Pendaftar"
+            android:layout_marginStart="14dp"
+            android:textColor="@color/black"
+            android:padding="6dp"/>
+
+        <!-- Tanggal Lahir -->
+        <TextView
+            android:id="@+id/tvTanggalLahir"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tanggal Lahir"
+            android:layout_marginStart="14dp"
+            android:textColor="@color/black"
+            android:padding="6dp"/>
+
+        <!-- Jenis Kelamin -->
+        <TextView
+            android:id="@+id/tvJenisKelamin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Jenis Kelamin"
+            android:layout_marginStart="14dp"
+            android:textColor="@color/black"
+            android:padding="6dp"/>
+
+        <!-- Nomor Handphone -->
+        <TextView
+            android:id="@+id/tvNomorRegistrasi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nomer Handphone"
+            android:layout_marginStart="14dp"
+            android:textColor="@color/black"
+            android:padding="6dp"/>
+
+        <!-- Email -->
+        <TextView
+            android:id="@+id/tvemail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:layout_marginStart="14dp"
+            android:textColor="@color/black"
+            android:padding="6dp"/>
+
+        <!-- Alamat -->
+        <TextView
+            android:id="@+id/tvalamat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Alamat"
+            android:layout_marginStart="14dp"
+            android:textColor="@color/black"
+            android:padding="6dp"/>
+
+        <TextView
+            android:id="@+id/tvKeteranganPendaftaran"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Program Kejuruan"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="14sp"
+            android:gravity="left"/>
+
+        <!-- Kejuruan -->
+        <TextView
+            android:id="@+id/tvkejuruan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Kejuruan"
+            android:layout_marginStart="14dp"
+            android:textColor="@color/black"
+            android:padding="6dp"/>
+
+        <!-- Program -->
+        <TextView
+            android:id="@+id/tvprogram"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Program"
+            android:layout_marginStart="14dp"
+            android:textColor="@color/black"
+            android:padding="6dp"/>
+
+        <!-- Waktu Pendaftaran -->
+        <TextView
+            android:id="@+id/tvwaktupendaftaran"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Waktu Pendaftaran"
+            android:layout_marginStart="14dp"
+            android:textColor="@color/black"
+            android:padding="6dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="@color/orange"
+            android:layout_marginTop="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingHorizontal="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/buttonCetak"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/google_icon"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_pdf"
+                    android:contentDescription="PDF Icon"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+                <TextView
+                    android:id="@+id/text_google"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cetak PDF"
+                    android:textSize="20sp"
+                    android:layout_marginStart="12dp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/inter_medium" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</LinearLayout>

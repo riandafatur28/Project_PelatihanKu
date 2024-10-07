@@ -94,7 +94,6 @@
                             android:layout_marginTop="12dp"
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/inter_medium"
-                            android:text="UPT BLK Nganjuk"
                             android:textColor="@color/font_black"
                             android:textSize="14sp" />
 
@@ -106,19 +105,17 @@
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/inter_regular"
-                            android:text="Pimpinan     : Aziz Harnowo, SP., M.A.P."
                             android:textColor="@color/font_black"
                             android:textSize="12sp" />
 
                         <!-- Line 3 of Button Text -->
                         <TextView
-                            android:id="@+id/text_line3_info"
+                            android:id="@+id/text_noVin"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/inter_regular"
-                            android:text="Nomor VIN  : 1903351802"
                             android:textColor="@color/font_black"
                             android:textSize="12sp" />
 
@@ -130,7 +127,6 @@
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/inter_regular"
-                            android:text="Tahun Berdiri : 1981"
                             android:textColor="@color/font_black"
                             android:textSize="12sp" />
 
@@ -142,7 +138,6 @@
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/inter_regular"
-                            android:text="Status            : Beroperasi"
                             android:textColor="@color/font_black"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -179,10 +174,9 @@
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="18dp"
                         android:fontFamily="@font/inter_regular"
-                        android:text="Berdirinya UPT Balai Latihan Kerja (BLK) Nganjuk pada tanggal 07 Juli 1983 dengan nama KLK (Kursus Latihan Kerja). Pada tahun 1985 berubah menjadi BLKIP LLK-UKM (Lokal Latihan Kerja Usaha Kecil, Menengah). Pada era otonomi daerah tahun 2000 menjadi BLKUKM Disnaker Provinsi Jawa Timur berdasarkan perda No. 35/2000. Berdasarkan Peraturan Gubernur No. 62/2018 berganti nama menjadi Unit Pelaksana Teknis Balai Latihan Kerja (BLK) Nganjuk Disnakertrans Provinsi Jawa Timur."
                         android:layout_marginEnd="12dp"
-                        android:textSize="12sp"
-                        />
+                        android:justificationMode="inter_word"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <!-- Garis Horizontal -->
@@ -218,7 +212,6 @@
                         android:layout_marginStart="12dp"
                         android:layout_marginEnd="5dp"
                         android:fontFamily="@font/inter_regular"
-                        android:text="Kepemilikan : Pemerintah"
                         android:textColor="@color/font_black"
                         android:textSize="12sp" />
 
@@ -231,7 +224,6 @@
                         android:layout_marginEnd="5dp"
                         android:layout_marginStart="12dp"
                         android:fontFamily="@font/inter_regular"
-                        android:text="Nomor SOTK dan Tanda Daftar : NO/62/TAHUN/2018"
                         android:textColor="@color/font_black"
                         android:textSize="12sp" />
 
@@ -244,7 +236,6 @@
                         android:layout_marginEnd="5dp"
                         android:layout_marginStart="12dp"
                         android:fontFamily="@font/inter_regular"
-                        android:text="Tipe : BLK UPTD"
                         android:textColor="@color/font_black"
                         android:textSize="12sp" />
                 </LinearLayout>

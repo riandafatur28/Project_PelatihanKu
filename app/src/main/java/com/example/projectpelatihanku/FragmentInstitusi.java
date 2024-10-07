@@ -1,5 +1,8 @@
 package com.example.projectpelatihanku;
 
+
+import static com.example.projectpelatihanku.R.id.btn_lihat_program;
+
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -49,7 +52,7 @@ public class FragmentInstitusi extends Fragment {
         View view = inflater.inflate(R.layout.fragment_institusi, container, false);
 
         // Menangani klik pada TextView "Lihat Program"
-        TextView lihatProgramTextView = view.findViewById(R.id.btn_lihat_program);
+        TextView lihatProgramTextView = view.findViewById(btn_lihat_program);
         lihatProgramTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

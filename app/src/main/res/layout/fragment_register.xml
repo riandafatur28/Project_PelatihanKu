@@ -1,193 +1,327 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="12dp"
-    tools:context=".FragmentRegister"
     android:background="@color/white">
 
-    <!-- Icon gambar -->
-    <ImageView
-        android:id="@+id/headerImage"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:scaleType="fitXY"
-        android:layout_gravity="end"
-        android:src="@drawable/logo"
-        android:layout_marginTop="16dp" />
-
-    <!-- Text Salam -->
-    <TextView
-        android:id="@+id/salamText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Halo,👋"
-        android:fontFamily="@font/inter_bold"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp"
-        android:textSize="26sp"
-        android:textColor="@color/font_black"
-        android:layout_gravity="start"
-        android:paddingBottom="8dp" />
-
-    <!-- Text Sub Salam -->
-    <TextView
-        android:id="@+id/tekssalam"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Silahkan memasukkan data diri anda untuk membuat akun di pelatihanKu"
-        android:textSize="16sp"
-        android:fontFamily="@font/inter_regular"
-        android:paddingBottom="16dp" />
-
-    <!-- EditText Nama -->
-    <EditText
-        android:id="@+id/inputNama"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="Nama Panjang"
-        android:textColor="@color/font_black"
-        android:inputType="textPersonName"
-        android:backgroundTint="@color/font_tint"
-        android:padding="12dp" />
-
-    <!-- EditText Email -->
-    <EditText
-        android:id="@+id/inputEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="Email"
-        android:textColor="@color/font_black"
-        android:inputType="textEmailAddress"
-        android:backgroundTint="@color/font_tint"
-        android:padding="12dp" />
-
-    <!-- FrameLayout for Password EditText and Eye Icon -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:paddingEnd="8dp">
-
-        <!-- EditText Kata Sandi -->
-        <EditText
-            android:id="@+id/inputpassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Kata Sandi"
-            android:inputType="textPassword"
-            android:paddingEnd="48dp"
-            android:textColor="@color/font_black"
-            android:backgroundTint="@color/font_tint"
-            android:padding="12dp"
-            android:focusable="true" /> <!-- Fokus dapat diatur di sini -->
-
-        <!-- Icon Visibility untuk Password -->
-        <ImageView
-            android:id="@+id/iconinputpassword"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/eye_icon"
-            android:tint="@color/font_tint"
-            android:contentDescription="Toggle Password Visibility"
-            android:clickable="true" /> <!-- Menambahkan clickable -->
-    </FrameLayout>
-
-    <!-- FrameLayout for Confirm Password EditText and Eye Icon -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:paddingEnd="8dp">
-
-        <!-- EditText Konfirmasi Kata Sandi -->
-        <EditText
-            android:id="@+id/KonfirmasiPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Konfirmasi Kata Sandi"
-            android:inputType="textPassword"
-            android:paddingEnd="48dp"
-            android:textColor="@color/font_black"
-            android:backgroundTint="@color/font_tint"
-            android:padding="12dp"
-            android:focusable="true" /> <!-- Fokus dapat diatur di sini -->
-
-        <!-- Icon Visibility untuk Konfirmasi Password -->
-        <ImageView
-            android:id="@+id/iconkonfirmpassword"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/eye_icon"
-            android:tint="@color/font_tint"
-            android:contentDescription="Toggle Confirm Password Visibility"
-            android:clickable="true" /> <!-- Menambahkan clickable -->
-    </FrameLayout>
-
-    <!-- Button Register -->
-    <Button
-        android:id="@+id/buttonregister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Buat Akun"
-        android:textAllCaps="false"
-        android:textColor="#ffffff"
-        android:textSize="18sp"
-        android:fontFamily="@font/inter_semibold"
-        android:backgroundTint="@color/orange"
-        android:layout_marginTop="32dp"
-        android:padding="12dp" />
-
-    <!-- LinearLayout Login dengan Google -->
     <LinearLayout
-        android:id="@+id/logindengangoogle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@drawable/button_background"
-        android:gravity="center"
+        android:orientation="vertical"
         android:padding="12dp"
-        android:elevation="2dp"
-        android:layout_marginTop="24dp">
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        tools:context=".FragmentRegister">
 
+        <!-- Icon gambar -->
         <ImageView
-            android:id="@+id/iconGoogle"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/google"
-            android:layout_gravity="center" />
+            android:id="@+id/headerImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:scaleType="fitXY"
+            android:layout_gravity="end"
+            android:src="@drawable/logo"
+            android:layout_marginTop="16dp" />
 
+        <!-- Text Salam -->
         <TextView
-            android:id="@+id/tekGoogle"
+            android:id="@+id/salamText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Daftar dengan Google"
+            android:text="Halo,Kawan👋"
+            android:fontFamily="@font/inter_bold"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:textSize="26sp"
             android:textColor="@color/font_black"
-            android:fontFamily="@font/inter_light"
-            android:textSize="16sp"
-            android:layout_gravity="center" />
-    </LinearLayout>
+            android:layout_gravity="start"
+            android:paddingBottom="8dp" />
 
-    <!-- TextView Sudah punya akun -->
-    <TextView
-        android:id="@+id/apakahpunyaakun"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/signin_text"
-        android:textColor="@color/font_black"
-        android:fontFamily="@font/inter_regular"
-        android:textSize="16sp"
-        android:layout_gravity="center"
-        android:layout_marginTop="24dp" />
-</LinearLayout>
+        <!-- Text Sub Salam -->
+        <TextView
+            android:id="@+id/tekssalam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Silahkan memasukkan data diri anda untuk membuat akun di pelatihanKu"
+            android:textSize="16sp"
+            android:fontFamily="@font/inter_regular"
+            android:paddingBottom="16dp" />
+
+        <!-- EditText Nama -->
+        <EditText
+            android:id="@+id/inputNama"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Nama Panjang"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:textColor="@color/font_black"
+            android:inputType="textPersonName"
+            android:backgroundTint="@color/font_tint"
+            android:padding="12dp" />
+
+        <Spinner
+            android:layout_marginTop="16dp"
+            android:id="@+id/jenisKelamin"
+            android:layout_marginStart="6dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/font_tint"/>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
+            android:background="@color/font_tint" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp">
+
+            <!-- EditText untuk menampilkan tanggal -->
+            <EditText
+                android:id="@+id/inputTanggal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Tanggal Lahir"
+                android:focusable="false"
+                android:clickable="true"
+                android:textColor="@color/font_black"
+                android:backgroundTint="@color/font_tint"
+                android:padding="12dp"
+                android:inputType="date" />
+
+            <!-- Icon Kalender untuk membuka DatePicker -->
+            <ImageView
+                android:id="@+id/iconKalender"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/calenderr"
+                android:tint="@color/font_tint"
+                android:contentDescription="Pilih Tanggal"
+                android:clickable="true" />
+        </FrameLayout>
+
+        <EditText
+            android:id="@+id/inputNoTelp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="No. Telp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:textColor="@color/font_black"
+            android:inputType="phone"
+            android:backgroundTint="@color/font_tint"
+            android:padding="12dp" />
+
+        <EditText
+            android:id="@+id/inputAlamat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Alamat"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:textColor="@color/font_black"
+            android:inputType="text"
+            android:backgroundTint="@color/font_tint"
+            android:padding="12dp" />
+
+        <!-- EditText Email -->
+        <EditText
+            android:id="@+id/inputEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Email"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:textColor="@color/font_black"
+            android:inputType="textEmailAddress"
+            android:backgroundTint="@color/font_tint"
+            android:padding="12dp" />
+
+        <!-- FrameLayout for Password EditText and Eye Icon -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp">
+
+            <!-- EditText Kata Sandi -->
+            <EditText
+                android:id="@+id/inputpassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Kata Sandi"
+                android:inputType="textPassword"
+                android:paddingEnd="48dp"
+
+                android:textColor="@color/font_black"
+                android:backgroundTint="@color/font_tint"
+                android:padding="12dp"
+                android:focusable="true" />
+
+            <!-- Icon Visibility untuk Password -->
+            <ImageView
+                android:id="@+id/iconinputpassword"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/eye_icon"
+                android:tint="@color/font_tint"
+                android:contentDescription="Toggle Password Visibility"
+                android:clickable="true" />
+        </FrameLayout>
+
+        <!-- FrameLayout for Confirm Password EditText and Eye Icon -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:paddingEnd="8dp">
+
+            <!-- EditText Konfirmasi Kata Sandi -->
+            <EditText
+                android:id="@+id/KonfirmasiPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Konfirmasi Kata Sandi"
+                android:inputType="textPassword"
+                android:paddingEnd="48dp"
+                android:textColor="@color/font_black"
+                android:backgroundTint="@color/font_tint"
+                android:padding="12dp"
+                android:focusable="true" />
+
+            <!-- Icon Visibility untuk Konfirmasi Password -->
+            <ImageView
+                android:id="@+id/iconkonfirmpassword"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_gravity="end|center_vertical"
+                android:src="@drawable/eye_icon"
+                android:tint="@color/font_tint"
+                android:contentDescription="Toggle Confirm Password Visibility"
+                android:clickable="true" />
+        </FrameLayout>
+
+        <!-- Button Register -->
+        <Button
+            android:id="@+id/buttonregister"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Buat Akun"
+            android:textAllCaps="false"
+            android:textColor="@color/white_bg"
+            android:textSize="18sp"
+            android:fontFamily="@font/inter_semibold"
+            android:backgroundTint="@color/orange"
+            android:layout_marginTop="32dp"/>
+
+        <TextView
+            android:id="@+id/text_or"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="atau lanjut dengan"
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/inter_regular"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal" />
+
+        <!-- LinearLayout Login dengan Google -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_button_white"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingHorizontal="8dp">
+
+            <ImageView
+                android:id="@+id/google_icon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/icon_google"
+                android:contentDescription="Google icon"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <TextView
+                android:id="@+id/text_google"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Google"
+                android:textSize="20sp"
+                android:layout_marginStart="12dp"
+                android:textColor="@color/orange"
+                android:fontFamily="@font/inter_semibold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:id="@+id/text_punya_akun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sudah memiliki akun?"
+                android:fontFamily="@font/inter_regular"
+                android:layout_marginStart="25dp"
+                android:textSize="14sp"
+                android:textColor="@color/gray" />
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/imageProfil"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:background="@drawable/rounded_background"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/gambar_user" />
+
+
+            <TextView
+                android:id="@+id/apakahpunyaakun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MASUK"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="16sp"
+                android:textColor="@color/orange"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="4dp"
+                android:gravity="center" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

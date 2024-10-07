@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,35 +21,31 @@ public class FragmentDetailProgram extends Fragment {
         imageArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Kembali ke FragmentProgramInstitusi
                 navigateToProgramInstitusi();
             }
         });
 
-        // Initialize the "Daftar" button
         Button buttonDaftar = view.findViewById(R.id.buttonDaftar);
         buttonDaftar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigate to the registration fragment
                 navigateToPendaftaran();
             }
         });
-
         return view;
     }
 
     private void navigateToProgramInstitusi() {
         MainActivity mainActivity = (MainActivity) getActivity();
         if (mainActivity != null) {
-            mainActivity.navigateToProgramInstitusi(); // Memanggil metode navigasi ke FragmentInstitusi
+            mainActivity.navigateToProgramInstitusi();
         }
     }
 
     private void navigateToPendaftaran() {
         MainActivity mainActivity = (MainActivity) getActivity();
         if (mainActivity != null) {
-            mainActivity.navigateToPendaftaran(); // Memanggil metode navigasi ke FragmentPendaftaran
+            mainActivity.navigateToPendaftaran();
         }
     }
 }
