@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,24 +24,18 @@ public class FragmentRegister extends Fragment {
 
     private Button buttonRegister;
     private TextView textLogin;
-    private boolean isPasswordVisible = false;
-    private boolean isConfirmPasswordVisible = false;
     private Spinner spinner;
-    private String selectedGender = null; // Variabel untuk menyimpan gender yang dipilih
-
-    // Variabel untuk input tanggal
+    private String selectedGender = null;
     private EditText inputTanggal;
-    private ImageView iconKalender;
-
-    // Variabel untuk gambar profil
-    private ImageView imageProfil;
+    private ImageView imageProfil, iconPassword, iconConfirmPassword;
     private static final int PICK_IMAGE = 1;
     private Uri imageUri;
-
-    // Variabel untuk SharedPreferences
     private static final String PREFS_NAME = "UserPrefs";
-    private static final String KEY_EMAIL = "email";
-    private static final String KEY_USER_NAME = "username"; // Kunci nama pengguna
+    private static final String KEY_USER_NAME = "username";
+
+    private EditText inputPassword, konfirmasiPassword;
+    private boolean isPasswordVisible = false;
+    private boolean isConfirmPasswordVisible = false;
 
     @Nullable
     @Override
@@ -54,43 +47,26 @@ public class FragmentRegister extends Fragment {
         textLogin = view.findViewById(R.id.apakahpunyaakun);
         EditText inputNama = view.findViewById(R.id.inputNama);
         EditText inputEmail = view.findViewById(R.id.inputEmail);
-        EditText inputPassword = view.findViewById(R.id.inputpassword);
-        EditText konfirmasiPassword = view.findViewById(R.id.KonfirmasiPassword);
+        inputPassword = view.findViewById(R.id.inputpassword);
+        konfirmasiPassword = view.findViewById(R.id.KonfirmasiPassword);
         EditText inputNoTelp = view.findViewById(R.id.inputNoTelp);
         EditText inputAlamat = view.findViewById(R.id.inputAlamat);
-        ImageView iconPassword = view.findViewById(R.id.iconinputpassword);
-        ImageView iconConfirmPassword = view.findViewById(R.id.iconkonfirmpassword);
         imageProfil = view.findViewById(R.id.imageProfil);
 
-        // Inisialisasi Spinner untuk jenis kelamin
+        // Inisialisasi ikon mata
+        iconPassword = view.findViewById(R.id.iconinputpassword);
+        iconConfirmPassword = view.findViewById(R.id.iconkonfirmpassword);
+
+        // Toggle visibilitas password dan konfirmasi password
+        iconPassword.setOnClickListener(v -> togglePasswordVisibility(inputPassword, iconPassword));
+        iconConfirmPassword.setOnClickListener(v -> togglePasswordVisibility(konfirmasiPassword, iconConfirmPassword));
+
         spinner = view.findViewById(R.id.jenisKelamin);
         setupGenderSpinner();
-
-        // Inisialisasi input tanggal lahir
         inputTanggal = view.findViewById(R.id.inputTanggal);
-        iconKalender = view.findViewById(R.id.iconKalender);
-
-        iconKalender.setOnClickListener(v -> showDatePicker());
-
-        inputTanggal.setOnClickListener(v -> showDatePicker());
+        view.findViewById(R.id.iconKalender).setOnClickListener(v -> showDatePicker());
 
         imageProfil.setOnClickListener(v -> openGallery());
-
-        iconPassword.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                togglePasswordVisibility(inputPassword);
-                return true;
-            }
-            return false;
-        });
-
-        iconConfirmPassword.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                togglePasswordVisibility(konfirmasiPassword);
-                return true;
-            }
-            return false;
-        });
 
         // Listener untuk tombol Register
         buttonRegister.setOnClickListener(v -> {
@@ -102,6 +78,7 @@ public class FragmentRegister extends Fragment {
             String alamat = inputAlamat.getText().toString().trim();
             String tanggalLahir = inputTanggal.getText().toString().trim();
 
+            // Validasi input sebelum menyimpan data
             if (!isInputValid(nama, email, password, konfirmasi)) {
                 return;
             }
@@ -115,7 +92,6 @@ public class FragmentRegister extends Fragment {
             saveUserData(nama, selectedGender, email, tanggalLahir, nomorTelepon, alamat);
 
             Toast.makeText(getContext(), "Akun berhasil dibuat", Toast.LENGTH_LONG).show();
-
             if (getActivity() instanceof MainActivity) {
                 ((MainActivity) getActivity()).navigateToLogin();
             }
@@ -130,140 +106,90 @@ public class FragmentRegister extends Fragment {
         return view;
     }
 
-    private void togglePasswordVisibility(EditText inputPassword) {
-    }
-
-    // Setup Spinner untuk memilih gender
     private void setupGenderSpinner() {
         if (spinner != null) {
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                    getContext(),
+                    requireContext(),
                     R.array.jenis_kelamin_array,
                     android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
-
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (position == 0) {
-                        selectedGender = null;
-                    } else {
-                        selectedGender = parent.getItemAtPosition(position).toString();
-                        if (selectedGender.equals("Laki-laki")) {
-                            imageProfil.setImageResource(R.drawable.men);
-                        } else if (selectedGender.equals("Perempuan")) {
-                            imageProfil.setImageResource(R.drawable.women);
-                        }
+                    selectedGender = position == 0 ? null : parent.getItemAtPosition(position).toString();
+                    if (selectedGender != null) {
+                        imageProfil.setImageResource(selectedGender.equals("Laki-laki") ? R.drawable.men : R.drawable.women);
                     }
                 }
-
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {}
             });
-        } else {
-            Log.e("FragmentRegister", "Spinner untuk jenis kelamin tidak ditemukan di layout.");
         }
     }
 
-    // Fungsi untuk menyimpan data pengguna ke SharedPreferences
+    private void togglePasswordVisibility(EditText passwordEditText, ImageView toggleIcon) {
+        if (passwordEditText.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            toggleIcon.setImageResource(R.drawable.eye_close); // Ganti dengan ikon mata terbuka
+        } else {
+            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            toggleIcon.setImageResource(R.drawable.eye_icon); // Ganti dengan ikon mata tertutup
+        }
+        passwordEditText.setSelection(passwordEditText.getText().length()); // Pindah kursor ke akhir teks
+    }
+
     private void saveUserData(String nama, String gender, String email, String tanggalLahir, String nomorTelepon, String alamat) {
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_USER_NAME, nama);  // Simpan nama pengguna
+        editor.putString(KEY_USER_NAME, nama);
         editor.putString("gender", gender);
         editor.putString("email", email);
         editor.putString("tanggalLahir", tanggalLahir);
         editor.putString("nomorTelepon", nomorTelepon);
         editor.putString("alamat", alamat);
+        if (imageUri != null) {
+            editor.putString("image_uri", imageUri.toString());
+        }
         editor.apply();
     }
 
-    // Fungsi validasi input
+    private void showDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        new DatePickerDialog(requireContext(), (view, year, month, day) -> {
+            inputTanggal.setText(day + "/" + (month + 1) + "/" + year);
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    private void openGallery() {
+        startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), PICK_IMAGE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            imageProfil.setImageURI(imageUri);
+        }
+    }
+
     private boolean isInputValid(String nama, String email, String password, String konfirmasi) {
         if (nama.isEmpty()) {
             Toast.makeText(getContext(), "Nama harus diisi", Toast.LENGTH_LONG).show();
             return false;
         }
 
-        if (!isValidName(nama)) {
-            Toast.makeText(getContext(), "Nama hanya boleh diisi dengan huruf dan spasi", Toast.LENGTH_LONG).show();
+        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(getContext(), "Email tidak valid", Toast.LENGTH_LONG).show();
             return false;
         }
 
-        if (email.isEmpty()) {
-            Toast.makeText(getContext(), "Email harus diisi", Toast.LENGTH_LONG).show();
-            return false;
-        }
-
-        if (!isEmailValid(email)) {
-            Toast.makeText(getContext(), "Email harus valid dan tidak boleh hanya berisi @gmail.com", Toast.LENGTH_LONG).show();
-            return false;
-        }
-
-        if (password.isEmpty()) {
-            Toast.makeText(getContext(), "Password harus diisi", Toast.LENGTH_LONG).show();
-            return false;
-        }
-
-        if (!isValidPassword(password)) {
-            Toast.makeText(getContext(), "Password harus terdiri dari 8 karakter, kombinasi huruf dan angka, " +
-                    "minimal satu huruf kapital, tidak boleh ada spasi, dan tidak ada karakter spesial", Toast.LENGTH_LONG).show();
-            return false;
-        }
-
-        if (!password.equals(konfirmasi)) {
-            Toast.makeText(getContext(), "Konfirmasi password tidak sama dengan password", Toast.LENGTH_LONG).show();
+        if (password.isEmpty() || !password.equals(konfirmasi)) {
+            Toast.makeText(getContext(), "Password dan konfirmasi tidak cocok", Toast.LENGTH_LONG).show();
             return false;
         }
 
         return true;
-    }
-
-    private boolean isValidName(String nama) {
-        return nama.matches("[a-zA-Z\\s]+");
-    }
-
-    private boolean isEmailValid(String email) {
-        return email.contains("@") && email.contains(".") && !email.equals("@gmail.com") && !email.startsWith("@");
-    }
-
-    private boolean isValidPassword(String password) {
-        return password.length() == 8 && password.matches("^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-zA-Z]).*$") &&
-                !password.contains(" ") && !password.matches(".*[^a-zA-Z0-9].*");
-    }
-
-    // Menampilkan DatePickerDialog untuk memilih tanggal
-    private void showDatePicker() {
-        final Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                getContext(),
-                (view, selectedYear, selectedMonth, selectedDay) -> {
-                    String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
-                    inputTanggal.setText(selectedDate);
-                },
-                year, month, day);
-
-        datePickerDialog.show();
-    }
-
-    // Membuka galeri untuk memilih gambar
-    private void openGallery() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(galleryIntent, PICK_IMAGE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
-            imageUri = data.getData();
-            imageProfil.setImageURI(imageUri);
-        }
     }
 }
