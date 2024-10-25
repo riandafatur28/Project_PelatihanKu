@@ -5,7 +5,6 @@
         </shape>
     </item>
     <item android:top="20dp" android:bottom="20dp" android:left="20dp" android:right="20dp">
-        <bitmap android:src="@drawable/_mkeeboqu09yqndlcejizbjlwyo"
             android:gravity="center"/>
     </item>
 </layer-list>

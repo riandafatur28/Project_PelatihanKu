@@ -1,0 +1,29 @@
+<!-- item_background_selector.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <layer-list>
+            <!-- Latar belakang lingkaran -->
+            <item android:drawable="@drawable/background_circle"/>
+            <!-- Ikon yang dipilih -->
+            <item android:drawable="@drawable/home"/> <!-- Sesuaikan dengan ikon yang diinginkan -->
+        </layer-list>
+    </item>
+    <item>
+        <!-- Ikon saat tidak dipilih -->
+        <layer-list>
+            <item android:drawable="@drawable/institusii"/> <!-- Ikon default (belum dipilih) -->
+        </layer-list>
+    </item>
+    <item>
+        <!-- Ikon saat tidak dipilih -->
+        <layer-list>
+            <item android:drawable="@drawable/notif"/> <!-- Ikon default (belum dipilih) -->
+        </layer-list>
+    </item>
+    <item>
+        <!-- Ikon saat tidak dipilih -->
+        <layer-list>
+            <item android:drawable="@drawable/user"/> <!-- Ikon default (belum dipilih) -->
+        </layer-list>
+    </item>
+</selector>
