@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class FragmentProfil extends Fragment {
-
     private TextView namaUser, namaProfil, jkProfil, ttlProfil, emailProfil, noTelpProfil, alamatProfil;
     private ImageView imageProfil;
     private static final String PREFS_NAME = "UserPrefs";
@@ -26,7 +25,7 @@ public class FragmentProfil extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profil, container, false);
 
-        // Inisialisasi TextView dan ImageView
+        // Inisialisasi komponen UI
         namaUser = view.findViewById(R.id.namaUser);
         namaProfil = view.findViewById(R.id.namaProfil);
         jkProfil = view.findViewById(R.id.JKProfil);
@@ -52,25 +51,21 @@ public class FragmentProfil extends Fragment {
             }
         });
 
-        // Ambil dan set data dari SharedPreferences
+        // Load data pengguna dari SharedPreferences
         loadUserData();
-
         return view;
     }
 
-    // Memuat data dari SharedPreferences
     private void loadUserData() {
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String nama = sharedPreferences.getString("nama", "Nama tidak tersedia");
+        String nama = sharedPreferences.getString("username", "Nama tidak tersedia");
         String gender = sharedPreferences.getString("gender", "Tidak diketahui");
         String tanggalLahir = sharedPreferences.getString("tanggalLahir", "Tanggal Lahir tidak tersedia");
-        String email = sharedPreferences.getString("email", "Email tidak tersedia");  // Pastikan kunci sesuai
-        emailProfil.setText(email);
+        String email = sharedPreferences.getString("email", "Email tidak tersedia");
         String nomorTelepon = sharedPreferences.getString("nomorTelepon", "Nomor telepon tidak tersedia");
         String alamat = sharedPreferences.getString("alamat", "Alamat tidak tersedia");
         String imageUriString = sharedPreferences.getString("image_uri", null);
 
-        // Set data ke TextView
         namaUser.setText(nama);
         namaProfil.setText(nama);
         jkProfil.setText(gender);
@@ -81,14 +76,13 @@ public class FragmentProfil extends Fragment {
 
         // Set gambar profil jika URI gambar ada
         if (imageUriString != null) {
-            Uri imageUri = Uri.parse(imageUriString);
-            imageProfil.setImageURI(imageUri);
+            imageProfil.setImageURI(Uri.parse(imageUriString));
         } else {
             // Set gambar default berdasarkan jenis kelamin
-            if (gender.equals("Laki-laki")) {
-                imageProfil.setImageResource(R.drawable.men); // Gambar default laki-laki
-            } else if (gender.equals("Perempuan")) {
-                imageProfil.setImageResource(R.drawable.women); // Gambar default perempuan
+            if ("Laki-laki".equals(gender)) {
+                imageProfil.setImageResource(R.drawable.men);
+            } else if ("Perempuan".equals(gender)) {
+                imageProfil.setImageResource(R.drawable.women);
             }
         }
     }
