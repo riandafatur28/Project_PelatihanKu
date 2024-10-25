@@ -52,7 +52,7 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    @SuppressLint({"WrongViewCast", "MissingInflatedId"})
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
@@ -67,20 +67,26 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         String userName = sharedPreferences.getString(KEY_USER_NAME, "User");  // "User" adalah default jika nama tidak ditemukan
         salamText.setText("Halo, " + userName);  // Menampilkan nama pengguna
 
-
-        // Mengambil URI gambar profil dari SharedPreferences
         String imageUriString = sharedPreferences.getString("image_uri", null);
+
         if (imageUriString != null) {
             Uri imageUri = Uri.parse(imageUriString);
             try {
-                imageUser.setImageURI(imageUri);  // Set gambar profil menggunakan URI
+                imageUser.setImageURI(imageUri);
             } catch (Exception e) {
-                imageUser.setImageResource(R.drawable.gambar_user);  // Set gambar default jika terjadi kesalahan
+                imageUser.setImageResource(R.drawable.gambar_user);  // Jika ada error, tampilkan default
                 e.printStackTrace();
             }
         } else {
-            // Jika tidak ada gambar yang disimpan, gunakan gambar default
-            imageUser.setImageResource(R.drawable.gambar_user);
+            // Default berdasarkan gender jika URI tidak tersedia
+            String gender = sharedPreferences.getString("gender", "Tidak diketahui");
+            if ("Laki-laki".equals(gender)) {
+                imageUser.setImageResource(R.drawable.men);
+            } else if ("Perempuan".equals(gender)) {
+                imageUser.setImageResource(R.drawable.women);
+            } else {
+                imageUser.setImageResource(R.drawable.gambar_user); // Gambar default umum
+            }
         }
 
         // Inisialisasi peta
