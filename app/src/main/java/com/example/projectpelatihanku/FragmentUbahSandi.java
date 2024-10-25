@@ -18,7 +18,7 @@ public class FragmentUbahSandi extends Fragment {
         @SuppressLint({"MissingInflatedId", "WrongViewCast"})
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_lupa_sandi, container, false);
+            View view = inflater.inflate(R.layout.fragment_ubah_sandi, container, false);
 
             sendButton = view.findViewById(R.id.button_kirim);
             backButton = view.findViewById(R.id.txtKembali);
