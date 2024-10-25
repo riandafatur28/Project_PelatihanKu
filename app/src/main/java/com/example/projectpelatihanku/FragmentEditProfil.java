@@ -58,29 +58,7 @@ public class FragmentEditProfil extends Fragment {
         editEmail.setEnabled(false);  // Email tidak bisa diubah
 
         // Ambil data dari SharedPreferences untuk ditampilkan di form
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, 0);
-        String nama = sharedPreferences.getString("nama", "");
-        String email = sharedPreferences.getString("email", "");
-        String tanggalLahir = sharedPreferences.getString("tanggalLahir", "");
-        String nomorTelepon = sharedPreferences.getString("nomorTelepon", "");
-        String alamat = sharedPreferences.getString("alamat", "");
-        String gender = sharedPreferences.getString("gender", "");
-        String imageUriString = sharedPreferences.getString("image_uri", null);
-
-        // Set data ke EditText
-        namaUser.setText(nama);
-        editNama.setText(nama);
-        editEmail.setText(email);
-        editTTL.setText(tanggalLahir);
-        editNoTelp.setText(nomorTelepon);
-        editAlamat.setText(alamat);
-        editGender.setText(gender);
-
-        // Set gambar profil jika ada di SharedPreferences
-        if (imageUriString != null) {
-            imageUri = Uri.parse(imageUriString);
-            imageSecond.setImageURI(imageUri);
-        }
+        loadUserData();
 
         // Tombol untuk menyimpan perubahan
         Button buttonUbah = view.findViewById(R.id.buttonubahProfil);
@@ -100,6 +78,42 @@ public class FragmentEditProfil extends Fragment {
         iconCamera.setOnClickListener(v -> pilihGambar()); // Ikon kamera juga bisa memilih gambar
 
         return view;
+    }
+
+    // Ambil data profil pengguna dari SharedPreferences
+    private void loadUserData() {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+
+        // Ambil data profil dari SharedPreferences
+        String nama = sharedPreferences.getString("username", "Nama tidak tersedia");
+        String email = sharedPreferences.getString("email", "");
+        String tanggalLahir = sharedPreferences.getString("tanggalLahir", "");
+        String nomorTelepon = sharedPreferences.getString("nomorTelepon", "");
+        String alamat = sharedPreferences.getString("alamat", "");
+        String gender = sharedPreferences.getString("gender", "");
+        String imageUriString = sharedPreferences.getString("image_uri", null);
+
+        // Set data ke EditText dan ImageView
+        namaUser.setText(nama);         // Menampilkan nama di header
+        editNama.setText(nama);         // Menampilkan nama untuk diedit
+        editEmail.setText(email);       // Email tidak bisa diubah
+        editTTL.setText(tanggalLahir);  // Tanggal Lahir
+        editNoTelp.setText(nomorTelepon);
+        editAlamat.setText(alamat);
+        editGender.setText(gender);     // Jenis Kelamin
+
+        // Set gambar profil jika ada di SharedPreferences
+        if (imageUriString != null) {
+            imageUri = Uri.parse(imageUriString);
+            imageSecond.setImageURI(imageUri); // Menampilkan gambar yang ada
+        } else {
+            // Jika tidak ada gambar di SharedPreferences, gunakan gambar default berdasarkan gender
+            if ("Laki-laki".equals(gender)) {
+                imageSecond.setImageResource(R.drawable.men);
+            } else if ("Perempuan".equals(gender)) {
+                imageSecond.setImageResource(R.drawable.women);
+            }
+        }
     }
 
     // Fungsi untuk memilih gambar dari galeri
@@ -164,18 +178,25 @@ public class FragmentEditProfil extends Fragment {
         }
 
         // Simpan perubahan ke SharedPreferences
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("nama", nama);
+        editor.putString("username", nama); // Pastikan key adalah 'username' sesuai dengan loadUserData
         editor.putString("nomorTelepon", noTelp);
         editor.putString("alamat", alamat);
+        if (imageUri != null) {
+            editor.putString("image_uri", imageUri.toString());
+        }
         editor.apply();  // Simpan perubahan
+
+        // Perbarui nama pada UI `namaUser` di FragmentEditProfil
+        namaUser.setText(nama);  // Menampilkan nama baru
 
         showToast("Perubahan disimpan!", 3000);
 
         // Navigasi kembali ke profil
         navigateBackToProfile();
     }
+
 
     private void navigateBackToProfile() {
         if (getActivity() instanceof MainActivity) {
