@@ -33,7 +33,7 @@
                     android:background="@color/orange"
                     android:paddingTop="8dp"
                     android:paddingBottom="5dp"
-                    android:src="@drawable/logo_jatim" />
+                    android:src="@drawable/vector_jatim" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -237,7 +237,7 @@
                     android:id="@+id/google_icon"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/ic_pdf"
+                    android:src="@drawable/vector_pdf"
                     android:contentDescription="PDF Icon"
                     android:clickable="true"
                     android:focusable="true" />
