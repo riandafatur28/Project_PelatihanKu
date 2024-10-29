@@ -81,7 +81,7 @@ public class FragmentPendaftaran extends Fragment {
     private void navigateBackDetailProgram() {
         MainActivity mainActivity = (MainActivity) getActivity();
         if (mainActivity != null) {
-            mainActivity.navigateToDetailProgram();
+//            mainActivity.navigateToDetailProgram();
         }
     }
 
