@@ -72,7 +72,7 @@
                     android:background="@color/orange"
                     android:paddingTop="16dp"
                     android:paddingBottom="5dp"
-                    android:src="@drawable/logo_jatim" />
+                    android:src="@drawable/vector_jatim" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -226,7 +226,7 @@
                             android:layout_height="40dp"
                             android:layout_marginEnd="8dp"
                             android:contentDescription="Icon"
-                            android:src="@drawable/vocational_1" />
+                            android:src="@drawable/vector_vocational" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -270,7 +270,7 @@
                             android:layout_height="40dp"
                             android:layout_marginEnd="8dp"
                             android:contentDescription="Icon"
-                            android:src="@drawable/program_1" />
+                            android:src="@drawable/vector_program" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -314,7 +314,7 @@
                             android:layout_height="40dp"
                             android:layout_marginEnd="8dp"
                             android:contentDescription="Icon"
-                            android:src="@drawable/building_1" />
+                            android:src="@drawable/vector_building" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -358,7 +358,7 @@
                             android:layout_height="40dp"
                             android:layout_marginEnd="8dp"
                             android:contentDescription="Icon"
-                            android:src="@drawable/tools_1" />
+                            android:src="@drawable/vector_tools" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
