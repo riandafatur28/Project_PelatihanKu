@@ -5,8 +5,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="12dp"
-    android:background="@color/white"
     android:id="@+id/containerProfil"
     tools:context=".FragmentProfil">
 
@@ -16,14 +14,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:layout_marginStart="12dp"
         android:fontFamily="@font/inter_medium"
         android:text="Profil"
-        android:textSize="28sp"
-        android:textColor="@color/font_black" />
+        android:textSize="24sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
         android:layout_marginTop="6dp"
         android:background="@color/font_tint" />
 
