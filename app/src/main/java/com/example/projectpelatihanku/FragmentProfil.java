@@ -74,18 +74,19 @@ public class FragmentProfil extends Fragment {
         noTelpProfil.setText(nomorTelepon);
         alamatProfil.setText(alamat);
 
-        // Set gambar profil jika URI gambar ada
+        // Set gambar profil
         if (imageUriString != null) {
             imageProfil.setImageURI(Uri.parse(imageUriString));
         } else {
-            // Set gambar default berdasarkan jenis kelamin
+            // Tampilkan gambar default sesuai jenis kelamin jika `image_uri` kosong
             if ("Laki-laki".equals(gender)) {
-                imageProfil.setImageResource(R.drawable.men);
+                imageProfil.setImageResource(R.drawable.vector_men);
             } else if ("Perempuan".equals(gender)) {
-                imageProfil.setImageResource(R.drawable.women);
+                imageProfil.setImageResource(R.drawable.vector_women);
             }
         }
     }
+
 
     @Override
     public void onResume() {
