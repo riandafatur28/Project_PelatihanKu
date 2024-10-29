@@ -20,11 +20,11 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     private FragmentProfil fragmentProfil = new FragmentProfil();
     private FragmentLogin fragmentLogin = new FragmentLogin();
     private FragmentTentang fragmentTentang = new FragmentTentang();
-    private FragmentProgramInstitusi fragmentProgramInstitusi = new FragmentProgramInstitusi();
+//    private FragmentProgramInstitusi fragmentProgramInstitusi = new FragmentProgramInstitusi();
     private FragmentSplash splashFragment = new FragmentSplash();
     private FragmentRegister fragmentRegister = new FragmentRegister();
     private FragmentLupaSandi fragmentLupaSandi = new FragmentLupaSandi();
-    private FragmentDetailProgram fragmentDetailProgram = new FragmentDetailProgram();
+//    private FragmentDetailProgram fragmentDetailProgram = new FragmentDetailProgram();
     private FragmentPendaftaran fragmentPendaftaran = new FragmentPendaftaran();
     private FragmentOTP fragmentOTP = new FragmentOTP();
     private FragmentUbahSandi fragmentUbahSandi = new FragmentUbahSandi();
@@ -143,17 +143,22 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         navigateToFragment(fragmentLupaSandi, false);
     }
 
-    public void navigateToDetailProgram() {
-        navigateToFragment(fragmentDetailProgram, false);
-    }
+//    public void navigateToDetailProgram() {
+//        navigateToFragment(fragmentDetailProgram, false);
+//    }
 
     public void navigateToTentang() {
         navigateToFragment(fragmentTentang, false);
     }
 
-    public void navigateToProgramInstitusi() {
-        navigateToFragment(fragmentProgramInstitusi, false);
-    }
+//    public void navigateToProgramInstitusi() {
+//        FragmentProgramInstitusi fragment = new FragmentProgramInstitusi();
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.fragment_container, fragment)
+//                .addToBackStack(null)
+//                .commit();
+//    }
+
 
     public void navigateToPendaftaran() {
         navigateToFragment(fragmentPendaftaran, false);
@@ -192,5 +197,14 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     public void onLoginSuccess() {
         navigateToDashboard();
         showBottomNavigation();
+    }
+
+
+    public void hideBottomNavigationView() {
+        bottomNavigationView.setVisibility(View.GONE);
+    }
+
+    public void showBottomNavigationView() {
+        bottomNavigationView.setVisibility(View.VISIBLE);
     }
 }
