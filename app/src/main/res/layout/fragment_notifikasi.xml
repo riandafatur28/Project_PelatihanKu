@@ -4,8 +4,6 @@
     android:id="@+id/layerNotifikasi"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="12dp"
     tools:context=".FragmentNotifikasi">
 
     <LinearLayout
@@ -55,6 +53,7 @@
                 android:id="@+id/buttonHapus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/red"
                 android:text="Hapus Notifikasi yang Dipilih"
                 android:visibility="gone"/>
 
