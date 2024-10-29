@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -25,7 +26,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.imageview.ShapeableImageView;
 
-public class DashboardFragment extends Fragment implements OnMapReadyCallback {
+public class DashboardFragment extends Fragment implements OnMapReadyCallback{
 
     private static final String PREFS_NAME = "UserPrefs";
     static final String KEY_USER_NAME = "user_name";
@@ -38,9 +39,17 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     private GestureDetector gestureDetector;
     private OnDashboardVisibleListener listener;
 
+    private String name;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public DashboardFragment() {
         // Required empty public constructor
     }
+
+
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -64,8 +73,8 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
 
         // Mengambil data pengguna dari SharedPreferences
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String userName = sharedPreferences.getString(KEY_USER_NAME, "User");  // "User" adalah default jika nama tidak ditemukan
-        salamText.setText("Halo, " + userName);  // Menampilkan nama pengguna
+//        String userName = sharedPreferences.getString(KEY_USER_NAME, "User");  // "User" adalah default jika nama tidak ditemukan
+        salamText.setText("Halo, " + FragmentLogin.sayName);  // Menampilkan nama pengguna
 
         String imageUriString = sharedPreferences.getString("image_uri", null);
 
@@ -81,9 +90,9 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
             // Default berdasarkan gender jika URI tidak tersedia
             String gender = sharedPreferences.getString("gender", "Tidak diketahui");
             if ("Laki-laki".equals(gender)) {
-                imageUser.setImageResource(R.drawable.men);
+                imageUser.setImageResource(R.drawable.vector_men);
             } else if ("Perempuan".equals(gender)) {
-                imageUser.setImageResource(R.drawable.women);
+                imageUser.setImageResource(R.drawable.vector_women);
             } else {
                 imageUser.setImageResource(R.drawable.gambar_user); // Gambar default umum
             }
