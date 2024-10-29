@@ -23,7 +23,7 @@
             android:layout_height="48dp"
             android:scaleType="fitXY"
             android:layout_gravity="end"
-            android:src="@drawable/logo"
+            android:src="@drawable/vector_logo"
             android:layout_marginTop="16dp" />
 
         <!-- Text Salam -->
@@ -107,7 +107,7 @@
                 android:layout_height="24dp"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="8dp"
-                android:src="@drawable/calenderr"
+                android:src="@drawable/vector_calendar"
                 android:tint="@color/font_tint"
                 android:contentDescription="Pilih Tanggal"
                 android:clickable="true" />
@@ -182,10 +182,10 @@
                 android:layout_height="24dp"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="8dp"
-                android:src="@drawable/eye_icon"
-                android:tint="@color/font_tint"
+                android:src="@drawable/vector_eye_open"
                 android:contentDescription="Toggle Password Visibility"
-                android:clickable="true" />
+                android:clickable="true"
+                app:tint="@color/font_tint" />
         </FrameLayout>
 
         <!-- FrameLayout for Confirm Password EditText and Eye Icon -->
@@ -216,10 +216,10 @@
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
                 android:layout_gravity="end|center_vertical"
-                android:src="@drawable/eye_icon"
-                android:tint="@color/font_tint"
+                android:src="@drawable/vector_eye_open"
                 android:contentDescription="Toggle Confirm Password Visibility"
-                android:clickable="true" />
+                android:clickable="true"
+                app:tint="@color/font_tint" />
         </FrameLayout>
 
         <!-- Button Register -->
@@ -263,7 +263,7 @@
                 android:id="@+id/google_icon"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:src="@drawable/icon_google"
+                android:src="@drawable/vector_google"
                 android:contentDescription="Google icon"
                 android:clickable="true"
                 android:focusable="true" />
