@@ -5,7 +5,7 @@
             <!-- Latar belakang lingkaran -->
             <item android:drawable="@drawable/background_circle"/>
             <!-- Ikon yang dipilih -->
-            <item android:drawable="@drawable/home"/> <!-- Sesuaikan dengan ikon yang diinginkan -->
+            <item android:drawable="@drawable/vector_home"/> <!-- Sesuaikan dengan ikon yang diinginkan -->
         </layer-list>
     </item>
     <item>
@@ -17,13 +17,13 @@
     <item>
         <!-- Ikon saat tidak dipilih -->
         <layer-list>
-            <item android:drawable="@drawable/notif"/> <!-- Ikon default (belum dipilih) -->
+            <item android:drawable="@drawable/vector_notif"/> <!-- Ikon default (belum dipilih) -->
         </layer-list>
     </item>
     <item>
         <!-- Ikon saat tidak dipilih -->
         <layer-list>
-            <item android:drawable="@drawable/user"/> <!-- Ikon default (belum dipilih) -->
+            <item android:drawable="@drawable/vector_user"/> <!-- Ikon default (belum dipilih) -->
         </layer-list>
     </item>
 </selector>
