@@ -26,7 +26,7 @@ public class FragmentDetailNotifikasi extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail_notifikasi, container, false);
 
-        ImageView imageArrow = view.findViewById(R.id.imageArrow); // Ambil referensi ke ImageView
+        ImageView imageArrow = view.findViewById(R.id.imageArrow);
         TextView textTitle = view.findViewById(R.id.textTitle);
         TextView textContent = view.findViewById(R.id.textContent);
 
@@ -37,12 +37,24 @@ public class FragmentDetailNotifikasi extends Fragment {
             textContent.setText(detail);
         }
 
+        // Menyembunyikan Bottom Navigation View saat fragment ini ditampilkan
+        ((MainActivity) requireActivity()).hideBottomNavigationView();
+
         // Menambahkan OnClickListener untuk ImageView
         imageArrow.setOnClickListener(v -> {
-            // Menggunakan FragmentManager untuk kembali ke Fragment sebelumnya
+            // Kembali ke fragment sebelumnya
             requireActivity().getSupportFragmentManager().popBackStack();
+            // Menampilkan kembali Bottom Navigation View
+            ((MainActivity) requireActivity()).showBottomNavigationView();
         });
 
         return view;
-}
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Menampilkan kembali Bottom Navigation View saat fragment ini dihancurkan
+        ((MainActivity) requireActivity()).showBottomNavigationView();
+    }
 }
