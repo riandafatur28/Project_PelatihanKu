@@ -16,6 +16,7 @@
         <item>Laki-laki</item>
         <item>Perempuan</item>
     </string-array>
+
     <style name="CircleImage">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
