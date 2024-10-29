@@ -1,7 +1,5 @@
 package com.example.projectpelatihanku;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -17,6 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.api.CallBackHelper;
+
+import org.json.JSONException;
+
 public class FragmentLogin extends Fragment {
     private Button buttonLogin;
     private TextView textRegister, textForgotPassword;
@@ -26,6 +29,10 @@ public class FragmentLogin extends Fragment {
     private static final String KEY_PASSWORD = "password";
     private EditText emailEditText, passwordEditText;
     private ImageView iconPassword;
+    public static String sayName;
+
+    // End Point
+    private String endPoint = "/login";
 
     @Nullable
     @Override
@@ -45,28 +52,58 @@ public class FragmentLogin extends Fragment {
             String email = emailEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
 
-            if (isValidEmail(email) && isValidPassword(password)) {
-                // Menyimpan data login ke SharedPreferences
-                SharedPreferences sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(KEY_EMAIL, email);
-                editor.putString(KEY_PASSWORD, password); // Pertimbangkan untuk menghindari penyimpanan langsung password
-                editor.apply();
+            ApiClient apiClient = new ApiClient();
+            try {
+                apiClient.oauthLogin(endPoint, email, password, new CallBackHelper() {
+                    @Override
+                    public void onLoginSuccess(String name) {
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                if (getActivity() instanceof MainActivity) {
+                                    sayName = name;
+                                    ((MainActivity) getActivity()).navigateToDashboard();
+                                } else {
+                                    Log.e("FragmentLogin", "MainActivity not found");
+                                }
+                            });
+                        }
+                    }
 
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).navigateToDashboard();
-                } else {
-                    Log.e("FragmentLogin", "MainActivity not found");
-                }
-            } else {
-                Toast.makeText(getContext(), "Invalid email or password format", Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void onLoginFailed() {
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() ->
+                                    Toast.makeText(getContext(), "Username atau password salah", Toast.LENGTH_LONG).show()
+                            );
+                        }
+
+                    }
+                });
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
             }
         });
+        //            if (isValidEmail(email) && isValidPassword(password)) {
+//                // Menyimpan data login ke SharedPreferences
+//                SharedPreferences sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//                editor.putString(KEY_EMAIL, email);
+//                editor.putString(KEY_PASSWORD, password); // Pertimbangkan untuk menghindari penyimpanan langsung password
+//                editor.apply();
+//
+//                if (getActivity() instanceof MainActivity) {
+//                    ((MainActivity) getActivity()).navigateToDashboard();
+//                } else {
+//                    Log.e("FragmentLogin", "MainActivity not found");
+//                }
+//            } else {
+//                Toast.makeText(getContext(), "Invalid email or password format", Toast.LENGTH_SHORT).show();
+//            }
 
         // Toggle visibilitas password dengan listener
         iconPassword.setOnClickListener(v -> {
             togglePasswordVisibility(passwordEditText);
-            iconPassword.setImageResource(isPasswordVisible ? R.drawable.eye_close : R.drawable.eye_icon);
+            iconPassword.setImageResource(isPasswordVisible ? R.drawable.vector_eye_close : R.drawable.vector_eye_open);
         });
 
         // Listener untuk pindah ke halaman register
@@ -77,6 +114,8 @@ public class FragmentLogin extends Fragment {
                 Log.e("FragmentLogin", "MainActivity not found");
             }
         });
+
+
 
         // Listener untuk pindah ke halaman lupa sandi
         textForgotPassword.setOnClickListener(v -> {
