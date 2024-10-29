@@ -1,123 +1,44 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="12dp"
-    android:id="@+id/fragmentinstitusi"
-    tools:context=".FragmentInstitusi">
+    android:orientation="vertical"
+    android:layout_marginTop="8dp">
 
-    <LinearLayout
-        android:id="@+id/layerkejuruan"
+    <TextView
+        android:id="@+id/textInstitusi"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginBottom="24dp">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="12dp"
+        android:fontFamily="@font/inter_medium"
+        android:text="Kejuruan"
+        android:textSize="24sp" />
 
-        <TextView
-            android:id="@+id/textkejuruan"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:background="@color/font_tint" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginStart="12dp"
-            android:fontFamily="@font/inter_medium"
-            android:text="Kejuruan"
-            android:textSize="24sp" />
+            android:orientation="vertical">
 
-        <!-- Garis Horizontal -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:background="@color/font_tint" />
-
-        <ScrollView
-            android:id="@+id/listKejuruan"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <LinearLayout
-                android:id="@+id/buttonContainer"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewInstitusi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <!-- Tombol 1 -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="180dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="12dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/white_bg">
-
-                    <LinearLayout
-                        android:id="@+id/buttonInstitusi1"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:id="@+id/imageInstitusi1"
-                            android:layout_width="180dp"
-                            android:layout_height="180dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/balai_img"
-                            app:shapeAppearanceOverlay="@style/RoundedImageView" />
-
-                        <LinearLayout
-                            android:id="@+id/container_institusi1"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:paddingStart="12dp">
-
-                            <TextView
-                                android:id="@+id/text_line_buttonInstitusi1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginEnd="5dp"
-                                android:fontFamily="@font/inter_bold"
-                                android:text="Balai Latihan Kerja"
-                                android:textColor="@color/font_black"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/text_line2_buttonInstitusi1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:layout_marginEnd="7dp"
-                                android:fontFamily="@font/inter_regular"
-                                android:text="Unit pelaksanaan teknis dari pemerintah daerah di Indonesia yang bertugas melaksanakan pelatihan kerja."
-                                android:textColor="@color/font_black"
-                                android:textSize="12sp" />
-
-                            <TextView
-                                android:id="@+id/btn_lihat_program"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="Lebih Banyak"
-                                android:textColor="@color/blue"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-            </LinearLayout>
-        </ScrollView>
-
-    </LinearLayout>
-</FrameLayout>
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
