@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:padding="12dp"
-    android:id="@+id/fragmenttentang"
     tools:context=".FragmentProgramInstitusi">
 
     <LinearLayout
@@ -28,7 +27,7 @@
                 android:id="@+id/imageArrow2"
                 android:layout_width="36dp"
                 android:layout_height="64dp"
-                android:src="@drawable/image_arrow"
+                android:src="@drawable/vector_back"
                 android:padding="8dp"
                 android:clickable="true"
                 android:focusable="true"
@@ -63,76 +62,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- CardView 1 -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/buttonInstitusi1"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewProgramInstitusi"
                     android:layout_width="match_parent"
-                    android:layout_height="180dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="12dp"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="6dp"
-                    app:cardBackgroundColor="@color/white_bg">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:id="@+id/imageInstitusi1"
-                            android:layout_width="180dp"
-                            android:layout_height="180dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/balai_img"
-                            app:shapeAppearanceOverlay="@style/RoundedImageView" />
-
-                        <LinearLayout
-                            android:id="@+id/container_institusi1"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:paddingStart="12dp">
-
-                            <TextView
-                                android:id="@+id/text_line_buttonInstitusi1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginEnd="5dp"
-                                android:fontFamily="@font/inter_bold"
-                                android:text="Balai Latihan Kerja"
-                                android:textColor="@color/font_black"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/text_line2_buttonInstitusi1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:layout_marginEnd="7dp"
-                                android:fontFamily="@font/inter_regular"
-                                android:text="Unit pelaksanaan teknis dari pemerintah daerah di Indonesia yang bertugas melaksanakan pelatihan kerja."
-                                android:textColor="@color/font_black"
-                                android:textSize="12sp" />
-
-                            <TextView
-                                android:id="@+id/btn_detail"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="Detail"
-                                android:textColor="@color/blue"
-                                android:textSize="12sp"
-                                android:clickable="true"
-                                android:focusable="true" /> <!-- Menambahkan atribut ini agar terlihat dapat ditekan -->
-                        </LinearLayout>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                    android:layout_marginTop="16dp"/>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
