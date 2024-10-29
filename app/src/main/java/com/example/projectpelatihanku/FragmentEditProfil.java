@@ -109,9 +109,9 @@ public class FragmentEditProfil extends Fragment {
         } else {
             // Jika tidak ada gambar di SharedPreferences, gunakan gambar default berdasarkan gender
             if ("Laki-laki".equals(gender)) {
-                imageSecond.setImageResource(R.drawable.men);
+                imageSecond.setImageResource(R.drawable.vector_men);
             } else if ("Perempuan".equals(gender)) {
-                imageSecond.setImageResource(R.drawable.women);
+                imageSecond.setImageResource(R.drawable.vector_women);
             }
         }
     }
