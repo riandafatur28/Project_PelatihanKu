@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
@@ -119,7 +118,7 @@ public class FragmentRegister extends Fragment {
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     selectedGender = position == 0 ? null : parent.getItemAtPosition(position).toString();
                     if (selectedGender != null) {
-                        imageProfil.setImageResource(selectedGender.equals("Laki-laki") ? R.drawable.men : R.drawable.women);
+                        imageProfil.setImageResource(selectedGender.equals("Laki-laki") ? R.drawable.vector_men : R.drawable.vector_women);
                     }
                 }
                 @Override
@@ -131,10 +130,10 @@ public class FragmentRegister extends Fragment {
     private void togglePasswordVisibility(EditText passwordEditText, ImageView toggleIcon) {
         if (passwordEditText.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
             passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            toggleIcon.setImageResource(R.drawable.eye_close); // Ganti dengan ikon mata terbuka
+            toggleIcon.setImageResource(R.drawable.vector_eye_close); // Ganti dengan ikon mata terbuka
         } else {
             passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            toggleIcon.setImageResource(R.drawable.eye_icon); // Ganti dengan ikon mata tertutup
+            toggleIcon.setImageResource(R.drawable.vector_eye_open); // Ganti dengan ikon mata tertutup
         }
         passwordEditText.setSelection(passwordEditText.getText().length()); // Pindah kursor ke akhir teks
     }
