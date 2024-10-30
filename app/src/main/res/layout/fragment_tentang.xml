@@ -103,13 +103,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:layout_marginTop="5dp"
+                            android:layout_marginTop="16dp"
                             android:layout_marginEnd="5dp">
 
                             <!-- Label di sebelah kiri -->
                             <TextView
                                 android:id="@+id/label_nama_pimpinan"
-                                android:layout_width="0dp"
+                                android:layout_width="20dp"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/inter_regular"
@@ -139,7 +139,7 @@
                             <!-- Label di sebelah kiri -->
                             <TextView
                                 android:id="@+id/label_no_vin"
-                                android:layout_width="0dp"
+                                android:layout_width="20dp"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/inter_regular"
@@ -169,7 +169,7 @@
                             <!-- Label di sebelah kiri -->
                             <TextView
                                 android:id="@+id/label_tahun_berdiri"
-                                android:layout_width="0dp"
+                                android:layout_width="20dp"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/inter_regular"
@@ -199,11 +199,11 @@
                             <!-- Label di sebelah kiri -->
                             <TextView
                                 android:id="@+id/label_status_beroperasi"
-                                android:layout_width="0dp"
+                                android:layout_width="20dp"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/inter_regular"
-                                android:text="Status                 :"
+                                android:text="Status                :"
                                 android:textColor="@color/font_black"
                                 android:textSize="14sp" />
 
@@ -360,7 +360,7 @@
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/inter_regular"
-                            android:text="Tipe                       :"
+                            android:text="Tipe                      :"
                             android:textColor="@color/font_black"
                             android:textSize="14sp" />
 
