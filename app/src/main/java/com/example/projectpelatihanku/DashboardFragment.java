@@ -38,7 +38,6 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback{
     private int currentIndex = 0;
     private GestureDetector gestureDetector;
     private OnDashboardVisibleListener listener;
-
     private String name;
 
     public void setName(String name) {
