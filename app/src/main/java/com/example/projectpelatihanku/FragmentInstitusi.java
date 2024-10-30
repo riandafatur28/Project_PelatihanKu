@@ -9,20 +9,18 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.projectpelatihanku.api.ApiClient;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class FragmentInstitusi extends Fragment {
-    private String endPoint = "http://192.168.1.6/department/getDepartment";
+    private String endPoint = "/department/getDepartment";
     private RecyclerView recyclerView;
     private InstitusiAdapter adapter;
     private List<Institusi> institusiList = new ArrayList<>();
@@ -37,56 +35,41 @@ public class FragmentInstitusi extends Fragment {
         adapter = new InstitusiAdapter(institusiList, getContext());
         recyclerView.setAdapter(adapter);
 
-        fetchInstitusiData(); // Memanggil fungsi untuk mengambil data
+        ApiClient api = new ApiClient();
+        api.fetchDepartment(endPoint, new ApiClient.GetResponese() {
+            @Override
+            public void onSuccesArray(String[] data) {
+
+            }
+
+            @Override
+            public void onSuccessArrayList(ArrayList<String> data) {
+
+            }
+
+            @Override
+            public void onSuccessFetchNotif(ArrayList<MyNotification> data) {
+
+            }
+
+            @Override
+            public void onSuccessFetchDepartment(ArrayList<Institusi> data) {
+                requireActivity().runOnUiThread(() -> {
+                    institusiList.clear();
+                    institusiList.addAll(data);
+                    Log.d("Department", "onSuccessFetchDepartment: " +data);
+                    adapter.notifyDataSetChanged();
+                });
+            }
+
+            @Override
+            public void onFailure(IOException e) {
+                Log.d("ERROR: ", "onFailure: " +e.getMessage());
+            }
+        });
 
         return view;
     }
 
-    private void fetchInstitusiData() {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(endPoint)
-                .build();
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.e("Network Error", "Request failed: " + e.getMessage());
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful() && response.body() != null) {
-                    String data = response.body().string();
-                    try {
-                        JSONArray jsonArray = new JSONArray(data);
-                        institusiList.clear(); // Pastikan untuk menghapus data sebelumnya
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            String id = jsonObject.getString("id");
-                            String nama = jsonObject.getString("nama");
-                            String deskripsi = jsonObject.getString("deskripsi");
-
-                            // Pengecekan untuk "image_url"
-                            String imageUrl = jsonObject.has("image_url") ? jsonObject.getString("image_url") : null;
-                            if (imageUrl == null) {
-                                Log.w("Data Warning", "image_url tidak ditemukan untuk institusi dengan ID: " + id);
-                            }
-
-                            // Buat objek Institusi dan tambahkan ke list
-                            Institusi institusi = new Institusi(id, nama, deskripsi, imageUrl);
-                            institusiList.add(institusi);
-                        }
-
-                        // Update UI di thread utama
-                        getActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
-                    } catch (JSONException e) {
-                        Log.e("JSON Error", "JSON Parsing error: " + e.getMessage());
-                    }
-                } else {
-                    Log.e("Network Error", "Response unsuccessful or empty body");
-                }
-            }
-        });
-    }
 }
