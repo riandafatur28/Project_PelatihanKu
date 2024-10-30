@@ -13,10 +13,11 @@ import com.example.projectpelatihanku.api.ApiClient;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class FragmentTentang extends Fragment {
     private String endPoint = "institute/getInstitute";
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-dd");
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private static final SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
 
     @Override
@@ -32,9 +33,9 @@ public class FragmentTentang extends Fragment {
         // Instansiasi Kelas ApiClient
         ApiClient apiClient = new ApiClient();
         // Panggil metode fetchInstitusi untuk melakukan request get data institusi
-        apiClient.fetchInstitusi(endPoint, new ApiClient.ResponseInstitute() {
+        apiClient.fetchInstitusi(endPoint, new ApiClient.GetResponese() {
             @Override
-            public void onSucces(String data[]) {
+            public void onSuccesArray(String[] data) {
                 // Jalankan ke main tread
                 getActivity().runOnUiThread(() -> {
                     if (getView() != null) {
@@ -71,7 +72,22 @@ public class FragmentTentang extends Fragment {
             }
 
             @Override
-            public void onFailed(IOException e) {
+            public void onSuccessArrayList(ArrayList<String> data) {
+
+            }
+
+            @Override
+            public void onSuccessFetchNotif(ArrayList<MyNotification> data) {
+
+            }
+
+            @Override
+            public void onSuccessFetchDepartment(ArrayList<Institusi> data) {
+
+            }
+
+            @Override
+            public void onFailure(IOException e) {
                 e.getMessage();
             }
         });
