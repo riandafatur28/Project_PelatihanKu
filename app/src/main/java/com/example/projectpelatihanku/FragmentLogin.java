@@ -30,6 +30,11 @@ public class FragmentLogin extends Fragment {
     private EditText emailEditText, passwordEditText;
     private ImageView iconPassword;
     public static String sayName;
+    public static String sayTtl;
+    public static String sayEmail;
+    public static String sayNoTelp;
+    public static String sayJenisKelamin;
+    public static String sayAlamat;
 
     // End Point
     private String endPoint = "/login";
@@ -61,6 +66,7 @@ public class FragmentLogin extends Fragment {
                             getActivity().runOnUiThread(() -> {
                                 if (getActivity() instanceof MainActivity) {
                                     sayName = name;
+                                    sayEmail = email;
                                     ((MainActivity) getActivity()).navigateToDashboard();
                                 } else {
                                     Log.e("FragmentLogin", "MainActivity not found");
@@ -76,6 +82,26 @@ public class FragmentLogin extends Fragment {
                                     Toast.makeText(getContext(), "Username atau password salah", Toast.LENGTH_LONG).show()
                             );
                         }
+                    }
+
+                    @Override
+                    public void onProfileFetchSuccess(String name, String email, String tlp, String jenisKelamin, String ttl, String alamat) {
+                        // Tidak digunakan di FragmentLogin, jadi biarkan kosong
+                        if (getActivity() instanceof MainActivity) {
+                            sayName = name;
+                            sayEmail = email;
+                            sayNoTelp = tlp;
+                            sayJenisKelamin = jenisKelamin;
+                            sayTtl = ttl;
+                            sayAlamat = alamat;
+                            ((MainActivity) getActivity()).navigateToProfil();
+                        } else {
+                            Log.e("FragmentProfil", "MainActivity not found");
+                        }
+                    }
+
+                    @Override
+                    public void onProfileFetchFailure(String errorMessage) {
 
                     }
                 });
@@ -83,22 +109,6 @@ public class FragmentLogin extends Fragment {
                 throw new RuntimeException(e);
             }
         });
-        //            if (isValidEmail(email) && isValidPassword(password)) {
-//                // Menyimpan data login ke SharedPreferences
-//                SharedPreferences sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-//                SharedPreferences.Editor editor = sharedPreferences.edit();
-//                editor.putString(KEY_EMAIL, email);
-//                editor.putString(KEY_PASSWORD, password); // Pertimbangkan untuk menghindari penyimpanan langsung password
-//                editor.apply();
-//
-//                if (getActivity() instanceof MainActivity) {
-//                    ((MainActivity) getActivity()).navigateToDashboard();
-//                } else {
-//                    Log.e("FragmentLogin", "MainActivity not found");
-//                }
-//            } else {
-//                Toast.makeText(getContext(), "Invalid email or password format", Toast.LENGTH_SHORT).show();
-//            }
 
         // Toggle visibilitas password dengan listener
         iconPassword.setOnClickListener(v -> {
@@ -114,8 +124,6 @@ public class FragmentLogin extends Fragment {
                 Log.e("FragmentLogin", "MainActivity not found");
             }
         });
-
-
 
         // Listener untuk pindah ke halaman lupa sandi
         textForgotPassword.setOnClickListener(v -> {
