@@ -29,7 +29,7 @@ public class FragmentNotifikasi extends Fragment implements OnNotificationChecke
     private static final String KEY_NOTIFICATIONS = "cachedNotifications";
     private String endPoint = "notification/getNotification";
     private NotificationAdapter adapter;
-    private List<MyNotification> notifications;
+    private List<MyNotification> notifications = new ArrayList<>();
     private Button buttonHapus;
 
     @Override
@@ -40,12 +40,6 @@ public class FragmentNotifikasi extends Fragment implements OnNotificationChecke
 
         ListView listViewNotifikasi = view.findViewById(R.id.listViewNotifikasi);
         buttonHapus = view.findViewById(R.id.buttonHapus);
-
-        // Inisialisasi daftar notifikasi dari cache
-        notifications = loadNotificationsFromCache();
-        if (notifications == null) {
-            notifications = new ArrayList<>(); // Buat list kosong jika cache kosong
-        }
 
         // Set adapter dengan data yang ada
         adapter = new NotificationAdapter(requireContext(), notifications, this);
@@ -81,42 +75,36 @@ public class FragmentNotifikasi extends Fragment implements OnNotificationChecke
 
     private void fetchNotifications() {
         ApiClient api = new ApiClient();
-        api.fetchData(new ApiClient.OnDataFetchedListener() {
+        api.fetchNotifikasi(new ApiClient.GetResponese() {
             @Override
-            public void onSuccess(List<MyNotification> fetchedNotifications) {
+            public void onSuccesArray(String[] data) {
+
+            }
+
+            @Override
+            public void onSuccessArrayList(ArrayList<String> data) {
+
+            }
+
+            @Override
+            public void onSuccessFetchNotif(ArrayList<MyNotification> data) {
                 requireActivity().runOnUiThread(() -> {
                     notifications.clear();
-                    notifications.addAll(fetchedNotifications);
-                    adapter.notifyDataSetChanged(); // Perbarui tampilan adapter
-                    saveNotificationsToCache(fetchedNotifications); // Simpan data ke cache
+                    notifications.addAll(data);
+                    adapter.notifyDataSetChanged();
                 });
             }
 
             @Override
+            public void onSuccessFetchDepartment(ArrayList<Institusi> data) {
+
+            }
+
+            @Override
             public void onFailure(IOException e) {
-                Log.e("Fetch Data Error", e.getMessage());
+                Log.d("FAILED", "onFailure: " + e.getMessage());
             }
         }, endPoint);
-    }
-
-    private void saveNotificationsToCache(List<MyNotification> notifications) {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(notifications);
-        editor.putString(KEY_NOTIFICATIONS, json);
-        editor.apply();
-    }
-
-    private List<MyNotification> loadNotificationsFromCache() {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String json = sharedPreferences.getString(KEY_NOTIFICATIONS, null);
-        if (json != null) {
-            Gson gson = new Gson();
-            Type type = new TypeToken<List<MyNotification>>() {}.getType();
-            return gson.fromJson(json, type);
-        }
-        return null;
     }
 
     @Override
