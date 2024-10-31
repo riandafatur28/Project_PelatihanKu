@@ -85,13 +85,13 @@ public class FragmentLogin extends Fragment {
                     }
 
                     @Override
-                    public void onProfileFetchSuccess(String name, String email, String tlp, String jenisKelamin, String ttl, String alamat) {
+                    public void onProfileFetchSuccess(String name, String email, String phoneNumber, String gender, String ttl, String alamat) {
                         // Tidak digunakan di FragmentLogin, jadi biarkan kosong
                         if (getActivity() instanceof MainActivity) {
                             sayName = name;
                             sayEmail = email;
-                            sayNoTelp = tlp;
-                            sayJenisKelamin = jenisKelamin;
+                            sayNoTelp = phoneNumber;
+                            sayJenisKelamin = gender;
                             sayTtl = ttl;
                             sayAlamat = alamat;
                             ((MainActivity) getActivity()).navigateToProfil();
