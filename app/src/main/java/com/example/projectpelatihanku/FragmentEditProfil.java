@@ -3,7 +3,6 @@ package com.example.projectpelatihanku;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -33,8 +32,7 @@ public class FragmentEditProfil extends Fragment {
     private TextView namaUser;
     private ImageView imageSecond, iconCamera;
     private static final int PICK_IMAGE_REQUEST = 1;
-    private static final String PREFS_NAME = "UserPrefs";
-    private Uri imageUri;  // Untuk menyimpan URI gambar yang dipilih
+    private Uri imageUri;
 
     @Nullable
     @Override
@@ -49,16 +47,13 @@ public class FragmentEditProfil extends Fragment {
         editNoTelp = view.findViewById(R.id.editNoTelpProfil);
         editAlamat = view.findViewById(R.id.editalamatProfil);
         editGender = view.findViewById(R.id.editJKProfil);
-        imageSecond = view.findViewById(R.id.imageProfil); // Profil image
-        iconCamera = view.findViewById(R.id.iconCamera);   // Ikon kamera
+        imageSecond = view.findViewById(R.id.imageProfil);
+        iconCamera = view.findViewById(R.id.iconCamera);
 
         // Buat Tanggal Lahir dan Jenis Kelamin tidak bisa diubah
         editTTL.setEnabled(false);
         editGender.setEnabled(false);
-        editEmail.setEnabled(false);  // Email tidak bisa diubah
-
-        // Ambil data dari SharedPreferences untuk ditampilkan di form
-        loadUserData();
+        editEmail.setEnabled(false);
 
         // Tombol untuk menyimpan perubahan
         Button buttonUbah = view.findViewById(R.id.buttonubahProfil);
@@ -75,45 +70,9 @@ public class FragmentEditProfil extends Fragment {
 
         // Listener untuk memilih gambar
         imageSecond.setOnClickListener(v -> pilihGambar());
-        iconCamera.setOnClickListener(v -> pilihGambar()); // Ikon kamera juga bisa memilih gambar
+        iconCamera.setOnClickListener(v -> pilihGambar());
 
         return view;
-    }
-
-    // Ambil data profil pengguna dari SharedPreferences
-    private void loadUserData() {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-
-        // Ambil data profil dari SharedPreferences
-        String nama = sharedPreferences.getString("username", "Nama tidak tersedia");
-        String email = sharedPreferences.getString("email", "");
-        String tanggalLahir = sharedPreferences.getString("tanggalLahir", "");
-        String nomorTelepon = sharedPreferences.getString("nomorTelepon", "");
-        String alamat = sharedPreferences.getString("alamat", "");
-        String gender = sharedPreferences.getString("gender", "");
-        String imageUriString = sharedPreferences.getString("image_uri", null);
-
-        // Set data ke EditText dan ImageView
-        namaUser.setText(nama);         // Menampilkan nama di header
-        editNama.setText(nama);         // Menampilkan nama untuk diedit
-        editEmail.setText(email);       // Email tidak bisa diubah
-        editTTL.setText(tanggalLahir);  // Tanggal Lahir
-        editNoTelp.setText(nomorTelepon);
-        editAlamat.setText(alamat);
-        editGender.setText(gender);     // Jenis Kelamin
-
-        // Set gambar profil jika ada di SharedPreferences
-        if (imageUriString != null) {
-            imageUri = Uri.parse(imageUriString);
-            imageSecond.setImageURI(imageUri); // Menampilkan gambar yang ada
-        } else {
-            // Jika tidak ada gambar di SharedPreferences, gunakan gambar default berdasarkan gender
-            if ("Laki-laki".equals(gender)) {
-                imageSecond.setImageResource(R.drawable.vector_men);
-            } else if ("Perempuan".equals(gender)) {
-                imageSecond.setImageResource(R.drawable.vector_women);
-            }
-        }
     }
 
     // Fungsi untuk memilih gambar dari galeri
@@ -133,7 +92,6 @@ public class FragmentEditProfil extends Fragment {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             try {
-                // Mengecek ukuran file gambar
                 Cursor cursor = getActivity().getContentResolver().query(imageUri, null, null, null, null);
                 if (cursor != null && cursor.moveToFirst()) {
                     int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
@@ -142,13 +100,6 @@ public class FragmentEditProfil extends Fragment {
 
                     if (fileSizeInBytes <= 1 * 1024 * 1024) { // Maks 1 MB
                         imageSecond.setImageURI(imageUri);
-
-                        // Simpan URI gambar ke SharedPreferences
-                        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("image_uri", imageUri.toString());
-                        editor.apply();  // Simpan perubahan
-
                     } else {
                         showToast("Ukuran gambar melebihi 1 MB!", 3000);
                     }
@@ -177,19 +128,10 @@ public class FragmentEditProfil extends Fragment {
             return;
         }
 
-        // Simpan perubahan ke SharedPreferences
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("username", nama); // Pastikan key adalah 'username' sesuai dengan loadUserData
-        editor.putString("nomorTelepon", noTelp);
-        editor.putString("alamat", alamat);
-        if (imageUri != null) {
-            editor.putString("image_uri", imageUri.toString());
-        }
-        editor.apply();  // Simpan perubahan
+
 
         // Perbarui nama pada UI `namaUser` di FragmentEditProfil
-        namaUser.setText(nama);  // Menampilkan nama baru
+        namaUser.setText(nama);
 
         showToast("Perubahan disimpan!", 3000);
 
@@ -197,11 +139,10 @@ public class FragmentEditProfil extends Fragment {
         navigateBackToProfile();
     }
 
-
     private void navigateBackToProfile() {
         if (getActivity() instanceof MainActivity) {
             ((MainActivity) getActivity()).navigateToProfil();
-            ((MainActivity) getActivity()).showBottomNavigation(); // Menampilkan kembali BottomNavigation
+            ((MainActivity) getActivity()).showBottomNavigation();
         }
     }
 
