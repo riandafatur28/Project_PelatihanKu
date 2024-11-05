@@ -1,8 +1,15 @@
 package com.example.projectpelatihanku.api;
 
+import java.io.IOException;
+
 public interface CallBackHelper {
-    void onLoginSuccess(String name);
-    void onLoginFailed();
+    // Login
+    void onLoginSuccess(String token);
+    void onLoginFailed(IOException e);
+
+
+
     void onProfileFetchSuccess(String name, String email, String ttl, String tlp, String jenisKelamin, String alamat);
-    void onProfileFetchFailure(String errorMessage); // Tambahkan metode ini
+    void onProfileFetchFailure(String errorMessage);
+
 }
