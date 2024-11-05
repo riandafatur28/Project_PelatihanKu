@@ -58,5 +58,9 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
     implementation ("com.google.code.gson:gson:2.8.8")
 
+    // Auth0 Java JWT
+    implementation ("com.auth0.android:jwtdecode:2.0.1")
+
+
 
 }
