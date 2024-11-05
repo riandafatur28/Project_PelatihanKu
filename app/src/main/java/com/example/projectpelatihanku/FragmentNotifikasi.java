@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.api.ApiClient;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -23,11 +24,12 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class FragmentNotifikasi extends Fragment implements OnNotificationCheckedChangeListener {
     private static final String PREFS_NAME = "NotificationPrefs";
     private static final String KEY_NOTIFICATIONS = "cachedNotifications";
-    private String endPoint = "notification/getNotification";
+    private String endPoint = "/notifications";
     private NotificationAdapter adapter;
     private List<MyNotification> notifications = new ArrayList<>();
     private Button buttonHapus;
@@ -46,7 +48,6 @@ public class FragmentNotifikasi extends Fragment implements OnNotificationChecke
         listViewNotifikasi.setAdapter(adapter);
 
         // Fetch data terbaru di latar belakang untuk memperbarui notifikasi
-        fetchNotifications();
 
         listViewNotifikasi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -70,44 +71,12 @@ public class FragmentNotifikasi extends Fragment implements OnNotificationChecke
         buttonHapus.setOnClickListener(v -> deleteSelectedNotifications());
         updateDeleteButtonVisibility();
 
+        fetchData();
+
         return view;
     }
 
-    private void fetchNotifications() {
-        ApiClient api = new ApiClient();
-        api.fetchNotifikasi(new ApiClient.GetResponese() {
-            @Override
-            public void onSuccesArray(String[] data) {
-
-            }
-
-            @Override
-            public void onSuccessArrayList(ArrayList<String> data) {
-
-            }
-
-            @Override
-            public void onSuccessFetchNotif(ArrayList<MyNotification> data) {
-                requireActivity().runOnUiThread(() -> {
-                    notifications.clear();
-                    notifications.addAll(data);
-                    adapter.notifyDataSetChanged();
-                });
-            }
-
-            @Override
-            public void onSuccessFetchDepartment(ArrayList<Institusi> data) {
-
-            }
-
-            @Override
-            public void onFailure(IOException e) {
-                Log.d("FAILED", "onFailure: " + e.getMessage());
-            }
-        }, endPoint);
-    }
-
-    @Override
+        @Override
     public void onNotificationCheckedChange() {
         updateDeleteButtonVisibility();
     }
@@ -133,5 +102,30 @@ public class FragmentNotifikasi extends Fragment implements OnNotificationChecke
             }
         }
         buttonHapus.setVisibility(anyChecked ? View.VISIBLE : View.GONE);
+    }
+
+    public void fetchData() {
+        // Get token dari shared preference
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString("token", "Token Tidak ditemukan");
+        ApiClient apiClient = new ApiClient();
+
+        // get data
+        apiClient.fetchNotifikasi(token, endPoint, new ApiClient.NotifikasiHelper() {
+
+            @Override
+            public void onSuccess(ArrayList<MyNotification> data) {
+                requireActivity().runOnUiThread(() -> {
+                    notifications.clear();
+                    notifications.addAll(data);
+                    adapter.notifyDataSetChanged();
+                });
+            }
+
+            @Override
+            public void onFailed(IOException e) {
+
+            }
+        });
     }
 }
