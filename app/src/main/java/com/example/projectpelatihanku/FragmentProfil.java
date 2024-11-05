@@ -27,6 +27,13 @@ public class FragmentProfil extends Fragment {
     private TextView namaUser, namaProfil, jkProfil, ttlProfil, emailProfil, noTelpProfil, alamatProfil;
     private ImageView imageProfil;
     private String userId;
+    public static String username;
+    public static String  gender;
+    public static String  birth;
+    public static String phone;
+    public static String  userEmail;
+    public static String  address;
+
 
     @Nullable
     @Override
@@ -45,6 +52,7 @@ public class FragmentProfil extends Fragment {
         Button buttonPerbaruiProfil = view.findViewById(R.id.buttonPerbaruiProfil);
         buttonPerbaruiProfil.setOnClickListener(v -> {
             if (getActivity() instanceof MainActivity) {
+                FragmentEditProfil edit = new FragmentEditProfil();
                 ((MainActivity) getActivity()).navigateToEditProfil();
             }
         });
@@ -78,6 +86,12 @@ public class FragmentProfil extends Fragment {
                 noTelpProfil.setText(tlp);
                 emailProfil.setText(email);
                 alamatProfil.setText(alamat);
+                username = name;
+                phone = tlp;
+                gender = jk;
+                birth = ttl;
+                userEmail = email;
+                address = alamat;
             }
 
             @Override
