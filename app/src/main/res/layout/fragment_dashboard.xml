@@ -436,7 +436,6 @@
                         android:id="@+id/container_linear"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginEnd="12dp"
                         android:orientation="vertical"
                         app:layout_constraintWidth_percent="0.5"
                         android:paddingStart="12dp">
@@ -446,7 +445,7 @@
                             android:id="@+id/text_line_buttonContent"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
+                            android:layout_marginTop="16dp"
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/inter_bold"
                             android:text="Balai Latihan Kerja"
