@@ -73,7 +73,7 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback{
         // Mengambil data pengguna dari SharedPreferences
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 //        String userName = sharedPreferences.getString(KEY_USER_NAME, "User");  // "User" adalah default jika nama tidak ditemukan
-        salamText.setText("Halo, " + FragmentLogin.sayName);  // Menampilkan nama pengguna
+        salamText.setText("Halo, " + FragmentLogin.firstName);  // Menampilkan nama pengguna
 
         String imageUriString = sharedPreferences.getString("image_uri", null);
 
