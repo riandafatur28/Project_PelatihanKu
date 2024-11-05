@@ -1,6 +1,9 @@
 package com.example.projectpelatihanku;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +16,12 @@ import com.example.projectpelatihanku.api.ApiClient;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 public class FragmentTentang extends Fragment {
-    private String endPoint = "institute/getInstitute";
+    private String endPoint = "/institutes";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private static final SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+    private TextView namaInstitusi, deskripsiInstitusi, notelpLembaga, emailLembaga, nomorFax, websiteLembaga, status, jenisLembaga, NoVin, thnBerdiri, namaPimpinan, kepemilikan, noSotk;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,67 +33,55 @@ public class FragmentTentang extends Fragment {
             ((MainActivity) requireActivity()).navigateToDashboard();
         });
 
-        // Instansiasi Kelas ApiClient
+        namaInstitusi = view.findViewById(R.id.nama_institusi);
+        deskripsiInstitusi = view.findViewById(R.id.deskripsiInstitusi);
+        notelpLembaga = view.findViewById(R.id.notelpLembaga);
+        emailLembaga = view.findViewById(R.id.emailLembaga);
+        nomorFax = view.findViewById(R.id.nomorFax);
+        websiteLembaga = view.findViewById(R.id.website);
+        status = view.findViewById(R.id.status_beroperasi);
+        jenisLembaga = view.findViewById(R.id.tipe);
+        NoVin = view.findViewById(R.id.no_vin);
+        thnBerdiri = view.findViewById(R.id.tahun_berdiri);
+        namaPimpinan = view.findViewById(R.id.nama_pimpinan);
+        kepemilikan = view.findViewById(R.id.kepemilikan);
+        noSotk = view.findViewById(R.id.no_sotk);
+
+        fetchData();
+
+        return view;
+    }
+
+    public void fetchData() {
+        // Get token dari shared preference
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString("token", "Token Tidak ditemukan");
         ApiClient apiClient = new ApiClient();
-        // Panggil metode fetchInstitusi untuk melakukan request get data institusi
-        apiClient.fetchInstitusi(endPoint, new ApiClient.GetResponese() {
-            @Override
-            public void onSuccesArray(String[] data) {
-                // Jalankan ke main tread
-                getActivity().runOnUiThread(() -> {
-                    if (getView() != null) {
-                        TextView namaInstitusi = getView().findViewById(R.id.nama_institusi);
-                        TextView deskripsiInstitusi = getView().findViewById(R.id.deskripsiInstitusi);
-                        TextView notelpLembaga = getView().findViewById(R.id.notelpLembaga);
-                        TextView emailLembaga = getView().findViewById(R.id.emailLembaga);
-                        TextView nomorFax = getView().findViewById(R.id.nomorFax);
-                        TextView websiteLembaga = getView().findViewById(R.id.website);
-                        TextView status = getView().findViewById(R.id.status_beroperasi);
-                        TextView jenisLembaga = getView().findViewById(R.id.tipe);
-                        TextView NoVin = getView().findViewById(R.id.no_vin);
-                        TextView thnBerdiri = getView().findViewById(R.id.tahun_berdiri);
-                        TextView namaPimpinan = getView().findViewById(R.id.nama_pimpinan);
-                        TextView kepemilikan = getView().findViewById(R.id.kepemilikan);
-                        TextView noSotk = getView().findViewById(R.id.no_sotk);
 
-                        // Set teks dari data JSON
-                        namaInstitusi.setText(data[1]);
-                        deskripsiInstitusi.setText(data[12]);
-                        notelpLembaga.setText(data[6]);
-                        emailLembaga.setText(data[5]);
-                        nomorFax.setText(data[10]);
-                        websiteLembaga.setText(data[11]);
-                        jenisLembaga.setText(data[9]);
-                        NoVin.setText(data[7]);
-                        thnBerdiri.setText(data[13]);
-                        namaPimpinan.setText(data[2]);
-                        kepemilikan.setText(data[3]);
-                        noSotk.setText(data[8]);
-                        status.setText(data[4]);
-                    }
-                });
+        // get data
+        apiClient.fetchInstitusi(endPoint, token, new ApiClient.InstituteHelper() {
+            @Override
+            public void onSuccess(String[] data) {
+                // Set teks dari data JSON
+                namaInstitusi.setText(data[1]);
+                deskripsiInstitusi.setText(data[12]);
+                notelpLembaga.setText(data[6]);
+                emailLembaga.setText(data[5]);
+                nomorFax.setText(data[10]);
+                websiteLembaga.setText(data[11]);
+                jenisLembaga.setText(data[9]);
+                NoVin.setText(data[7]);
+                thnBerdiri.setText(data[13]);
+                namaPimpinan.setText(data[2]);
+                kepemilikan.setText(data[3]);
+                noSotk.setText(data[8]);
+                status.setText(data[4]);
             }
 
             @Override
-            public void onSuccessArrayList(ArrayList<String> data) {
-
-            }
-
-            @Override
-            public void onSuccessFetchNotif(ArrayList<MyNotification> data) {
-
-            }
-
-            @Override
-            public void onSuccessFetchDepartment(ArrayList<Institusi> data) {
-
-            }
-
-            @Override
-            public void onFailure(IOException e) {
-                e.getMessage();
+            public void onFailed(IOException e) {
+                Log.d("Failed", "onFailed: " + e.getMessage());
             }
         });
-        return view;
     }
 }
