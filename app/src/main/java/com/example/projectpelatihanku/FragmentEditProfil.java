@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import static android.app.Activity.RESULT_OK;
+import static com.example.projectpelatihanku.FragmentProfil.*;
 
 public class FragmentEditProfil extends Fragment {
 
@@ -33,6 +34,7 @@ public class FragmentEditProfil extends Fragment {
     private ImageView imageSecond, iconCamera;
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
+
 
     @Nullable
     @Override
@@ -54,6 +56,15 @@ public class FragmentEditProfil extends Fragment {
         editTTL.setEnabled(false);
         editGender.setEnabled(false);
         editEmail.setEnabled(false);
+
+//        set value
+        namaUser.setText(username);
+        editNama.setText(username);
+        editGender.setText(gender);
+        editEmail.setText(userEmail);
+        editNoTelp.setText(phone);
+        editTTL.setText(birth);
+        editAlamat.setText(address);
 
         // Tombol untuk menyimpan perubahan
         Button buttonUbah = view.findViewById(R.id.buttonubahProfil);
