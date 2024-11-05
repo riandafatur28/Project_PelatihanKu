@@ -1,7 +1,9 @@
+
 package com.example.projectpelatihanku;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,11 +22,11 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     private FragmentProfil fragmentProfil = new FragmentProfil();
     private FragmentLogin fragmentLogin = new FragmentLogin();
     private FragmentTentang fragmentTentang = new FragmentTentang();
-//    private FragmentProgramInstitusi fragmentProgramInstitusi = new FragmentProgramInstitusi();
+        private FragmentProgramInstitusi fragmentProgramInstitusi = new FragmentProgramInstitusi();
     private FragmentSplash splashFragment = new FragmentSplash();
     private FragmentRegister fragmentRegister = new FragmentRegister();
     private FragmentLupaSandi fragmentLupaSandi = new FragmentLupaSandi();
-//    private FragmentDetailProgram fragmentDetailProgram = new FragmentDetailProgram();
+//        private FragmentDetailProgram fragmentDetailProgram = new FragmentDetailProgram();
     private FragmentPendaftaran fragmentPendaftaran = new FragmentPendaftaran();
     private FragmentOTP fragmentOTP = new FragmentOTP();
     private FragmentUbahSandi fragmentUbahSandi = new FragmentUbahSandi();
