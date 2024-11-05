@@ -43,6 +43,7 @@
         android:background="@drawable/rounded_edittext"
         android:fontFamily="@font/inter_regular"
         android:hint="Email"
+        android:text="ilman@gmail.com"
         android:inputType="textEmailAddress"
         android:padding="16dp"
         android:textColor="@color/black" />
@@ -58,6 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Kata Sandi"
+            android:text="12345678"
             android:inputType="textPassword"
             android:padding="16dp"
             android:textColor="@color/black"
