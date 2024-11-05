@@ -110,7 +110,7 @@
             android:id="@+id/tvidpeserta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="ID Pendaftar"
+            android:hint="ID Pendaftaran"
             android:layout_marginStart="14dp"
             android:textColor="@color/black"
             android:padding="6dp"/>
