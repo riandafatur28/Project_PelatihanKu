@@ -36,7 +36,6 @@ public class InstitusiAdapter extends RecyclerView.Adapter<InstitusiAdapter.Inst
         holder.textNamaInstitusi.setText(institusi.getNama()); // Memanggil metode yang benar
         holder.textDeskripsi.setText(institusi.getDeskripsi());
         Glide.with(context).load(institusi.getImageUrl()).into(holder.imageInstitusi);
-
         // Menambahkan listener untuk tombol lihat program
         holder.btnLihatProgram.setOnClickListener(v -> {
 //            FragmentProgramInstitusi fragmentProgramInstitusi = FragmentProgramInstitusi.newInstance(institusi);
