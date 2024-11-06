@@ -108,7 +108,7 @@ public class FragmentLogin extends Fragment {
         // Listener untuk pindah ke halaman lupa sandi
         textForgotPassword.setOnClickListener(v -> {
             if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).navigateToLupaSandi();
+                ((MainActivity) getActivity()).navigateToForgotPassword();
             } else {
                 Log.e("FragmentLogin", "MainActivity not found");
             }
