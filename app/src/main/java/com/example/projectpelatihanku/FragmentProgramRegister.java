@@ -38,7 +38,7 @@ public class FragmentProgramRegister extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_pendaftaran, container, false);
+        View view = inflater.inflate(R.layout.fragment_program_register, container, false);
 
         inputNamaDaftar = view.findViewById(R.id.inputNamaDaftar);
         inputKejuruanDaftar = view.findViewById(R.id.inputKejuruanDaftar);
