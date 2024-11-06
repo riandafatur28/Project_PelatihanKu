@@ -8,8 +8,8 @@
         />
 
     <item
-        android:id="@+id/institusi"
-        android:icon="@drawable/institusii"
+        android:id="@+id/department"
+        android:icon="@drawable/vector_department"
         android:title=""
         />
 
