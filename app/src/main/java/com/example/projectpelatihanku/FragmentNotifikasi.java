@@ -3,6 +3,7 @@ package com.example.projectpelatihanku;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -76,7 +77,7 @@ public class FragmentNotifikasi extends Fragment implements OnNotificationChecke
         return view;
     }
 
-        @Override
+    @Override
     public void onNotificationCheckedChange() {
         updateDeleteButtonVisibility();
     }
