@@ -2,40 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@android:color/white">
+    android:padding="16dp">
 
     <!-- Back Button -->
     <ImageView
         android:id="@+id/imageArrow"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:src="@drawable/vector_back"
-        android:contentDescription="@string/description_arrow"
         android:clickable="true"
+        android:contentDescription="@string/description_arrow"
         android:focusable="true"
-        android:padding="8dp"/>
+        android:padding="8dp"
+        android:src="@drawable/vector_back" />
 
     <!-- Notification Title -->
     <TextView
         android:id="@+id/textTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textStyle="bold"
         android:layout_marginStart="36dp"
         android:layout_marginTop="16dp"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <!-- Notification Content -->
     <TextView
         android:id="@+id/textContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="8dp"
-        android:textColor="@color/gray"/>
+        android:textColor="@color/gray"
+        android:textSize="16sp" />
 
 </LinearLayout>
