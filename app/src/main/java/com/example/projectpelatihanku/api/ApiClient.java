@@ -6,8 +6,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.projectpelatihanku.Institusi;
+import com.example.projectpelatihanku.Department;
 import com.example.projectpelatihanku.MyNotification;
+import com.example.projectpelatihanku.Program;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +26,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ApiClient {
-    public static final String BASE_URL = "http://192.168.57.251:80/";
+    public static final String BASE_URL = "http://172.16.110.24:80/";
     public static final String BASE_URL_PUBLIC = "api/v1/public";
     // Inisialisasi OkHttpClient
     private OkHttpClient client = new OkHttpClient();
@@ -155,7 +156,7 @@ public class ApiClient {
 
     //    Department adapter
     public interface DepartmentHelper {
-        void onSuccess(ArrayList<Institusi> data);
+        void onSuccess(ArrayList<Department> data);
 
         void onFailed(IOException e);
     }
@@ -179,7 +180,7 @@ public class ApiClient {
                     Log.e("Network Error", "Respon gagal: " + response.message());
                     String data = response.body().string();
                     try {
-                        ArrayList<Institusi> dataDepartments = new ArrayList<>();
+                        ArrayList<Department> dataDepartments = new ArrayList<>();
                         JSONObject jsonObject = new JSONObject(data);
                         if (!jsonObject.getBoolean("isEmpty")) {
                             JSONArray departments = jsonObject.getJSONArray("departments");
@@ -188,7 +189,7 @@ public class ApiClient {
                                 String id = department.getString("id");
                                 String nama = department.getString("nama");
                                 String deskripsi = department.getString("deskripsi");
-                                dataDepartments.add(new Institusi(id, nama, deskripsi, null));
+                                dataDepartments.add(new Department(id, nama, deskripsi, null));
                             }
                             listener.onSuccess(dataDepartments);
                         }
@@ -203,42 +204,55 @@ public class ApiClient {
         });
     }
 
-    // program
-    public void fetchProgram(String endPoint) {
-        Request request = new Request.Builder().url(BASE_URL + endPoint).build();
+    //    Program adapter
+    public interface ProgramHelper {
+        void onSuccess(ArrayList<Program> data);
+
+        void onFailed(IOException e);
+
+        void onResponse(Call call, Response response) throws IOException;
+    }
+
+    // GET Programs
+    public void fetchProgram(String token, String endPoint, ProgramHelper listener) {
+        Request request = new Request.Builder()
+                .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.d(TAG, "onFailure: " + e.getMessage());
+                listener.onFailed(e);
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    final String data = response.body().string();
-                    Log.d("Data program", data);
+                    Log.e("Network Error", "Respon gagal: " + response.message());
+                    String data = response.body().string();
                     try {
-                        // Inisialisasi JSONArray dari string response
-                        JSONArray jsonArray = new JSONArray(data);
-
-                        // Iterasi melalui setiap objek dalam JSONArray
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                            // Mengambil data dari setiap objek
-                            String id = jsonObject.getString("id");
-                            String pesan = jsonObject.getString("nama");
-                            String tipe = jsonObject.getString("deskripsi");
-                            System.out.println(id);
-                            System.out.println(pesan);
-                            System.out.println(tipe);
+                        ArrayList<Program> dataPrograms = new ArrayList<>();
+                        JSONObject jsonObject = new JSONObject(data);
+                        if (!jsonObject.getBoolean("isEmpty")) {
+                            JSONArray programs = jsonObject.getJSONArray("programs");
+                            for (int i = 0; i < programs.length(); i++) {
+                                JSONObject program = programs.getJSONObject(i);
+                                String id = program.getString("id");
+                                String nama = program.getString("nama");
+                                String deskripsi = program.getString("deskripsi");
+                                dataPrograms.add(new Program(id, nama, deskripsi, null));
+                            }
+                            listener.onSuccess(dataPrograms);
                         }
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
+                } else {
+                    Log.e("Network Error", "Response unsuccessful or empty body");
                 }
             }
+
         });
     }
 
