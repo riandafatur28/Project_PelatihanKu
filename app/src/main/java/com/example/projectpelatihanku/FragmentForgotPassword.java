@@ -9,11 +9,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
+
 import java.util.Arrays;
 import java.util.List;
 
-public class FragmentLupaSandi extends Fragment {
+public class FragmentForgotPassword extends Fragment {
 
     private Button buttonKirim;
     private LinearLayout txtKembali;
@@ -47,7 +49,6 @@ public class FragmentLupaSandi extends Fragment {
                 if (getActivity() instanceof MainActivity) {
                     ((MainActivity) getActivity()).navigateToOTP();
                 } else {
-                    Log.e("FragmentLupaSandi", "MainActivity not found");
                 }
             }
         });
