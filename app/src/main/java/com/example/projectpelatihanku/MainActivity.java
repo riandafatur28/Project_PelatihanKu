@@ -3,7 +3,6 @@ package com.example.projectpelatihanku;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,19 +16,19 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
 
     BottomNavigationView bottomNavigationView;
     private DashboardFragment dashboardFragment = new DashboardFragment();
-    private FragmentInstitusi fragmentInstitusi = new FragmentInstitusi();
+    private FragmentDepartment fragmentDepartment = new FragmentDepartment();
     private FragmentNotifikasi fragmentNotifikasi = new FragmentNotifikasi();
     private FragmentProfil fragmentProfil = new FragmentProfil();
     private FragmentLogin fragmentLogin = new FragmentLogin();
-    private FragmentTentang fragmentTentang = new FragmentTentang();
-        private FragmentProgramInstitusi fragmentProgramInstitusi = new FragmentProgramInstitusi();
+    private FragmentInstitute fragmentInstitute = new FragmentInstitute();
+    private FragmentProgram fragmentProgram = new FragmentProgram();
     private FragmentSplash splashFragment = new FragmentSplash();
     private FragmentRegister fragmentRegister = new FragmentRegister();
-    private FragmentLupaSandi fragmentLupaSandi = new FragmentLupaSandi();
+    private FragmentForgotPassword fragmentForgotPassword = new FragmentForgotPassword();
 //        private FragmentDetailProgram fragmentDetailProgram = new FragmentDetailProgram();
-    private FragmentPendaftaran fragmentPendaftaran = new FragmentPendaftaran();
+    private FragmentProgramRegister fragmentProgramRegister = new FragmentProgramRegister();
     private FragmentOTP fragmentOTP = new FragmentOTP();
-    private FragmentUbahSandi fragmentUbahSandi = new FragmentUbahSandi();
+    private FragmentResetPassword fragmentResetPassword = new FragmentResetPassword();
     private FragmentConfirmPassword fragmentConfirmPassword = new FragmentConfirmPassword();
     private FragmentProfil getFragmentProfil = new FragmentProfil();
     private FragmentEditProfil fragmentEditProfil = new FragmentEditProfil();
@@ -64,8 +63,8 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
 
         if (item.getItemId() == R.id.home) {
             selectedFragment = dashboardFragment;
-        } else if (item.getItemId() == R.id.institusi) {
-            selectedFragment = fragmentInstitusi;
+        } else if (item.getItemId() == R.id.department) {
+            selectedFragment = fragmentDepartment;
         } else if (item.getItemId() == R.id.notifikasi) {
             selectedFragment = fragmentNotifikasi;
         } else if (item.getItemId() == R.id.user) {
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
 
     private boolean isMainFragment(Fragment fragment) {
         return fragment instanceof DashboardFragment ||
-                fragment instanceof FragmentInstitusi ||
+                fragment instanceof FragmentDepartment ||
                 fragment instanceof FragmentNotifikasi ||
                 fragment instanceof FragmentProfil;
     }
@@ -133,28 +132,28 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         navigateToFragment(fragmentLogin, false);
     }
 
-    public void navigateToInstitusi() {
-        navigateToFragment(fragmentInstitusi, true);
+    public void navigateToDepartment() {
+        navigateToFragment(fragmentDepartment, true);
     }
 
     public void navigateToRegister() {
         navigateToFragment(fragmentRegister, false);
     }
 
-    public void navigateToLupaSandi() {
-        navigateToFragment(fragmentLupaSandi, false);
+    public void navigateToForgotPassword() {
+        navigateToFragment(fragmentForgotPassword, false);
     }
 
 //    public void navigateToDetailProgram() {
 //        navigateToFragment(fragmentDetailProgram, false);
 //    }
 
-    public void navigateToTentang() {
-        navigateToFragment(fragmentTentang, false);
+    public void navigateToInstitute() {
+        navigateToFragment(fragmentInstitute, false);
     }
 
-//    public void navigateToProgramInstitusi() {
-//        FragmentProgramInstitusi fragment = new FragmentProgramInstitusi();
+//    public void navigateToProgram() {
+//        FragmentProgram fragment = new FragmentProgram();
 //        getSupportFragmentManager().beginTransaction()
 //                .replace(R.id.fragment_container, fragment)
 //                .addToBackStack(null)
@@ -162,8 +161,8 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
 //    }
 
 
-    public void navigateToPendaftaran() {
-        navigateToFragment(fragmentPendaftaran, false);
+    public void navigateToProgramRegister() {
+        navigateToFragment(fragmentProgramRegister, false);
     }
 
     @Override
@@ -175,8 +174,8 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         navigateToFragment(fragmentOTP, false);
     }
 
-    public void navigateToUbahSandi() {
-        navigateToFragment(fragmentUbahSandi, false);
+    public void navigateToResetPassword() {
+        navigateToFragment(fragmentResetPassword, false);
     }
 
     public void navigateToConfirmPassword() {
