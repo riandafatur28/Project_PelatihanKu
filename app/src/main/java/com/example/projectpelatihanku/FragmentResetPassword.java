@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-public class FragmentUbahSandi extends Fragment {
+public class FragmentResetPassword extends Fragment {
 
 
         private LinearLayout backButton;
