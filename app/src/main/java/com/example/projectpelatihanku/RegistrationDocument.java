@@ -5,24 +5,23 @@ import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Bitmap;
 import android.graphics.pdf.PdfDocument;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class BuktiPendaftaranActivity extends AppCompatActivity {
+public class RegistrationDocument extends AppCompatActivity {
 
     private TextView tvNama, tvKejuruan, tvProgram;
     private LinearLayout buttonDownload;
@@ -31,10 +30,10 @@ public class BuktiPendaftaranActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.buktipendaftaran); // Ganti dengan nama layout Anda
+        setContentView(R.layout.registration_document); // Ganti dengan nama layout Anda
 
         // Inisialisasi View
-        tvNama = findViewById(R.id.tvNamaLengkap);
+        tvNama = findViewById(R.id.tvNamapendaftar);
         tvKejuruan = findViewById(R.id.tvkejuruan);
         tvProgram = findViewById(R.id.tvprogram);
         buttonDownload = findViewById(R.id.buttonCetak);
@@ -90,7 +89,7 @@ public class BuktiPendaftaranActivity extends AppCompatActivity {
         // Menggambar data ke halaman PDF
         Bitmap bitmap = Bitmap.createBitmap(595, 842, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        View contentView = getLayoutInflater().inflate(R.layout.buktipendaftaran, null);
+        View contentView = getLayoutInflater().inflate(R.layout.registration_document, null);
         contentView.measure(View.MeasureSpec.makeMeasureSpec(595, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(842, View.MeasureSpec.EXACTLY));
         contentView.layout(0, 0, contentView.getMeasuredWidth(), contentView.getMeasuredHeight());
         contentView.draw(canvas);
