@@ -14,10 +14,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.api.ApiClient;
-
 import java.io.IOException;
 import java.util.Map;
 
@@ -28,11 +26,11 @@ public class FragmentProfil extends Fragment {
     private ImageView imageProfil;
     private String userId;
     public static String username;
-    public static String  gender;
-    public static String  birth;
+    public static String gender;
+    public static String birth;
     public static String phone;
-    public static String  userEmail;
-    public static String  address;
+    public static String userEmail;
+    public static String address;
 
 
     @Nullable

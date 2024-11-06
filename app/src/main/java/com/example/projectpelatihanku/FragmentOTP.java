@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
 
 public class FragmentOTP extends Fragment {
@@ -61,7 +62,7 @@ public class FragmentOTP extends Fragment {
 
                 isNavigating = true;
                 if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) requireActivity()).navigateToUbahSandi();
+                    ((MainActivity) requireActivity()).navigateToResetPassword();
                 } else {
                     Log.e("FragmentOTP", "MainActivity not found");
                 }
@@ -71,7 +72,7 @@ public class FragmentOTP extends Fragment {
         textKembali.setOnClickListener(v -> {
             isNavigating = true;
             if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).navigateToLupaSandi();
+                ((MainActivity) getActivity()).navigateToForgotPassword();
             } else {
                 Log.e("FragmentOTP", "MainActivity not found");
             }
