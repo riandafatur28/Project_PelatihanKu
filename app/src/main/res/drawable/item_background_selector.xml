@@ -11,7 +11,7 @@
     <item>
         <!-- Ikon saat tidak dipilih -->
         <layer-list>
-            <item android:drawable="@drawable/institusii"/> <!-- Ikon default (belum dipilih) -->
+            <item android:drawable="@drawable/vector_department"/> <!-- Ikon default (belum dipilih) -->
         </layer-list>
     </item>
     <item>
