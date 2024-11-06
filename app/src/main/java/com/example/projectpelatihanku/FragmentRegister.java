@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -31,7 +32,6 @@ public class FragmentRegister extends Fragment {
     private Uri imageUri;
     private static final String PREFS_NAME = "UserPrefs";
     private static final String KEY_USER_NAME = "username";
-
     private EditText inputPassword, konfirmasiPassword;
     private boolean isPasswordVisible = false;
     private boolean isConfirmPasswordVisible = false;
@@ -121,8 +121,10 @@ public class FragmentRegister extends Fragment {
                         imageProfil.setImageResource(selectedGender.equals("Laki-laki") ? R.drawable.vector_men : R.drawable.vector_women);
                     }
                 }
+
                 @Override
-                public void onNothingSelected(AdapterView<?> parent) {}
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
             });
         }
     }

@@ -17,7 +17,7 @@ import com.example.projectpelatihanku.api.ApiClient;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
-public class FragmentTentang extends Fragment {
+public class FragmentInstitute extends Fragment {
     private String endPoint = "/institutes";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private static final SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
@@ -26,7 +26,7 @@ public class FragmentTentang extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tentang, container, false);
+        View view = inflater.inflate(R.layout.fragment_institute, container, false);
 
         ImageView backArrow = view.findViewById(R.id.imageArrow);
         backArrow.setOnClickListener(v -> {
