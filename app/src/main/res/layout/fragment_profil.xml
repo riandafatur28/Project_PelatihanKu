@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerProfil"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:id="@+id/containerProfil"
     tools:context=".FragmentProfil">
 
     <!-- Header Profil -->
@@ -13,8 +13,8 @@
         android:id="@+id/textProfil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
         android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
         android:fontFamily="@font/inter_medium"
         android:text="Profil"
         android:textSize="24sp" />
@@ -23,16 +23,16 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
         android:layout_marginTop="6dp"
+        android:layout_marginEnd="12dp"
         android:background="@color/font_tint" />
 
     <!-- ScrollView untuk Konten Profil -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="12dp">
+        android:layout_marginTop="12dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,124 +45,185 @@
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_gravity="center"
+                android:contentDescription="Profile Image"
                 android:scaleType="centerCrop"
                 android:src="@drawable/gambar_user"
-                app:shapeAppearanceOverlay="@style/CircleImage"
-                android:contentDescription="Profile Image" />
+                app:shapeAppearanceOverlay="@style/CircleImage" />
 
             <TextView
                 android:id="@+id/namaUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nama User"
-                android:gravity="center"
                 android:layout_marginTop="12dp"
                 android:fontFamily="@font/inter_regular"
+                android:gravity="center"
+                android:text="Nama User"
+                android:textColor="@color/font_black"
                 android:textSize="18sp"
-                android:textColor="@color/font_black" />
+                android:textStyle="bold" />
 
             <!-- Detail Profil -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/LabelnamaProfil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/inter_regular"
+                    android:text="Nama Panjang   :"
+                    android:textColor="@color/font_tint"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/namaProfil"
-                    android:layout_marginTop="16dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Nama Panjang"
-                    android:textColor="@color/font_tint"
+                    android:layout_marginTop="4dp"
                     android:fontFamily="@font/inter_regular"
-                    android:textSize="16sp"/>
+                    android:text="Nama Panjang"
+                    android:textColor="@color/font_black"
+                    android:textSize="16sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/font_tint" />
+                    android:layout_marginTop="4dp"
+                    android:background="@color/font_black" />
+
+                <TextView
+                    android:id="@+id/LabelJK"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/inter_regular"
+                    android:text="Jenis Kelamin    :"
+                    android:textColor="@color/font_tint"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/JKProfil"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Jenis Kelamin"
-                    android:textColor="@color/font_tint"
+                    android:layout_marginTop="4dp"
                     android:fontFamily="@font/inter_regular"
-                    android:textSize="16sp"/>
+                    android:text="Jenis Kelamin"
+                    android:textColor="@color/font_black"
+                    android:textSize="16sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/font_tint" />
+                    android:layout_marginTop="4dp"
+                    android:background="@color/font_black" />
+
+                <TextView
+                    android:id="@+id/LabelTlp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/inter_regular"
+                    android:text="Nomor Telepon :"
+                    android:textColor="@color/font_tint"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/noTelpProfil"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="No.Telp"
-                    android:textColor="@color/font_tint"
+                    android:layout_marginTop="4dp"
                     android:fontFamily="@font/inter_regular"
-                    android:textSize="16sp"/>
+                    android:text="No.Telp"
+                    android:textColor="@color/font_black"
+                    android:textSize="16sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/font_tint" />
+                    android:layout_marginTop="4dp"
+                    android:background="@color/font_black" />
+
+                <TextView
+                    android:id="@+id/Labelttl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/inter_regular"
+                    android:text="Tanggal Lahir    :"
+                    android:textColor="@color/font_tint"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/TTLProfil"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Tanggal Lahir"
-                    android:textColor="@color/font_tint"
+                    android:layout_marginTop="4dp"
                     android:fontFamily="@font/inter_regular"
-                    android:textSize="16sp"/>
+                    android:text="Tanggal Lahir"
+                    android:textColor="@color/font_black"
+                    android:textSize="16sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/font_tint" />
+                    android:layout_marginTop="4dp"
+                    android:background="@color/font_black" />
+
+                <TextView
+                    android:id="@+id/Labelemail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/inter_regular"
+                    android:text="Email                 :"
+                    android:textColor="@color/font_tint"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/emailProfil"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Email"
-                    android:textColor="@color/font_tint"
+                    android:layout_marginTop="4dp"
                     android:fontFamily="@font/inter_regular"
-                    android:textSize="16sp"/>
+                    android:text="Email"
+                    android:textColor="@color/font_black"
+                    android:textSize="16sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/font_tint" />
+                    android:layout_marginTop="4dp"
+                    android:background="@color/font_black" />
+
+                <TextView
+                    android:id="@+id/Labelalamat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/inter_regular"
+                    android:text="Alamat              :"
+                    android:textColor="@color/font_tint"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/alamatProfil"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Alamat"
-                    android:textColor="@color/font_tint"
+                    android:layout_marginTop="4dp"
                     android:fontFamily="@font/inter_regular"
-                    android:textSize="16sp"/>
+                    android:text="Alamat"
+                    android:textColor="@color/font_black"
+                    android:textSize="16sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/font_tint" />
+                    android:layout_marginTop="4dp"
+                    android:background="@color/font_black" />
             </LinearLayout>
 
             <!-- Button Perbarui Profil -->
@@ -172,12 +233,12 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="36dp"
                 android:backgroundTint="@color/orange"
-                android:textSize="16sp"
                 android:fontFamily="@font/inter_bold"
                 android:gravity="center"
                 android:text="Perbarui Profil"
                 android:textAllCaps="false"
-                android:textColor="@color/white_bg" />
+                android:textColor="@color/white_bg"
+                android:textSize="16sp" />
 
             <!-- Kembali Button -->
             <LinearLayout
@@ -186,20 +247,20 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/rounded_button_white"
-                android:gravity="center"
-                android:orientation="horizontal"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/text_Kembali"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_semibold"
+                    android:padding="8dp"
                     android:text="Keluar"
                     android:textColor="@color/orange"
-                    android:textSize="16sp"
-                    android:padding="8dp" />
+                    android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
