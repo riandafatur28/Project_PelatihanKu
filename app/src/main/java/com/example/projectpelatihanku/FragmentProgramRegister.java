@@ -16,15 +16,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.cardview.widget.CardView;
+
 import java.io.File;
 
-public class FragmentPendaftaran extends Fragment {
+public class FragmentProgramRegister extends Fragment {
 
     private EditText inputNamaDaftar, inputKejuruanDaftar, inputProgramDaftar;
     private TextView textUnduhBukti, textViewKTPFileName, textViewKKFileName, textViewIjazahFileName;
