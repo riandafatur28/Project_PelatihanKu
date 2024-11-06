@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentdetailprogram"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_bg"
-    android:id="@+id/fragmentdetailprogram"
     android:padding="8dp"
     tools:context=".FragmentDetailProgram">
 
@@ -12,25 +12,25 @@
         android:id="@+id/layerdetailProgram"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginBottom="24dp">
+        android:layout_marginBottom="24dp"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginTop="1dp"
             android:gravity="center_vertical"
-            android:layout_marginTop="1dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/imageArrow"
                 android:layout_width="36dp"
                 android:layout_height="64dp"
-                android:src="@drawable/vector_back"
-                android:padding="8dp"
                 android:clickable="true"
+                android:contentDescription="@string/description_arrow"
                 android:focusable="true"
-                android:contentDescription="@string/description_arrow" />
+                android:padding="8dp"
+                android:src="@drawable/vector_back" />
 
             <TextView
                 android:id="@+id/texttentang"
@@ -54,34 +54,34 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/inter_medium"
                     android:layout_marginStart="12dp"
-                    android:text="Tentang Program" />
+                    android:layout_marginTop="18dp"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Tentang Program"
+                    android:textSize="16sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginTop="1dp"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/imageDetailProgram"
                         android:layout_width="180dp"
                         android:layout_height="180dp"
-                        android:scaleType="fitXY"
                         android:layout_marginStart="12dp"
-                        android:src="@drawable/balai_img2"
-                        android:padding="8dp"/>
+                        android:padding="8dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/balai_img2" />
 
                     <LinearLayout
                         android:id="@+id/detailProgram"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:layout_marginEnd="12dp"
+                        android:layout_weight="1"
                         android:orientation="vertical"
                         android:paddingStart="6dp">
 
@@ -151,8 +151,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="24dp"
                     android:layout_marginStart="12dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginEnd="12dp"
                     android:background="@color/font_tint" />
 
@@ -165,11 +165,11 @@
                         android:id="@+id/deskripsiProgram"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
                         android:layout_marginStart="12dp"
-                        android:text="Deskripsi Program"
+                        android:layout_marginTop="32dp"
                         android:fontFamily="@font/inter_medium"
-                        android:textSize="16sp"/>
+                        android:text="Deskripsi Program"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/teksDeskripsiProgram"
@@ -177,10 +177,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="18dp"
-                        android:fontFamily="@font/inter_regular"
-                        android:text="Berdirinya UPT Balai Latihan Kerja (BLK) Nganjuk pada tanggal 07 Juli 1983 dengan nama KLK (Kursus Latihan Kerja). Pada tahun 1985 berubah menjadi BLKIP LLK-UKM (Lokal Latihan Kerja Usaha Kecil, Menengah). Pada era otonomi daerah tahun 2000 menjadi BLKUKM Disnaker Provinsi Jawa Timur berdasarkan perda No. 35/2000. Berdasarkan Peraturan Gubernur No. 62/2018 berganti nama menjadi Unit Pelaksana Teknis Balai Latihan Kerja (BLK) Nganjuk Disnakertrans Provinsi Jawa Timur."
                         android:layout_marginEnd="12dp"
+                        android:fontFamily="@font/inter_regular"
                         android:justificationMode="inter_word"
+                        android:text="Berdirinya UPT Balai Latihan Kerja (BLK) Nganjuk pada tanggal 07 Juli 1983 dengan nama KLK (Kursus Latihan Kerja). Pada tahun 1985 berubah menjadi BLKIP LLK-UKM (Lokal Latihan Kerja Usaha Kecil, Menengah). Pada era otonomi daerah tahun 2000 menjadi BLKUKM Disnaker Provinsi Jawa Timur berdasarkan perda No. 35/2000. Berdasarkan Peraturan Gubernur No. 62/2018 berganti nama menjadi Unit Pelaksana Teknis Balai Latihan Kerja (BLK) Nganjuk Disnakertrans Provinsi Jawa Timur."
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -188,8 +188,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="24dp"
                     android:layout_marginStart="12dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginEnd="12dp"
                     android:background="@color/font_tint" />
 
@@ -202,34 +202,34 @@
                         android:id="@+id/Instruktur"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
                         android:layout_marginStart="12dp"
-                        android:text="Instruktur"
+                        android:layout_marginTop="32dp"
                         android:fontFamily="@font/inter_medium"
-                        android:textSize="16sp"/>
+                        android:text="Instruktur"
+                        android:textSize="16sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginTop="1dp"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <ImageView
                             android:id="@+id/imageTentang"
                             android:layout_width="180dp"
                             android:layout_height="180dp"
-                            android:scaleType="fitXY"
                             android:layout_marginStart="12dp"
-                            android:src="@drawable/balai_img2"
-                            android:padding="8dp"/>
+                            android:padding="8dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/balai_img2" />
 
                         <LinearLayout
                             android:id="@+id/container_linear"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
                             android:layout_marginEnd="12dp"
+                            android:layout_weight="1"
                             android:orientation="vertical"
                             android:paddingStart="6dp">
 
@@ -288,8 +288,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="24dp"
                     android:layout_marginStart="12dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginEnd="12dp"
                     android:background="@color/font_tint" />
 
@@ -301,8 +301,8 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_marginStart="-1dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="-1dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -310,18 +310,18 @@
                             android:id="@+id/Persyaratan"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="24dp"
                             android:layout_marginStart="1dp"
-                            android:text="Persyaratan"
+                            android:layout_marginTop="24dp"
                             android:fontFamily="@font/inter_medium"
-                            android:textSize="16sp"/>
+                            android:text="Persyaratan"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/syarat1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
                             android:layout_marginStart="1dp"
+                            android:layout_marginTop="12dp"
                             android:layout_marginEnd="5dp"
                             android:fontFamily="@font/inter_regular"
                             android:text="1. Scan KTP"
@@ -332,9 +332,9 @@
                             android:id="@+id/syarat2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="1dp"
                             android:layout_marginTop="3dp"
                             android:layout_marginEnd="5dp"
-                            android:layout_marginStart="1dp"
                             android:fontFamily="@font/inter_regular"
                             android:text="2. Scan Kartu Keluarga (KK)"
                             android:textColor="@color/font_black"
@@ -344,9 +344,9 @@
                             android:id="@+id/syarat3"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="1dp"
                             android:layout_marginTop="3dp"
                             android:layout_marginEnd="5dp"
-                            android:layout_marginStart="1dp"
                             android:fontFamily="@font/inter_regular"
                             android:text="3. Scan Ijazah Terakhir"
                             android:textColor="@color/font_black"
@@ -358,8 +358,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="24dp"
                     android:layout_marginStart="12dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginEnd="12dp"
                     android:background="@color/font_tint" />
 
@@ -368,26 +368,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
+
                     <TextView
                         android:id="@+id/infoPendaftaran"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
                         android:layout_marginTop="24dp"
                         android:layout_marginEnd="5dp"
-                        android:layout_marginStart="12dp"
                         android:fontFamily="@font/inter_medium"
-                        android:textStyle=""
                         android:text="Informasi Pendaftaran"
                         android:textColor="@color/font_black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textStyle="" />
 
                     <TextView
                         android:id="@+id/statusPendaftaran"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="5dp"
-                        android:layout_marginStart="12dp"
                         android:fontFamily="@font/inter_regular"
                         android:text="Status : Dibuka"
                         android:textColor="@color/font_black"
@@ -397,9 +398,9 @@
                         android:id="@+id/tanggalPendaftaran"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
                         android:layout_marginTop="3dp"
                         android:layout_marginEnd="5dp"
-                        android:layout_marginStart="12dp"
                         android:fontFamily="@font/inter_regular"
                         android:text="Tanggal Pendaftaran : 10 Desember 2024 - 10 Januari 2025"
                         android:textColor="@color/font_black"
@@ -409,11 +410,11 @@
                         android:id="@+id/buttonDaftar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
                         android:layout_marginTop="8dp"
-                        android:text="Daftar"
-                        android:backgroundTint="@color/orange"
                         android:layout_marginBottom="24dp"
-                        android:layout_marginStart="12dp"/>
+                        android:backgroundTint="@color/orange"
+                        android:text="Daftar" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
