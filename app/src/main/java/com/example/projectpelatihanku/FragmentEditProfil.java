@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -138,7 +139,6 @@ public class FragmentEditProfil extends Fragment {
             showToast("No. Telepon harus hanya angka dan maksimal 15 digit!", 3000);
             return;
         }
-
 
 
         // Perbarui nama pada UI `namaUser` di FragmentEditProfil
