@@ -43,12 +43,12 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
         // Menambahkan listener untuk tombol lihat program
         holder.btnDetail.setOnClickListener(v -> {
             // Membuat instance FragmentProgramInstitusi dengan data
-            FragmentProgramInstitusi fragmentProgramInstitusi = FragmentProgramInstitusi.newInstance(program.getNama());
+//            FragmentProgramInstitusi fragmentProgramInstitusi = FragmentProgramInstitusi.newInstance(program.getNama());
 
             // Menggunakan FragmentManager untuk memulai FragmentProgramInstitusi
             FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, fragmentProgramInstitusi);
+//            fragmentTransaction.replace(R.id.fragment_container, fragmentProgramInstitusi);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         });
