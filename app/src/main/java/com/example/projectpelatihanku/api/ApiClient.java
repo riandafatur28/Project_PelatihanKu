@@ -24,9 +24,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class ApiClient {
-    public static final String BASE_URL = "http://172.16.110.24:80/";
+    public static final String BASE_URL = "http://192.168.1.7:80/";
     public static final String BASE_URL_PUBLIC = "api/v1/public";
     // Inisialisasi OkHttpClient
     private OkHttpClient client = new OkHttpClient();
@@ -135,7 +136,7 @@ public class ApiClient {
                             dataInstitute[11] = website;
                             dataInstitute[12] = deskripsi;
                             dataInstitute[13] = thnBerdiriString;
-//                          Kirim data ke views
+                            // Kirim data ke views
                             resInstitute.onSuccess(dataInstitute);
                         }
                     } catch (JSONException e) {
@@ -152,7 +153,6 @@ public class ApiClient {
             }
         });
     }
-
 
     //    Department adapter
     public interface DepartmentHelper {
@@ -209,12 +209,11 @@ public class ApiClient {
         void onSuccess(ArrayList<Program> data);
 
         void onFailed(IOException e);
-
-        void onResponse(Call call, Response response) throws IOException;
     }
 
     // GET Programs
     public void fetchProgram(String token, String endPoint, ProgramHelper listener) {
+        Log.d("Endpoint", "fetchProgram: " + BASE_URL + BASE_URL_PUBLIC + endPoint);
         Request request = new Request.Builder()
                 .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
                 .addHeader("Authorization", "Bearer " + token)
@@ -229,34 +228,37 @@ public class ApiClient {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    Log.e("Network Error", "Respon gagal: " + response.message());
-                    String data = response.body().string();
-                    try {
-                        ArrayList<Program> dataPrograms = new ArrayList<>();
-                        JSONObject jsonObject = new JSONObject(data);
-                        if (!jsonObject.getBoolean("isEmpty")) {
-                            JSONArray programs = jsonObject.getJSONArray("programs");
-                            for (int i = 0; i < programs.length(); i++) {
-                                JSONObject program = programs.getJSONObject(i);
-                                String id = program.getString("id");
-                                String nama = program.getString("nama");
-                                String deskripsi = program.getString("deskripsi");
-                                dataPrograms.add(new Program(id, nama, deskripsi, null));
+                    ResponseBody responseBody = response.body();
+                    String data = responseBody != null ? responseBody.string() : "";
+                    if (!data.isEmpty()) {
+                        try {
+                            ArrayList<Program> dataPrograms = new ArrayList<>();
+                            JSONObject jsonObject = new JSONObject(data);
+                            if (!jsonObject.getBoolean("isEmpty")) {
+                                JSONArray programs = jsonObject.getJSONArray("programs");
+                                for (int i = 0; i < programs.length(); i++) {
+                                    JSONObject program = programs.getJSONObject(i);
+                                    String id = program.getString("id");
+                                    String nama = program.getString("nama");
+                                    String deskripsi = program.getString("deskripsi");
+                                    dataPrograms.add(new Program(id, nama, deskripsi, null));
+                                }
+                                listener.onSuccess(dataPrograms);
                             }
-                            listener.onSuccess(dataPrograms);
+                        } catch (JSONException e) {
+                            Log.e("Network Error", "JSON Parsing error: " + e.getMessage());
                         }
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                    } else {
+                        Log.e("Network Error", "Data body kosong atau tidak tersedia");
                     }
                 } else {
-                    Log.e("Network Error", "Response unsuccessful or empty body");
+                    Log.e("Network Error", "Respon gagal: " + response.message());
                 }
             }
-
         });
     }
 
-    //    Notifikasi adapter
+    // Notifikasi adapter
     public interface NotifikasiHelper {
         void onSuccess(ArrayList<MyNotification> data);
 
@@ -366,8 +368,4 @@ public class ApiClient {
             }
         });
     }
-
-    public void fetchDepartment(String s) {
-    }
-
 }
