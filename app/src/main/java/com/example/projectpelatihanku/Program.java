@@ -3,7 +3,7 @@ package com.example.projectpelatihanku;
 import java.io.Serializable;
 
 public class Program implements Serializable {
-    private String id; // Menambahkan ID untuk institusi
+    private String id;
     private String nama;
     private String deskripsi;
     private String imageUrl;
