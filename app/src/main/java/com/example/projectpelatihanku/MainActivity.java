@@ -1,6 +1,8 @@
 
 package com.example.projectpelatihanku;
 
+import static android.text.TextUtils.replace;
+
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -8,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -152,14 +155,20 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         navigateToFragment(fragmentInstitute, false);
     }
 
-//    public void navigateToProgram() {
-//        FragmentProgram fragment = new FragmentProgram();
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_container, fragment)
-//                .addToBackStack(null)
-//                .commit();
-//    }
+    public void navigateToProgram() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
+        // Mengecek apakah FragmentProgram sudah ada dan sedang ditampilkan
+        Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
+        if (!(currentFragment instanceof FragmentProgram)) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, new FragmentProgram())
+                    .commit();
+
+            // Menyembunyikan BottomNavigationView setelah mengganti fragment
+            hideBottomNavigation();
+        }
+    }
 
     public void navigateToProgramRegister() {
         navigateToFragment(fragmentProgramRegister, false);
