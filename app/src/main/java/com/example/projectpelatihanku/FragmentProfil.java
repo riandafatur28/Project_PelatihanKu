@@ -17,6 +17,9 @@ import androidx.fragment.app.Fragment;
 import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.api.ApiClient;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Map;
 
 public class FragmentProfil extends Fragment {
@@ -32,7 +35,6 @@ public class FragmentProfil extends Fragment {
     public static String userEmail;
     public static String address;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class FragmentProfil extends Fragment {
         noTelpProfil = view.findViewById(R.id.noTelpProfil);
         alamatProfil = view.findViewById(R.id.alamatProfil);
         imageProfil = view.findViewById(R.id.imageProfil);
+
         // Menyiapkan tombol untuk memperbarui profil
         Button buttonPerbaruiProfil = view.findViewById(R.id.buttonPerbaruiProfil);
         buttonPerbaruiProfil.setOnClickListener(v -> {
@@ -56,6 +59,7 @@ public class FragmentProfil extends Fragment {
         });
 
         loadUserData();
+
         // Menyiapkan tombol untuk kembali ke halaman login
         LinearLayout txtKembali = view.findViewById(R.id.txtKembali);
         txtKembali.setOnClickListener(v -> {
@@ -74,16 +78,23 @@ public class FragmentProfil extends Fragment {
         JWT jwt = new JWT(token);
         userId = jwt.getClaim("users").asObject(Map.class).get("id").toString();
         String endPoint = "/users/" + userId;
+
         api.FetchProfile(userId, token, endPoint, new ApiClient.ProfileHelper() {
             @Override
             public void onSuccess(String name, String jk, String ttl, String tlp, String email, String alamat) {
+                // Mengubah format tanggal dari yyyy-MM-dd ke dd-MM-yyyy
+                String formattedDate = formatDate(ttl);
+
+                // Menampilkan data ke UI
                 namaUser.setText(name);
                 namaProfil.setText(name);
                 jkProfil.setText(jk);
-                ttlProfil.setText(ttl);
+                ttlProfil.setText(formattedDate);  // Menampilkan tanggal yang telah diformat
                 noTelpProfil.setText(tlp);
                 emailProfil.setText(email);
                 alamatProfil.setText(alamat);
+
+                // Menyimpan data ke variabel statis
                 username = name;
                 phone = tlp;
                 gender = jk;
@@ -97,5 +108,27 @@ public class FragmentProfil extends Fragment {
                 Log.d("Failed", "onFailed: " + e.getMessage());
             }
         });
+    }
+
+    // Metode untuk mengubah format tanggal
+    private String formatDate(String ttl) {
+        try {
+            // Membuat SimpleDateFormat untuk format input (yyyy-MM-dd)
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            // Membuat SimpleDateFormat untuk format output (dd-MM-yyyy)
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+
+            // Mengubah String menjadi Date
+            Date date = inputFormat.parse(ttl);
+
+            // Mengubah Date menjadi String dengan format baru
+            return outputFormat.format(date);
+
+        } catch (ParseException e) {
+            // Menangani error jika format tanggal tidak sesuai
+            Log.e("DateFormatError", "Error parsing date: " + e.getMessage());
+            return ttl;  // Jika gagal, kembalikan tanggal original
+        }
     }
 }
