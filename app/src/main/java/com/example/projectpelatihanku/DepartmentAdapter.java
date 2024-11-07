@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
+
 import java.util.List;
 
 public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.InstitusiViewHolder> {
@@ -30,21 +30,42 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
         return new InstitusiViewHolder(view);
     }
 
+    // Method untuk navigasi ke FragmentProgram
+    private void navigateToProgram() {
+        // Membuat instance FragmentProgram
+        FragmentProgram fragmentProgram = new FragmentProgram();
+
+        // Menggunakan FragmentActivity untuk mendapatkan FragmentManager
+        FragmentActivity activity = (FragmentActivity) context;
+
+        // Memulai transaksi fragment
+        FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
+        // Gantikan fragment yang ada di R.id.fragment_container dengan FragmentProgram
+        transaction.replace(R.id.layoutDepartment, fragmentProgram);
+        // Menambahkan transaksi ke BackStack (agar dapat kembali ke fragment sebelumnya)
+        transaction.addToBackStack(null);
+        // Menyelesaikan transaksi
+        transaction.commit();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull InstitusiViewHolder holder, int position) {
         Department department = institusiList.get(position);
-        holder.textNamaInstitusi.setText(department.getNama()); // Memanggil metode yang benar
+        holder.textNamaInstitusi.setText(department.getNama());
         holder.textDeskripsi.setText(department.getDeskripsi());
+
+        // Menampilkan gambar menggunakan Glide
         Glide.with(context).load(department.getImageUrl()).into(holder.imageInstitusi);
-        // Menambahkan listener untuk tombol lihat program
+
+        // Tombol "Lebih Banyak"
         holder.btnLihatProgram.setOnClickListener(v -> {
-            FragmentProgram fragmentProgramInstitusi = FragmentProgram.newInstance(String.valueOf(department));
-            FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, fragmentProgramInstitusi);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
+            // Call navigateToProgram when button is clicked
+            navigateToProgram();
+
+
         });
+
+
     }
 
     @Override
@@ -58,8 +79,8 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
 
         InstitusiViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageInstitusi = itemView.findViewById(R.id.imageInstitusi);
-            textNamaInstitusi = itemView.findViewById(R.id.text_nama_institusi);
+            imageInstitusi = itemView.findViewById(R.id.imageDepartment);
+            textNamaInstitusi = itemView.findViewById(R.id.text_nama_department);
             textDeskripsi = itemView.findViewById(R.id.text_deskripsi);
             btnLihatProgram = itemView.findViewById(R.id.btn_lihat_program);
         }
