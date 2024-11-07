@@ -5,12 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 
@@ -30,21 +33,22 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
         return new InstitusiViewHolder(view);
     }
 
-    // Method untuk navigasi ke FragmentProgram
+    // Method untuk navigasi ke FragmentProgram dan sembunyikan BottomNavigationView
     private void navigateToProgram() {
+        // Menyembunyikan BottomNavigationView sebelum navigasi
+        FragmentActivity activity = (FragmentActivity) context;
+        BottomNavigationView bottomNavigationView = activity.findViewById(R.id.bottomview);
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setVisibility(View.GONE);  // Menyembunyikan BottomNavigationView
+        }
+
         // Membuat instance FragmentProgram
         FragmentProgram fragmentProgram = new FragmentProgram();
 
-        // Menggunakan FragmentActivity untuk mendapatkan FragmentManager
-        FragmentActivity activity = (FragmentActivity) context;
-
         // Memulai transaksi fragment
         FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
-        // Gantikan fragment yang ada di R.id.fragment_container dengan FragmentProgram
-        transaction.replace(R.id.layoutDepartment, fragmentProgram);
-        // Menambahkan transaksi ke BackStack (agar dapat kembali ke fragment sebelumnya)
-        transaction.addToBackStack(null);
-        // Menyelesaikan transaksi
+        transaction.replace(R.id.layoutDepartment, fragmentProgram);  // Gantikan fragment yang ada dengan FragmentProgram
+        transaction.addToBackStack(null);  // Menambahkan transaksi ke BackStack agar dapat kembali
         transaction.commit();
     }
 
@@ -61,11 +65,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
         holder.btnLihatProgram.setOnClickListener(v -> {
             // Call navigateToProgram when button is clicked
             navigateToProgram();
-
-
         });
-
-
     }
 
     @Override
