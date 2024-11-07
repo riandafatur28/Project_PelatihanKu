@@ -4,17 +4,17 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 
@@ -31,7 +31,16 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
     @Override
     public ProgramViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_program, parent, false);
-        return new ProgramViewHolder(view);
+        return new ProgramViewHolder(view);  // Return the view holder with the inflated view
+    }
+
+    private void navigateToDepartment() {
+        FragmentDepartment fragmentDepartment = new FragmentDepartment();
+        FragmentActivity activity = (FragmentActivity) context;
+        FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.layoutprogram, fragmentDepartment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @Override
@@ -39,29 +48,13 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
         Program program = programList.get(position);
         holder.textNamaProgram.setText(program.getNama());
         holder.textDeskripsi.setText(program.getDeskripsi());
+
+        // Load the program image using Glide
         Glide.with(context).load(program.getImageUrl()).into(holder.imageProgram);
 
-        // Menambahkan listener untuk tombol lihat program
-        holder.btnDetail.setOnClickListener(v -> {
-            // Menyembunyikan BottomNavigationView sebelum mengganti fragment
-            if (context instanceof FragmentActivity) {
-                FragmentActivity fragmentActivity = (FragmentActivity) context;
-                BottomNavigationView bottomNavigationView = fragmentActivity.findViewById(R.id.bottomView);
-                if (bottomNavigationView != null) {
-                    bottomNavigationView.setVisibility(View.GONE); // Menyembunyikan BottomNavigationView
-                }
-            }
-
-            // Membuat instance FragmentProgram dengan data
-            FragmentProgram fragmentProgram = FragmentProgram.newInstance(Integer.parseInt(program.getNama()));
-
-            // Menggunakan FragmentManager untuk memulai FragmentProgram
-            FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, fragmentProgram);
-            fragmentTransaction.addToBackStack(null); // Menambahkan fragment ke back stack
-            fragmentTransaction.commit();
-        });
+        // Button to navigate to FragmentDepartment
+        holder.imageArrow2.setOnClickListener(v -> navigateToDepartment());
+        navigateToDepartment();
     }
 
     @Override
@@ -69,9 +62,12 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
         return programList.size();
     }
 
+
+
     static class ProgramViewHolder extends RecyclerView.ViewHolder {
         ShapeableImageView imageProgram;
         TextView textNamaProgram, textDeskripsi, btnDetail;
+        ImageView imageArrow2; // Reference to the back arrow
 
         ProgramViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -79,6 +75,7 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
             textNamaProgram = itemView.findViewById(R.id.text_nama_program);
             textDeskripsi = itemView.findViewById(R.id.text_deskripsi_program);
             btnDetail = itemView.findViewById(R.id.btn_detail);
+            imageArrow2 = itemView.findViewById(R.id.imageArrow2); // Link to the ImageView arrow
         }
     }
 }
