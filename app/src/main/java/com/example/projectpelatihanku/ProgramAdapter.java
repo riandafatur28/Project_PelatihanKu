@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 
@@ -42,14 +43,23 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
 
         // Menambahkan listener untuk tombol lihat program
         holder.btnDetail.setOnClickListener(v -> {
-            // Membuat instance FragmentProgramInstitusi dengan data
-//            FragmentProgramInstitusi fragmentProgramInstitusi = FragmentProgramInstitusi.newInstance(program.getNama());
+            // Menyembunyikan BottomNavigationView sebelum mengganti fragment
+            if (context instanceof FragmentActivity) {
+                FragmentActivity fragmentActivity = (FragmentActivity) context;
+                BottomNavigationView bottomNavigationView = fragmentActivity.findViewById(R.id.bottomView);
+                if (bottomNavigationView != null) {
+                    bottomNavigationView.setVisibility(View.GONE); // Menyembunyikan BottomNavigationView
+                }
+            }
 
-            // Menggunakan FragmentManager untuk memulai FragmentProgramInstitusi
+            // Membuat instance FragmentProgram dengan data
+            FragmentProgram fragmentProgram = FragmentProgram.newInstance(Integer.parseInt(program.getNama()));
+
+            // Menggunakan FragmentManager untuk memulai FragmentProgram
             FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//            fragmentTransaction.replace(R.id.fragment_container, fragmentProgramInstitusi);
-            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.replace(R.id.fragment_container, fragmentProgram);
+            fragmentTransaction.addToBackStack(null); // Menambahkan fragment ke back stack
             fragmentTransaction.commit();
         });
     }
