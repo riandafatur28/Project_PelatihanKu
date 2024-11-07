@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.OpenableColumns;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static android.app.Activity.RESULT_OK;
 import static com.example.projectpelatihanku.FragmentProfil.*;
 
@@ -35,7 +40,8 @@ public class FragmentEditProfil extends Fragment {
     private ImageView imageSecond, iconCamera;
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
-
+    private SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     @Nullable
     @Override
@@ -58,14 +64,27 @@ public class FragmentEditProfil extends Fragment {
         editGender.setEnabled(false);
         editEmail.setEnabled(false);
 
-//        set value
+        // Set value
         namaUser.setText(username);
         editNama.setText(username);
         editGender.setText(gender);
         editEmail.setText(userEmail);
         editNoTelp.setText(phone);
-        editTTL.setText(birth);
         editAlamat.setText(address);
+
+        // Format tanggal lahir dari yyyy-MM-dd ke dd-MM-yyyy
+        try {
+            if (!TextUtils.isEmpty(birth)) {
+                Date birthDate = inputFormat.parse(birth);
+                if (birthDate != null) {
+                    String formattedDate = outputFormat.format(birthDate);
+                    editTTL.setText(formattedDate);
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            showToast("Format tanggal lahir tidak valid", 3000);
+        }
 
         // Tombol untuk menyimpan perubahan
         Button buttonUbah = view.findViewById(R.id.buttonubahProfil);
@@ -139,7 +158,6 @@ public class FragmentEditProfil extends Fragment {
             showToast("No. Telepon harus hanya angka dan maksimal 15 digit!", 3000);
             return;
         }
-
 
         // Perbarui nama pada UI `namaUser` di FragmentEditProfil
         namaUser.setText(nama);
