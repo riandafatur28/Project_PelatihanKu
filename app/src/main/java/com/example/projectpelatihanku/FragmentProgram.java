@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.projectpelatihanku.api.ApiClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -31,7 +32,6 @@ public class FragmentProgram extends Fragment {
     private RecyclerView recyclerView;
     private ProgramAdapter adapter;
     private List<Program> ProgramList = new ArrayList<>();
-    private Object context;
 
     // Metode newInstance untuk membuat instance fragment dengan DepartmentId
     public static FragmentProgram newInstance(int departmentId) {
@@ -60,6 +60,12 @@ public class FragmentProgram extends Fragment {
         // Inflating layout untuk fragment
         View view = inflater.inflate(R.layout.fragment_program, container, false);
 
+        // Menyembunyikan BottomNavigationView saat FragmentProgram aktif
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottomview);
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setVisibility(View.GONE); // Menyembunyikan BottomNavigationView
+        }
+
         recyclerView = view.findViewById(R.id.recyclerViewProgramInstitusi);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -68,28 +74,33 @@ public class FragmentProgram extends Fragment {
 
         // Set click listener for the arrow image
         ImageView imageArrow2 = view.findViewById(R.id.imageArrow2);
-        imageArrow2.setOnClickListener(v -> navigateToDepartmentFragment());
+        imageArrow2.setOnClickListener(v -> navigateToDepartment());
 
         fetchData();
 
         return view;
     }
 
-
-    private void navigateToDepartmentFragment() {
-        if (getActivity() != null) {
-            FragmentDepartment fragmentDepartment = new FragmentDepartment(); // Membuat fragment baru
-
-            // Ganti fragment yang ada dengan FragmentDepartment tanpa menambahkannya ke back stack
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.layoutprogram, fragmentDepartment) // Ganti fragment yang ada
-                    .commit();  // Tidak menggunakan addToBackStack, fragment lama akan diganti
-        } else {
-            Log.e("FragmentProgram", "Activity is null");
+    // Method untuk navigasi ke FragmentDepartment
+    private void navigateToDepartment() {
+        // Menampilkan kembali BottomNavigationView sebelum pindah ke FragmentDepartment
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            BottomNavigationView bottomNavigationView = activity.findViewById(R.id.bottomview);
+            if (bottomNavigationView != null) {
+                bottomNavigationView.setVisibility(View.VISIBLE); // Menampilkan BottomNavigationView
+            }
         }
+
+        // Pindah ke FragmentDepartment
+        FragmentDepartment fragmentDepartment = new FragmentDepartment();
+        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.layoutprogram, fragmentDepartment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
-
+    // Fetch data program dari API
     public void fetchData() {
         // Ambil token dari shared preference
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
