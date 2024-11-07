@@ -45,7 +45,7 @@
             android:hint="Email"
             android:inputType="textEmailAddress"
             android:padding="16dp"
-            android:text="ilman@gmail.com"
+            android:text="meifia@gmail.com"
             android:textColor="@color/black" />
 
         <FrameLayout
@@ -63,7 +63,7 @@
                 android:hint="Kata Sandi"
                 android:inputType="textPassword"
                 android:padding="16dp"
-                android:text="12345678"
+                android:text="Meifia11"
                 android:textColor="@color/black" />
 
             <ImageView
