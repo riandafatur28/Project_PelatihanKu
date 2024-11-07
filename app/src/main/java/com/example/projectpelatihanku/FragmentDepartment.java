@@ -23,6 +23,7 @@ public class FragmentDepartment extends Fragment {
     private RecyclerView recyclerView;
     private DepartmentAdapter adapter;
     private List<Department> departmentList = new ArrayList<>();
+    
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
