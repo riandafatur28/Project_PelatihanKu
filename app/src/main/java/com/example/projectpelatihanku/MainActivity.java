@@ -24,11 +24,11 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     private FragmentProfil fragmentProfil = new FragmentProfil();
     private FragmentLogin fragmentLogin = new FragmentLogin();
     private FragmentInstitute fragmentInstitute = new FragmentInstitute();
-    private FragmentProgram fragmentProgram = new FragmentProgram();
+    private FragmentProgram fragmentProgram = new FragmentProgram(null);
     private FragmentSplash splashFragment = new FragmentSplash();
     private FragmentRegister fragmentRegister = new FragmentRegister();
     private FragmentForgotPassword fragmentForgotPassword = new FragmentForgotPassword();
-//        private FragmentDetailProgram fragmentDetailProgram = new FragmentDetailProgram();
+    private FragmentDetailProgram fragmentDetailProgram = new FragmentDetailProgram();
     private FragmentProgramRegister fragmentProgramRegister = new FragmentProgramRegister();
     private FragmentOTP fragmentOTP = new FragmentOTP();
     private FragmentResetPassword fragmentResetPassword = new FragmentResetPassword();
@@ -147,9 +147,10 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         navigateToFragment(fragmentForgotPassword, false);
     }
 
-//    public void navigateToDetailProgram() {
-//        navigateToFragment(fragmentDetailProgram, false);
-//    }
+    public void navigateToDetailProgram() {
+        navigateToFragment(fragmentDetailProgram, false);
+    }
+
 
     public void navigateToInstitute() {
         navigateToFragment(fragmentInstitute, false);
@@ -162,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
         if (!(currentFragment instanceof FragmentProgram)) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new FragmentProgram())
+                    .replace(R.id.fragment_container, new FragmentProgram(null))
                     .commit();
 
             // Menyembunyikan BottomNavigationView setelah mengganti fragment
