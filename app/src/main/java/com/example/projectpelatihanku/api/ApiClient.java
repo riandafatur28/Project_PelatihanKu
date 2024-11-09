@@ -27,7 +27,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class ApiClient {
-    public static final String BASE_URL = "http://192.168.1.7:80/";
+    public static final String BASE_URL = "http://192.168.18.133:80/";
     public static final String BASE_URL_PUBLIC = "api/v1/public";
     // Inisialisasi OkHttpClient
     private OkHttpClient client = new OkHttpClient();
@@ -177,7 +177,6 @@ public class ApiClient {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    Log.e("Network Error", "Respon gagal: " + response.message());
                     String data = response.body().string();
                     try {
                         ArrayList<Department> dataDepartments = new ArrayList<>();
@@ -228,28 +227,24 @@ public class ApiClient {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    ResponseBody responseBody = response.body();
-                    String data = responseBody != null ? responseBody.string() : "";
-                    if (!data.isEmpty()) {
-                        try {
-                            ArrayList<Program> dataPrograms = new ArrayList<>();
-                            JSONObject jsonObject = new JSONObject(data);
-                            if (!jsonObject.getBoolean("isEmpty")) {
-                                JSONArray programs = jsonObject.getJSONArray("programs");
-                                for (int i = 0; i < programs.length(); i++) {
-                                    JSONObject program = programs.getJSONObject(i);
-                                    String id = program.getString("id");
-                                    String nama = program.getString("nama");
-                                    String deskripsi = program.getString("deskripsi");
-                                    dataPrograms.add(new Program(id, nama, deskripsi, null));
-                                }
-                                listener.onSuccess(dataPrograms);
+                    String data = response.body().string();
+                    try {
+                        ArrayList<Program> dataPrograms = new ArrayList<>();
+                        JSONObject jsonObject = new JSONObject(data);
+                        Log.d(TAG, "onResponse: fetch program" + jsonObject);
+                        if (!jsonObject.getBoolean("isEmpty")) {
+                            JSONArray programs = jsonObject.getJSONArray("programs");
+                            for (int i = 0; i < programs.length(); i++) {
+                                JSONObject program = programs.getJSONObject(i);
+                                String id = program.getString("id");
+                                String nama = program.getString("nama");
+                                String deskripsi = program.getString("deskripsi");
+                                dataPrograms.add(new Program(id, nama, deskripsi, null));
                             }
-                        } catch (JSONException e) {
-                            Log.e("Network Error", "JSON Parsing error: " + e.getMessage());
+                            listener.onSuccess(dataPrograms);
                         }
-                    } else {
-                        Log.e("Network Error", "Data body kosong atau tidak tersedia");
+                    } catch (JSONException e) {
+                        Log.e("Network Error", "JSON Parsing error: " + e.getMessage());
                     }
                 } else {
                     Log.e("Network Error", "Respon gagal: " + response.message());
@@ -257,6 +252,84 @@ public class ApiClient {
             }
         });
     }
+
+    //  Detail Program adapter
+    public interface DetailProgramHelper {
+        void onSuccess(String data[]);
+
+        void onFailed(IOException e);
+    }
+
+    public void fetchDetailProgram(String endPoint, String token, DetailProgramHelper resDetailProgram) {
+        Request request = new Request.Builder()
+                .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful() && response.body() != null) {
+                    String data = response.body().string();
+                    try {
+                        JSONObject jsonObject = new JSONObject(data);
+                        if (jsonObject.getBoolean("success")) {
+                            JSONArray detailProgram1 = jsonObject.getJSONArray("detailProgram1");
+                            JSONObject detailProgram = detailProgram1.getJSONObject(0);
+
+                            // Ambil data dari setiap objek
+                            String id = detailProgram.getString("id");
+                            String namaProgram = detailProgram.getString("nama");
+                            String kejuruan = detailProgram.getString("kejuruan");
+                            String standar = detailProgram.getString("standar");
+                            String peserta = detailProgram.getString("peserta");
+                            String gedung = detailProgram.getString("gedung");
+                            String deskripsi = detailProgram.getString("deskripsi");
+                            String idInstructor = detailProgram.getString("idInstructor");
+                            String namaInstructor = detailProgram.getString("namaInstructor");
+                            String alamatInstructor = detailProgram.getString("alamatInstructor");
+                            String kontakInstructor = detailProgram.getString("kontakInstructor");
+                            String status = detailProgram.getString("status");
+                            String tglPendaftaran = detailProgram.getString("tglPendaftaran");
+
+
+                            // Simpan data ke array
+                            String[] dataDetailProgram = new String[14];
+                            dataDetailProgram[0] = id;
+                            dataDetailProgram[1] = namaProgram;
+                            dataDetailProgram[2] = kejuruan;
+                            dataDetailProgram[3] = standar;
+                            dataDetailProgram[4] = peserta;
+                            dataDetailProgram[5] = gedung;
+                            dataDetailProgram[6] = deskripsi;
+                            dataDetailProgram[7] = idInstructor;
+                            dataDetailProgram[8] = namaInstructor;
+                            dataDetailProgram[9] = alamatInstructor;
+                            dataDetailProgram[10] = kontakInstructor;
+                            dataDetailProgram[11] = status;
+                            dataDetailProgram[12] = tglPendaftaran;
+
+                            // Kirim data ke views melalui callback
+                            resDetailProgram.onSuccess(dataDetailProgram);
+                        } else {
+                            resDetailProgram.onFailed(new IOException("Response success flag is false"));
+                        }
+                    } catch (JSONException e) {
+                        resDetailProgram.onFailed(new IOException("JSON parsing error", e));
+                    }
+                } else {
+                    resDetailProgram.onFailed(new IOException("Response not successful or body is null"));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                resDetailProgram.onFailed(e);
+            }
+        });
+    }
+
+
 
     // Notifikasi adapter
     public interface NotifikasiHelper {
