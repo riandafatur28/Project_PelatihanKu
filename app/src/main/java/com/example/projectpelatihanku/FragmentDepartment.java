@@ -23,7 +23,7 @@ public class FragmentDepartment extends Fragment {
     private RecyclerView recyclerView;
     private DepartmentAdapter adapter;
     private List<Department> departmentList = new ArrayList<>();
-    
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,12 +50,18 @@ public class FragmentDepartment extends Fragment {
             @Override
             public void onSuccess(ArrayList<Department> data) {
                 requireActivity().runOnUiThread(() -> {
-                    departmentList.clear();
-                    departmentList.addAll(data);
-                    Log.d("Department", "onSuccessFetchDepartment: " + data);
-                    adapter.notifyDataSetChanged();
+                    Log.d("Department", "Jumlah data diterima: " + data.size()); // Periksa jumlah data
+                    if (data != null && !data.isEmpty()) {
+                        departmentList.clear();
+                        departmentList.addAll(data);
+                        Log.d("Department", "Data setelah ditambahkan: " + departmentList.size());
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        Log.d("Department", "Data kosong.");
+                    }
                 });
             }
+
 
             @Override
             public void onFailed(IOException e) {
