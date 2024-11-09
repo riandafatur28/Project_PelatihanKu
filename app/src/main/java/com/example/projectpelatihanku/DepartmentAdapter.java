@@ -1,6 +1,7 @@
 package com.example.projectpelatihanku;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import java.util.List;
 public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.InstitusiViewHolder> {
     private List<Department> institusiList;
     private Context context;
+    private String departmentId;
 
     public DepartmentAdapter(List<Department> departmentList, Context context) {
         this.institusiList = departmentList;
@@ -34,7 +36,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
     }
 
     // Method untuk navigasi ke FragmentProgram dan sembunyikan BottomNavigationView
-    private void navigateToProgram() {
+    private void navigateToProgram(String departmentId, String namaInstitusi) {
         // Menyembunyikan BottomNavigationView sebelum navigasi
         FragmentActivity activity = (FragmentActivity) context;
         BottomNavigationView bottomNavigationView = activity.findViewById(R.id.bottomview);
@@ -43,12 +45,19 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
         }
 
         // Membuat instance FragmentProgram
-        FragmentProgram fragmentProgram = new FragmentProgram();
+        FragmentProgram fragmentProgram = new FragmentProgram(departmentId);
+
+        // Membuat Bundle untuk mengirim data
+        Bundle bundle = new Bundle();
+        bundle.putString("namaInstitusi", namaInstitusi);  // Kirim nama institusi
+
+        // Menambahkan Bundle ke FragmentProgram
+        fragmentProgram.setArguments(bundle);
 
         // Memulai transaksi fragment
         FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.layoutDepartment, fragmentProgram);  // Gantikan fragment yang ada dengan FragmentProgram
-        transaction.addToBackStack(null);  // Menambahkan transaksi ke BackStack agar dapat kembali
+        transaction.replace(R.id.layoutDepartment, fragmentProgram);
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 
@@ -63,10 +72,15 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
 
         // Tombol "Lebih Banyak"
         holder.btnLihatProgram.setOnClickListener(v -> {
-            // Call navigateToProgram when button is clicked
-            navigateToProgram();
+            // Ambil departmentId langsung dari objek department
+            String departmentId = department.getId(); // Ambil ID dari objek department
+            String namaInstitusi = department.getNama();
+
+            // Panggil navigateToProgram dengan parameter yang tepat
+            navigateToProgram(departmentId, namaInstitusi);
         });
     }
+
 
     @Override
     public int getItemCount() {
