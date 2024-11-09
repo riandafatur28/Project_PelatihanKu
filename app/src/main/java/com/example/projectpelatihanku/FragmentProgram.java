@@ -8,9 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -26,106 +26,98 @@ import java.util.List;
 
 public class FragmentProgram extends Fragment {
 
-    private static final String ARG_DEPARTMENT_ID = "DepartmentId";
-    private String DepartmentId;
     private String endPoint;
     private RecyclerView recyclerView;
     private ProgramAdapter adapter;
-    private List<Program> ProgramList = new ArrayList<>();
+    private List<Program> programList = new ArrayList<>();
 
-    // Metode newInstance untuk membuat instance fragment dengan DepartmentId
-    public static FragmentProgram newInstance(int departmentId) {
-        FragmentProgram fragment = new FragmentProgram();
-        Bundle args = new Bundle();
-        args.putInt(ARG_DEPARTMENT_ID, departmentId);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // Mendapatkan DepartmentId dari arguments jika ada
-        if (getArguments() != null) {
-            DepartmentId = getArguments().getString(ARG_DEPARTMENT_ID);
-            // Membuat endpoint berdasarkan DepartmentId
-            if (DepartmentId != null && !DepartmentId.isEmpty()) {
-                endPoint = "/departments/" + DepartmentId + "/programs";
-            }
-        }
+    // Constructor untuk FragmentProgram, endpoint di-set sesuai dengan departmentId
+    public FragmentProgram(String departmentId) {
+        this.endPoint = "/departments/" + departmentId + "/programs";
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflating layout untuk fragment
+        // Inflate layout untuk fragment ini
         View view = inflater.inflate(R.layout.fragment_program, container, false);
 
-        // Menyembunyikan BottomNavigationView saat FragmentProgram aktif
-        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottomview);
-        if (bottomNavigationView != null) {
-            bottomNavigationView.setVisibility(View.GONE); // Menyembunyikan BottomNavigationView
+        // Ambil nama institusi dari Bundle
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String namaInstitusi = bundle.getString("namaInstitusi");
+
+            // Tampilkan teks "Program" dan nama institusi di UI (misalnya di TextView)
+            TextView textNamaInstitusi = view.findViewById(R.id.texttentang);
+
+            // Menambahkan teks "Program" sebelum nama institusi
+            String displayText = "Program di Kejuruan " + namaInstitusi;
+            textNamaInstitusi.setText(displayText);
         }
 
+        // Sembunyikan BottomNavigationView saat FragmentProgram aktif
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottomview);
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setVisibility(View.GONE);
+        }
+
+        // Inisialisasi RecyclerView dan Adapter
         recyclerView = view.findViewById(R.id.recyclerViewProgramInstitusi);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        adapter = new ProgramAdapter(ProgramList, getContext());
+        adapter = new ProgramAdapter(programList, getContext());
         recyclerView.setAdapter(adapter);
 
-        // Set click listener for the arrow image
+        // Tombol panah untuk kembali ke FragmentDepartment
         ImageView imageArrow2 = view.findViewById(R.id.imageArrow2);
         imageArrow2.setOnClickListener(v -> navigateToDepartment());
 
+        // Panggil API untuk mendapatkan data program
         fetchData();
 
         return view;
     }
 
-    // Method untuk navigasi ke FragmentDepartment
+    // Navigasi kembali ke FragmentDepartment
     private void navigateToDepartment() {
-        // Menampilkan kembali BottomNavigationView sebelum pindah ke FragmentDepartment
         FragmentActivity activity = getActivity();
         if (activity != null) {
+            // Tampilkan kembali BottomNavigationView
             BottomNavigationView bottomNavigationView = activity.findViewById(R.id.bottomview);
             if (bottomNavigationView != null) {
-                bottomNavigationView.setVisibility(View.VISIBLE); // Menampilkan BottomNavigationView
+                bottomNavigationView.setVisibility(View.VISIBLE);
             }
-        }
 
-        // Pindah ke FragmentDepartment
-        FragmentDepartment fragmentDepartment = new FragmentDepartment();
-        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.layoutprogram, fragmentDepartment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+            FragmentDepartment fragmentDepartment = new FragmentDepartment();
+            FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.layoutprogram, fragmentDepartment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
     }
 
-    // Fetch data program dari API
+    // Ambil data program dari API
     public void fetchData() {
-        // Ambil token dari shared preference
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
         String token = sharedPreferences.getString("token", "Token Tidak ditemukan");
 
         ApiClient apiClient = new ApiClient();
-        // Mendapatkan data program dari API
         apiClient.fetchProgram(token, endPoint, new ApiClient.ProgramHelper() {
             @Override
             public void onSuccess(ArrayList<Program> data) {
                 requireActivity().runOnUiThread(() -> {
+                    Log.d("FragmentProgram", "Jumlah data diterima: " + data.size());
                     if (data != null && !data.isEmpty()) {
-                        ProgramList.clear();
-                        ProgramList.addAll(data);
-                        Log.d("Department", "onSuccessFetchDepartment: " + data);
+                        programList.clear();
+                        programList.addAll(data);
                         adapter.notifyDataSetChanged();
                     } else {
-                        Log.d("Department", "No data found or empty list.");
+                        Log.d("FragmentProgram", "Data kosong atau tidak ditemukan.");
                     }
                 });
             }
 
             @Override
             public void onFailed(IOException e) {
-                Log.d("Failed", "onFailed: " + e.getMessage());
+                Log.d("FragmentProgram", "Gagal mengambil data: " + e.getMessage());
             }
         });
     }
