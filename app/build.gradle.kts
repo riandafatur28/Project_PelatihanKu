@@ -61,6 +61,7 @@ dependencies {
     // Auth0 Java JWT
     implementation ("com.auth0.android:jwtdecode:2.0.1")
 
+    implementation ("com.tbuonomo:dotsindicator:4.3")
 
 
 }
