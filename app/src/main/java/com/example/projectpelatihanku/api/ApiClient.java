@@ -1,3 +1,4 @@
+
 package com.example.projectpelatihanku.api;
 
 import static android.content.ContentValues.TAG;
@@ -24,14 +25,84 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class ApiClient {
-    public static final String BASE_URL = "http://192.168.18.133:80/";
+    public static final String BASE_URL = "http://192.168.122.251:80/";
     public static final String BASE_URL_PUBLIC = "api/v1/public";
     // Inisialisasi OkHttpClient
     private OkHttpClient client = new OkHttpClient();
 
+    // Adapter Register
+    public interface RegisterHelper {
+        void onSuccess(String data);
+        void onFailed(IOException e);
+    }
+
+    // ApiClient.java
+    public void Register(String endPoint, String nama, String jk, String ttl, String tlp, String email, String password, String konfirmPass, String fotoProfil, String alamat, RegisterHelper callback) throws JSONException {
+        JSONObject dataReg = new JSONObject();
+        dataReg.put("name", nama);
+        dataReg.put("jenis_kelamin", jk);
+        dataReg.put("tanggal_lahir", ttl);
+        dataReg.put("phone", tlp);
+        dataReg.put("email", email);
+        dataReg.put("password", password);
+        dataReg.put("pas_foto", fotoProfil); // Tambahkan fotoProfil ke objek JSON
+        dataReg.put("alamat", alamat);
+
+        Log.d("RegisterDebug", "Nama: " + nama);
+        Log.d("RegisterDebug", "Jenis Kelamin: " + jk);
+        Log.d("RegisterDebug", "Tanggal Lahir: " + ttl);
+        Log.d("RegisterDebug", "Nomor Telepon: " + tlp);
+        Log.d("RegisterDebug", "Email: " + email);
+        Log.d("RegisterDebug", "Password: " + password);
+        Log.d("RegisterDebug", "konfirmPass: " + konfirmPass);
+        Log.d("RegisterDebug", "Foto Profil: " + fotoProfil);
+        Log.d("RegisterDebug", "Alamat: " + alamat);
+
+
+        RequestBody body = RequestBody.create(
+                dataReg.toString(),
+                MediaType.parse("application/json; charset=utf-8")
+        );
+
+        Request request = new Request.Builder()
+                .url(BASE_URL + endPoint)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d("Gagal kirim request", "onFailure: " + e.getMessage());
+                callback.onFailed(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String dataRegResponse = response.body().string();
+                Log.d("Server Response", dataRegResponse);
+
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject jsonData = new JSONObject(dataRegResponse);
+                        if (jsonData.has("status") && jsonData.getString("status").equalsIgnoreCase("success")) {
+                            String data = jsonData.optString("data", "");
+                            callback.onSuccess(data);
+                        } else {
+                            String errorMessage = jsonData.optString("message", "Unknown error");
+                            callback.onFailed(new IOException(errorMessage));
+                        }
+                    } catch (JSONException e) {
+                        Log.e("JSON Parsing Error", e.getMessage());
+                        callback.onFailed(new IOException("Failed to parse JSON response"));
+                    }
+                } else {
+                    callback.onFailed(new IOException("Request failed with status " + response.code()));
+                }
+            }
+        });
+    }
 
     // Adapter Login API
     public interface LoginHelper {
