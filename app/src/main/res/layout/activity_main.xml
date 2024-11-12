@@ -25,6 +25,7 @@
         android:layout_height="80dp"
         android:background="@drawable/rounded_profil"
         android:visibility="gone"
+        android:layout_marginTop="24dp"
         app:itemIconSize="24dp"
         app:itemIconTint="@color/icon_selector"
         app:itemRippleColor="@drawable/ic_selector"
