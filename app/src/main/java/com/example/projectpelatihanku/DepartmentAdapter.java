@@ -35,26 +35,20 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
         return new InstitusiViewHolder(view);
     }
 
-    // Method untuk navigasi ke FragmentProgram dan sembunyikan BottomNavigationView
     private void navigateToProgram(String departmentId, String namaInstitusi) {
-        // Menyembunyikan BottomNavigationView sebelum navigasi
         FragmentActivity activity = (FragmentActivity) context;
         BottomNavigationView bottomNavigationView = activity.findViewById(R.id.bottomview);
         if (bottomNavigationView != null) {
-            bottomNavigationView.setVisibility(View.GONE);  // Menyembunyikan BottomNavigationView
+            bottomNavigationView.setVisibility(View.GONE);
         }
 
-        // Membuat instance FragmentProgram
         FragmentProgram fragmentProgram = new FragmentProgram(departmentId);
 
-        // Membuat Bundle untuk mengirim data
         Bundle bundle = new Bundle();
-        bundle.putString("namaInstitusi", namaInstitusi);  // Kirim nama institusi
+        bundle.putString("namaInstitusi", namaInstitusi);
 
-        // Menambahkan Bundle ke FragmentProgram
         fragmentProgram.setArguments(bundle);
 
-        // Memulai transaksi fragment
         FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.layoutDepartment, fragmentProgram);
         transaction.addToBackStack(null);
