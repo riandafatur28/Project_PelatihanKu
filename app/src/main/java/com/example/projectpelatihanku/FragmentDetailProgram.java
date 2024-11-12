@@ -26,7 +26,7 @@ public class FragmentDetailProgram extends Fragment {
 
         ImageView backArrow = view.findViewById(R.id.imageArrow);
         backArrow.setOnClickListener(v -> {
-            ((MainActivity) requireActivity()).navigateToDashboard();
+            ((MainActivity) requireActivity()).navigateToProgram();
         });
 
         namaProgram = view.findViewById(R.id.namaProgram);
@@ -41,7 +41,7 @@ public class FragmentDetailProgram extends Fragment {
         kontakInstructor = view.findViewById(R.id.kontakInstructor);
         alamatInstructor = view.findViewById(R.id.alamatInstructor);
         tglPendaftaran = view.findViewById(R.id.tanggalPendaftaran);
-  
+
 
         fetchData();
 
