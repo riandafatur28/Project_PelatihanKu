@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -32,21 +34,20 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     private ShapeableImageView imageUser;
     private GoogleMap mMap;
     private LatLng initialLocation = new LatLng(-7.600671315258253, 111.88837430296729);
-    private ImageView imageView;
+    private ImageView imagePage;
     private int[] images = {R.drawable.slide_1, R.drawable.slide_2, R.drawable.slide_3};
     private int currentIndex = 0;
     private GestureDetector gestureDetector;
     private OnDashboardVisibleListener listener;
     private String name;
+    private Handler handler;
+    private final int CAROUSEL_DELAY = 2000; // 2 detik
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public DashboardFragment() {
-        // Required empty public constructor
-    }
-
+    public DashboardFragment() {}
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -66,11 +67,10 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         // Inisialisasi komponen UI
         imageUser = view.findViewById(R.id.imageUser);
         TextView salamText = view.findViewById(R.id.salamText);
-        imageView = view.findViewById(R.id.imagepage);
+        imagePage = view.findViewById(R.id.imagepage);
 
         // Mengambil data pengguna dari SharedPreferences
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-//        String userName = sharedPreferences.getString(KEY_USER_NAME, "User");  // "User" adalah default jika nama tidak ditemukan
         salamText.setText("Halo, " + FragmentLogin.firstName);  // Menampilkan nama pengguna
 
         String imageUriString = sharedPreferences.getString("image_uri", null);
@@ -84,14 +84,13 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
                 e.printStackTrace();
             }
         } else {
-            // Default berdasarkan gender jika URI tidak tersedia
             String gender = sharedPreferences.getString("gender", "Tidak diketahui");
             if ("Laki-laki".equals(gender)) {
-                imageUser.setImageResource(R.drawable.vector_men);
+                imageUser.setImageResource(R.drawable.img_men);
             } else if ("Perempuan".equals(gender)) {
-                imageUser.setImageResource(R.drawable.vector_women);
+                imageUser.setImageResource(R.drawable.img_women);
             } else {
-                imageUser.setImageResource(R.drawable.gambar_user); // Gambar default umum
+                imageUser.setImageResource(R.drawable.gambar_user);
             }
         }
 
@@ -101,48 +100,35 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
             mapFragment.getMapAsync(this);
         }
 
-        // Tombol untuk berpindah gambar carousel
-        ImageButton btnLeft = view.findViewById(R.id.btn_left);
-        btnLeft.setOnClickListener(v -> {
-            currentIndex--;
-            if (currentIndex < 0) {
-                currentIndex = images.length - 1;
-            }
-            imageView.setImageResource(images[currentIndex]);
-        });
-
-        ImageButton btnRight = view.findViewById(R.id.btn_right);
-        btnRight.setOnClickListener(v -> {
-            currentIndex++;
-            if (currentIndex >= images.length) {
-                currentIndex = 0;
-            }
-            imageView.setImageResource(images[currentIndex]);
-        });
-
-        // Gesture untuk mengaktifkan scroll pada peta
-        gestureDetector = new GestureDetector(requireContext(), new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                requireActivity().findViewById(R.id.scroll_view).setEnabled(Math.abs(distanceY) > Math.abs(distanceX));
-                return super.onScroll(e1, e2, distanceX, distanceY);
-            }
-        });
-
-        view.setOnTouchListener((v, event) -> {
-            gestureDetector.onTouchEvent(event);
-            return false;
-        });
-
-        // Tombol "Lebih Banyak"
-        TextView btn_LebihBanyak = view.findViewById(R.id.btn_lebihBanyak);
-        btn_LebihBanyak.setOnClickListener(v -> {
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).navigateToInstitute();
-            }
-        });
+        // Mulai carousel otomatis
+        handler = new Handler(Looper.getMainLooper());
+        startAutoSlide();
 
         return view;
+    }
+
+    // Fungsi untuk menjalankan carousel otomatis
+    private void startAutoSlide() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Ganti gambar ke yang berikutnya
+                currentIndex++;
+                if (currentIndex >= images.length) {
+                    currentIndex = 0; // Reset ke awal jika sudah mencapai akhir
+                }
+                imagePage.setImageResource(images[currentIndex]);
+
+                // Jalankan lagi setiap 2 detik
+                handler.postDelayed(this, CAROUSEL_DELAY);
+            }
+        }, CAROUSEL_DELAY);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        handler.removeCallbacksAndMessages(null); // Hentikan handler saat fragment dihancurkan
     }
 
     @Override
