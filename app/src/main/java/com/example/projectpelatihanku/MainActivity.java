@@ -130,6 +130,8 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         bottomNavigationView.setVisibility(View.GONE);
     }
 
+    
+
     public void navigateToLogin() {
         hideBottomNavigation();
         navigateToFragment(fragmentLogin, false);
