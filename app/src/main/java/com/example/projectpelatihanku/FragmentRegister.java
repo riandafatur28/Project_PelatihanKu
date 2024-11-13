@@ -4,9 +4,10 @@ import static android.app.Activity.RESULT_OK;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,13 +30,10 @@ public class FragmentRegister extends Fragment {
     private TextView textLogin;
     private Spinner spinner;
     private String selectedGender = null;
-    private EditText inputTanggal;
-    private ImageView imageProfil, iconPassword, iconConfirmPassword;
+    private EditText inputNama, inputEmail, inputPassword, konfirmasiPassword, inputNoTelp, inputAlamat, inputTanggal;
+    private ImageView imageProfil;
     private static final int PICK_IMAGE = 1;
     private Uri imageUri;
-    private EditText inputPassword, konfirmasiPassword;
-    private boolean isPasswordVisible = false;
-    private boolean isConfirmPasswordVisible = false;
     private boolean isImageUploaded = false;
     private String endPoint = "user/create";
 
@@ -47,21 +45,13 @@ public class FragmentRegister extends Fragment {
         // Inisialisasi komponen UI
         buttonRegister = view.findViewById(R.id.buttonregister);
         textLogin = view.findViewById(R.id.apakahpunyaakun);
-        EditText inputNama = view.findViewById(R.id.inputNama);
-        EditText inputEmail = view.findViewById(R.id.inputEmail);
+        inputNama = view.findViewById(R.id.inputNama);
+        inputEmail = view.findViewById(R.id.inputEmail);
         inputPassword = view.findViewById(R.id.inputpassword);
         konfirmasiPassword = view.findViewById(R.id.KonfirmasiPassword);
-        EditText inputNoTelp = view.findViewById(R.id.inputNoTelp);
-        EditText inputAlamat = view.findViewById(R.id.inputAlamat);
+        inputNoTelp = view.findViewById(R.id.inputNoTelp);
+        inputAlamat = view.findViewById(R.id.inputAlamat);
         imageProfil = view.findViewById(R.id.imageProfil);
-
-        // Inisialisasi ikon mata
-        iconPassword = view.findViewById(R.id.iconinputpassword);
-        iconConfirmPassword = view.findViewById(R.id.iconkonfirmpassword);
-
-        // Toggle visibilitas password dan konfirmasi password
-        iconPassword.setOnClickListener(v -> togglePasswordVisibility(inputPassword, iconPassword));
-        iconConfirmPassword.setOnClickListener(v -> togglePasswordVisibility(konfirmasiPassword, iconConfirmPassword));
 
         spinner = view.findViewById(R.id.jenisKelamin);
         setupGenderSpinner();
@@ -81,14 +71,12 @@ public class FragmentRegister extends Fragment {
             String alamat = inputAlamat.getText().toString().trim();
             String tanggalLahir = inputTanggal.getText().toString().trim();
 
-            // Tentukan fotoProfil berdasarkan gender
-            String fotoProfil;
+            // Menentukan fotoProfil berdasarkan gender
+            Bitmap fotoProfil = null; // Foto profil sebagai Bitmap
             if ("Laki-laki".equals(selectedGender)) {
-                fotoProfil = "img_men"; // Ganti dengan path yang sesuai untuk img_men
+                fotoProfil = BitmapFactory.decodeResource(getResources(), R.drawable.img_men);  // Ganti dengan gambar yang sesuai
             } else if ("Perempuan".equals(selectedGender)) {
-                fotoProfil = "img_women"; // Ganti dengan path yang sesuai untuk img_women
-            } else {
-                fotoProfil = null;
+                fotoProfil = BitmapFactory.decodeResource(getResources(), R.drawable.img_women);  // Ganti dengan gambar yang sesuai
             }
 
             if (isInputValid(nama, email, password, konfirmPass, nomorTelepon, alamat, tanggalLahir)) {
@@ -118,6 +106,7 @@ public class FragmentRegister extends Fragment {
             }
         });
 
+
         textLogin.setOnClickListener(v -> {
             if (getActivity() instanceof MainActivity) {
                 ((MainActivity) getActivity()).navigateToLogin();
@@ -127,7 +116,6 @@ public class FragmentRegister extends Fragment {
         return view;
     }
 
-    /// Inisialisasi Spinner Gender dan Gambar Profil
     private void setupGenderSpinner() {
         if (spinner != null) {
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
@@ -140,18 +128,7 @@ public class FragmentRegister extends Fragment {
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    selectedGender = position == 0 ? null : parent.getItemAtPosition(position).toString();
-
-                    // Atur gambar profil sesuai gender jika pengguna belum mengunggah gambar
-                    if (!isImageUploaded && selectedGender != null) {
-                        if ("Laki-laki".equals(selectedGender)) {
-                            imageProfil.setImageResource(R.drawable.img_men);
-                        } else if ("Perempuan".equals(selectedGender)) {
-                            imageProfil.setImageResource(R.drawable.img_women);
-                        } else {
-                            imageProfil.setImageResource(R.drawable.gambar_user); // Gambar default untuk opsi lainnya
-                        }
-                    }
+                    selectedGender = parent.getItemAtPosition(position).toString();
                 }
 
                 @Override
@@ -160,32 +137,17 @@ public class FragmentRegister extends Fragment {
         }
     }
 
-    // Fungsi untuk mengatur gambar profil dari foto yang diunggah
-    private void setProfileImage(Uri imageUri) {
-        imageProfil.setImageURI(imageUri);
-        isImageUploaded = true;
-    }
-
-    private void togglePasswordVisibility(EditText passwordEditText, ImageView toggleIcon) {
-        if (passwordEditText.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
-            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            toggleIcon.setImageResource(R.drawable.vector_eye_close); // Ganti dengan ikon mata terbuka
-        } else {
-            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            toggleIcon.setImageResource(R.drawable.vector_eye_open); // Ganti dengan ikon mata tertutup
-        }
-        passwordEditText.setSelection(passwordEditText.getText().length());
-    }
-
-    private void showDatePicker() {
-        Calendar calendar = Calendar.getInstance();
-        new DatePickerDialog(requireContext(), (view, year, month, day) -> {
-            inputTanggal.setText(day + "/" + (month + 1) + "/" + year);
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-    }
-
     private void openGallery() {
         startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), PICK_IMAGE);
+    }
+
+    private Bitmap getGenderImage(String gender) {
+        if ("Laki-laki".equals(gender)) {
+            return BitmapFactory.decodeResource(getResources(), R.drawable.img_men); // Gambar laki-laki
+        } else if ("Perempuan".equals(gender)) {
+            return BitmapFactory.decodeResource(getResources(), R.drawable.img_women); // Gambar perempuan
+        }
+        return null; // Default jika tidak ada gender
     }
 
     @Override
@@ -193,7 +155,8 @@ public class FragmentRegister extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             imageUri = data.getData();
-            setProfileImage(imageUri);
+            imageProfil.setImageURI(imageUri);
+            isImageUploaded = true;
         }
     }
 
@@ -211,5 +174,12 @@ public class FragmentRegister extends Fragment {
             return false;
         }
         return true;
+    }
+
+    private void showDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        new DatePickerDialog(requireContext(), (view, year, month, day) -> {
+            inputTanggal.setText(day + "/" + (month + 1) + "/" + year);
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 }
