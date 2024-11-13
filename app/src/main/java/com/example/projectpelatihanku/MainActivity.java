@@ -1,8 +1,6 @@
 
 package com.example.projectpelatihanku;
 
-import static android.text.TextUtils.replace;
-
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -130,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         bottomNavigationView.setVisibility(View.GONE);
     }
 
-    
+
 
     public void navigateToLogin() {
         hideBottomNavigation();
