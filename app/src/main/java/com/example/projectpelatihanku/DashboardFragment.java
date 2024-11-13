@@ -8,17 +8,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import android.view.GestureDetector;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
+
+import com.example.projectpelatihanku.api.ApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -27,25 +28,28 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.imageview.ShapeableImageView;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class DashboardFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String PREFS_NAME = "UserPrefs";
-    static final String KEY_USER_NAME = "user_name";
+    public static final String KEY_USER_NAME = "user_name";
+    private static final String endPoint = "/dashboard/summary";
+
+    // UI components
     private ShapeableImageView imageUser;
     private GoogleMap mMap;
-    private LatLng initialLocation = new LatLng(-7.600671315258253, 111.88837430296729);
     private ImageView imagePage;
+    private TextView totalDepartments, totalPrograms, totalBuildings, totalInstructors, totalTools, salamText;
+
+    private LatLng initialLocation = new LatLng(-7.600671315258253, 111.88837430296729);
     private int[] images = {R.drawable.slide_1, R.drawable.slide_2, R.drawable.slide_3};
     private int currentIndex = 0;
-    private GestureDetector gestureDetector;
-    private OnDashboardVisibleListener listener;
-    private String name;
-    private Handler handler;
-    private final int CAROUSEL_DELAY = 2000; // 2 detik
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    private Handler handler;
+    private final int CAROUSEL_DELAY = 2000;
+    private OnDashboardVisibleListener listener;
 
     public DashboardFragment() {}
 
@@ -65,23 +69,120 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         // Inisialisasi komponen UI
-        imageUser = view.findViewById(R.id.imageUser);
-        TextView salamText = view.findViewById(R.id.salamText);
-        imagePage = view.findViewById(R.id.imagepage);
+        initializeUI(view);
 
         // Mengambil data pengguna dari SharedPreferences
+        loadUserData();
+
+        // Inisialisasi peta
+        initializeMap();
+
+        // Mulai carousel otomatis
+        startAutoSlide();
+
+        // Tombol "Lebih Banyak"
+        view.findViewById(R.id.btn_lebihBanyak).setOnClickListener(v -> {
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).navigateToInstitute();
+            }
+        });
+
+        fecthData();
+        return view;
+    }
+
+    private void fecthData() {
+        // Ambil token dari SharedPreferences
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString("token", null);
+
+        if (token == null || token.equals("Token Tidak ditemukan")) {
+            Log.e("DashboardFragment", "Token not found in SharedPreferences");
+            showErrorUI();
+            return;
+        }
+
+        ApiClient apiClient = new ApiClient();
+
+        // Panggil API untuk mendapatkan data dashboard
+        apiClient.fetchDashboard(token, endPoint, new ApiClient.DashboardDataHelper() {
+            @Override
+            public void onSuccess(ArrayList<DashboardData> data) {
+                requireActivity().runOnUiThread(() -> {
+                    // Update UI dengan data dashboard
+                    updateUIWithDashboardData(data);
+                });
+            }
+
+            @Override
+            public void onFailed(IOException e) {
+                Log.e("DashboardFragment", "Failed to fetch data: " + e.getMessage());
+                requireActivity().runOnUiThread(() -> {
+                    // Tampilkan error di UI
+                    showErrorUI();
+                });
+            }
+
+            private void updateUIWithDashboardData(ArrayList<DashboardData> data) {
+                for (DashboardData item : data) {
+                    switch (item.getTableName()) {
+                        case "departments":
+                            totalDepartments.setText("Memiliki Total " + item.getTotal());
+                            break;
+                        case "programs":
+                            totalPrograms.setText("Memiliki Total " + item.getTotal());
+                            break;
+                        case "buildings":
+                            totalBuildings.setText("Memiliki Total " + item.getTotal());
+                            break;
+                        case "instructors":
+                            totalInstructors.setText("Memiliki Total " + item.getTotal());
+                            break;
+                        case "tools":
+                            totalTools.setText("Memiliki Total " + item.getTotal());
+                            break;
+                        default:
+                            Log.w("DashboardFragment", "Unknown table name: " + item.getTableName());
+                            break;
+                    }
+                }
+            }
+        });
+    }
+
+    private void showErrorUI() {
+        totalDepartments.setText("Error");
+        totalPrograms.setText("Error");
+        totalBuildings.setText("Error");
+        totalInstructors.setText("Error");
+        totalTools.setText("Error");
+    }
+
+
+    private void initializeUI(View view) {
+        imageUser = view.findViewById(R.id.imageUser);
+        salamText = view.findViewById(R.id.salamText);
+        imagePage = view.findViewById(R.id.imagepage);
+
+        totalDepartments = view.findViewById(R.id.totalDepartment);
+        totalPrograms = view.findViewById(R.id.totalProgram);
+        totalBuildings = view.findViewById(R.id.totalBuilding);
+        totalInstructors = view.findViewById(R.id.totalInstructor);
+        totalTools = view.findViewById(R.id.totalTools);
+    }
+
+    private void loadUserData() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        salamText.setText("Halo, " + FragmentLogin.firstName);  // Menampilkan nama pengguna
+        String firstName = sharedPreferences.getString(KEY_USER_NAME, "User");
+        salamText.setText("Halo, " + firstName);
 
         String imageUriString = sharedPreferences.getString("image_uri", null);
-
         if (imageUriString != null) {
-            Uri imageUri = Uri.parse(imageUriString);
             try {
-                imageUser.setImageURI(imageUri);
+                imageUser.setImageURI(Uri.parse(imageUriString));
             } catch (Exception e) {
-                imageUser.setImageResource(R.drawable.gambar_user);  // Jika ada error, tampilkan default
-                e.printStackTrace();
+                imageUser.setImageResource(R.drawable.gambar_user);
+                Log.e("DashboardFragment", "Failed to load user image", e);
             }
         } else {
             String gender = sharedPreferences.getString("gender", "Tidak diketahui");
@@ -93,33 +194,25 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
                 imageUser.setImageResource(R.drawable.gambar_user);
             }
         }
+    }
 
-        // Inisialisasi peta
+    private void initializeMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
-
-        // Mulai carousel otomatis
-        handler = new Handler(Looper.getMainLooper());
-        startAutoSlide();
-
-        return view;
     }
 
-    // Fungsi untuk menjalankan carousel otomatis
     private void startAutoSlide() {
+        handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Ganti gambar ke yang berikutnya
                 currentIndex++;
                 if (currentIndex >= images.length) {
-                    currentIndex = 0; // Reset ke awal jika sudah mencapai akhir
+                    currentIndex = 0;
                 }
                 imagePage.setImageResource(images[currentIndex]);
-
-                // Jalankan lagi setiap 2 detik
                 handler.postDelayed(this, CAROUSEL_DELAY);
             }
         }, CAROUSEL_DELAY);
@@ -128,7 +221,9 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        handler.removeCallbacksAndMessages(null); // Hentikan handler saat fragment dihancurkan
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
     }
 
     @Override
@@ -148,10 +243,6 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    public interface OnDashboardVisibleListener {
-        void onDashboardVisible();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -164,5 +255,9 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     public void onDetach() {
         super.onDetach();
         listener = null;
+    }
+
+    public interface OnDashboardVisibleListener {
+        void onDashboardVisible();
     }
 }
