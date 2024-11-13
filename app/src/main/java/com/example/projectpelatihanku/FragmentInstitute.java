@@ -62,20 +62,22 @@ public class FragmentInstitute extends Fragment {
         apiClient.fetchInstitusi(endPoint, token, new ApiClient.InstituteHelper() {
             @Override
             public void onSuccess(String[] data) {
-                // Set teks dari data JSON
-                namaInstitusi.setText(data[1]);
-                deskripsiInstitusi.setText(data[12]);
-                notelpLembaga.setText(data[6]);
-                emailLembaga.setText(data[5]);
-                nomorFax.setText(data[10]);
-                websiteLembaga.setText(data[11]);
-                jenisLembaga.setText(data[9]);
-                NoVin.setText(data[7]);
-                thnBerdiri.setText(data[13]);
-                namaPimpinan.setText(data[2]);
-                kepemilikan.setText(data[3]);
-                noSotk.setText(data[8]);
-                status.setText(data[4]);
+                requireActivity().runOnUiThread(() -> {
+                    // Set teks dari data JSON
+                    namaInstitusi.setText(data[1]);
+                    deskripsiInstitusi.setText(data[12]);
+                    notelpLembaga.setText(data[6]);
+                    emailLembaga.setText(data[5]);
+                    nomorFax.setText(data[10]);
+                    websiteLembaga.setText(data[11]);
+                    jenisLembaga.setText(data[9]);
+                    NoVin.setText(data[7]);
+                    thnBerdiri.setText(data[13]);
+                    namaPimpinan.setText(data[2]);
+                    kepemilikan.setText(data[3]);
+                    noSotk.setText(data[8]);
+                    status.setText(data[4]);
+                });
             }
 
             @Override
