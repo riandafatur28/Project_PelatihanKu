@@ -13,12 +13,16 @@ public class DetailProgram implements Serializable {
     private String standar;
     private String peserta;
     private String idInstructor;
+    private String namaInstructor;
+    private String alamatInstructor;
+    private String kontakInstructor;
     private String idBuilding;
     private String idDepartment;
 
     // Constructor
     public DetailProgram(String id, String nama, String deskripsi, String imageUrl, String statusPendaftaran,
-                         String tanggalMulai, String tanggalAkhir, String standar, String peserta) {
+                         String tanggalMulai, String tanggalAkhir, String standar, String peserta,
+                         String idInstructor, String idBuilding, String idDepartment) {
         this.id = id;
         this.nama = nama;
         this.deskripsi = deskripsi;
@@ -29,11 +33,14 @@ public class DetailProgram implements Serializable {
         this.standar = standar;
         this.peserta = peserta;
         this.idInstructor = idInstructor;
+        this.namaInstructor = namaInstructor;
+        this.alamatInstructor = alamatInstructor;
+        this.kontakInstructor = kontakInstructor;
         this.idBuilding = idBuilding;
         this.idDepartment = idDepartment;
     }
 
-    // Getters for all fields
+    // Getters
     public String getId() {
         return id;
     }
@@ -72,6 +79,18 @@ public class DetailProgram implements Serializable {
 
     public String getIdInstructor() {
         return idInstructor;
+    }
+
+    public String getNamaInstructor() {
+        return namaInstructor;
+    }
+
+    public String getAlamatInstructor() {
+        return alamatInstructor;
+    }
+
+    public String getKontakInstructor() {
+        return kontakInstructor;
     }
 
     public String getIdBuilding() {
