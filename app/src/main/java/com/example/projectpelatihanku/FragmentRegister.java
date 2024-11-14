@@ -8,10 +8,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +29,8 @@ import com.example.projectpelatihanku.api.ApiClient;
 
 import org.json.JSONException;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
 
@@ -31,7 +41,7 @@ public class FragmentRegister extends Fragment {
     private Spinner spinner;
     private String selectedGender = null;
     private EditText inputNama, inputEmail, inputPassword, konfirmasiPassword, inputNoTelp, inputAlamat, inputTanggal;
-    private ImageView imageProfil;
+    private ImageView imageProfil, iconInputPassword, iconConfirmPassword;
     private static final int PICK_IMAGE = 1;
     private Uri imageUri;
     private boolean isImageUploaded = false;
@@ -52,6 +62,8 @@ public class FragmentRegister extends Fragment {
         inputNoTelp = view.findViewById(R.id.inputNoTelp);
         inputAlamat = view.findViewById(R.id.inputAlamat);
         imageProfil = view.findViewById(R.id.imageProfil);
+        iconInputPassword = view.findViewById(R.id.iconInputPassword);
+        iconConfirmPassword = view.findViewById(R.id.iconConfirmPassword);
 
         spinner = view.findViewById(R.id.jenisKelamin);
         setupGenderSpinner();
@@ -60,6 +72,12 @@ public class FragmentRegister extends Fragment {
         view.findViewById(R.id.iconKalender).setOnClickListener(v -> showDatePicker());
 
         imageProfil.setOnClickListener(v -> openGallery());
+
+        // Mengatur aksi klik pada ikon visibilitas untuk password
+        iconInputPassword.setOnClickListener(v -> togglePasswordVisibility(inputPassword, iconInputPassword));
+
+        // Mengatur aksi klik pada ikon visibilitas untuk konfirmasi password
+        iconConfirmPassword.setOnClickListener(v -> togglePasswordVisibility(konfirmasiPassword, iconConfirmPassword));
 
         // Listener untuk tombol Register
         buttonRegister.setOnClickListener(v -> {
@@ -71,15 +89,12 @@ public class FragmentRegister extends Fragment {
             String alamat = inputAlamat.getText().toString().trim();
             String tanggalLahir = inputTanggal.getText().toString().trim();
 
-            // Menentukan fotoProfil berdasarkan gender
-            Bitmap fotoProfil = null; // Foto profil sebagai Bitmap
-            if ("Laki-laki".equals(selectedGender)) {
-                fotoProfil = BitmapFactory.decodeResource(getResources(), R.drawable.img_men);  // Ganti dengan gambar yang sesuai
-            } else if ("Perempuan".equals(selectedGender)) {
-                fotoProfil = BitmapFactory.decodeResource(getResources(), R.drawable.img_women);  // Ganti dengan gambar yang sesuai
-            }
-
             if (isInputValid(nama, email, password, konfirmPass, nomorTelepon, alamat, tanggalLahir)) {
+                byte[] fotoProfil = null;
+                if (imageUri != null) {
+                    fotoProfil = convertImageUriToByteArray(imageUri);
+                }
+
                 ApiClient apiClient = new ApiClient();
                 try {
                     apiClient.Register(endPoint, nama, selectedGender, tanggalLahir, nomorTelepon, email, password, konfirmPass, fotoProfil, alamat, new ApiClient.RegisterHelper() {
@@ -105,7 +120,6 @@ public class FragmentRegister extends Fragment {
                 }
             }
         });
-
 
         textLogin.setOnClickListener(v -> {
             if (getActivity() instanceof MainActivity) {
@@ -141,15 +155,6 @@ public class FragmentRegister extends Fragment {
         startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), PICK_IMAGE);
     }
 
-    private Bitmap getGenderImage(String gender) {
-        if ("Laki-laki".equals(gender)) {
-            return BitmapFactory.decodeResource(getResources(), R.drawable.img_men); // Gambar laki-laki
-        } else if ("Perempuan".equals(gender)) {
-            return BitmapFactory.decodeResource(getResources(), R.drawable.img_women); // Gambar perempuan
-        }
-        return null; // Default jika tidak ada gender
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -157,6 +162,18 @@ public class FragmentRegister extends Fragment {
             imageUri = data.getData();
             imageProfil.setImageURI(imageUri);
             isImageUploaded = true;
+        }
+    }
+
+    private byte[] convertImageUriToByteArray(Uri uri) {
+        try {
+            Bitmap bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(uri));
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -181,5 +198,16 @@ public class FragmentRegister extends Fragment {
         new DatePickerDialog(requireContext(), (view, year, month, day) -> {
             inputTanggal.setText(day + "/" + (month + 1) + "/" + year);
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    private void togglePasswordVisibility(EditText passwordField, ImageView toggleIcon) {
+        if (passwordField.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+            passwordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            toggleIcon.setImageResource(R.drawable.vector_eye_close);
+        } else {
+            passwordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            toggleIcon.setImageResource(R.drawable.vector_eye_open);
+        }
+        passwordField.setSelection(passwordField.getText().length());
     }
 }
