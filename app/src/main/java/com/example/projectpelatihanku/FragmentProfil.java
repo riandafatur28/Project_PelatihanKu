@@ -1,5 +1,7 @@
 package com.example.projectpelatihanku;
 
+import static com.example.projectpelatihanku.DashboardFragment.PREFS_NAME;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -101,11 +103,20 @@ public class FragmentProfil extends Fragment {
                 birth = ttl;
                 userEmail = email;
                 address = alamat;
+
+                // Menyimpan gender ke SharedPreferences
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("gender", jk);  // Menyimpan gender
+                editor.apply();  // Apply changes asynchronously
+
+                // Log to confirm the data is saved
+                Log.d("DashboardFragment", "Gender saved: " + jk);
             }
 
             @Override
             public void onFailed(IOException e) {
-                Log.d("Failed", "onFailed: " + e.getMessage());
+
             }
         });
     }
