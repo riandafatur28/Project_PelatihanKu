@@ -180,10 +180,11 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         bottomNavigationView.setVisibility(View.VISIBLE);
     }
 
+    // Metode navigateToOTP yang memanggil navigateToFragment
     public void navigateToOTP() {
+        Fragment fragmentOTP = new FragmentOTP(); // Pastikan Anda telah membuat FragmentOTP
         navigateToFragment(fragmentOTP, false);
     }
-
     public void navigateToResetPassword() {
         navigateToFragment(fragmentResetPassword, false);
     }
