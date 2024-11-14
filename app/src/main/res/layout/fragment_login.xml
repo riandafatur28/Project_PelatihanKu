@@ -98,55 +98,13 @@
             android:id="@+id/button_login"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="36dp"
             android:backgroundTint="@color/orange"
             android:fontFamily="@font/inter_bold"
             android:text="Masuk"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/text_or"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/inter_regular"
-            android:gravity="center"
-            android:text="atau lanjut dengan"
-            android:textColor="@color/gray"
-            android:textSize="14sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/rounded_button_white"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingHorizontal="8dp">
-
-            <ImageView
-                android:id="@+id/google_icon"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:clickable="true"
-                android:contentDescription="Google icon"
-                android:focusable="true"
-                android:src="@drawable/vector_google" />
-
-            <TextView
-                android:id="@+id/text_google"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:fontFamily="@font/inter_semibold"
-                android:text="Google"
-                android:textColor="@color/orange"
-                android:textSize="20sp" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
