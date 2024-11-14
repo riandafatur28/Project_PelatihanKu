@@ -196,17 +196,6 @@
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
 
-            <!-- Text Timer -->
-            <TextView
-                android:id="@+id/timer_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="Sisa waktu: 60 detik"
-                android:textColor="@color/font_black"
-                android:textSize="14sp" />
-
             <LinearLayout
                 android:id="@+id/txtKembali"
                 android:layout_width="match_parent"
