@@ -11,24 +11,22 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import java.util.Arrays;
-import java.util.List;
+import com.example.projectpelatihanku.api.ApiClient;
+
+import java.io.IOException;
 
 public class FragmentForgotPassword extends Fragment {
 
     private Button buttonKirim;
     private LinearLayout txtKembali;
     private EditText editTextEmail;
-
-    private List<String> registeredEmails = Arrays.asList(
-            "user1@gmail.com",
-            "user2@gmail.com",
-            "user3@gmail.com"
-    );
+    private ApiClient apiClient;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_forgot_password, container, false);
+
+        apiClient = new ApiClient();
 
         buttonKirim = view.findViewById(R.id.button_kirim);
         txtKembali = view.findViewById(R.id.txtKembali);
@@ -37,18 +35,12 @@ public class FragmentForgotPassword extends Fragment {
         buttonKirim.setOnClickListener(v -> {
             String email = editTextEmail.getText().toString().trim();
 
-            // Validasi email
             if (email.isEmpty()) {
                 Toast.makeText(getActivity(), "Email tidak boleh kosong.", Toast.LENGTH_LONG).show();
             } else if (!email.endsWith("@gmail.com")) {
                 Toast.makeText(getActivity(), "Masukkan email yang valid dengan domain @gmail.com", Toast.LENGTH_LONG).show();
-            } else if (!checkEmailInRegisteredAccounts(email)) {
-                Toast.makeText(getActivity(), "Email tidak terdaftar. Silakan gunakan email yang sudah terdaftar.", Toast.LENGTH_LONG).show();
             } else {
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).navigateToOTP();
-                } else {
-                }
+                sendPasswordResetRequest(email);
             }
         });
 
@@ -61,7 +53,31 @@ public class FragmentForgotPassword extends Fragment {
         return view;
     }
 
-    private boolean checkEmailInRegisteredAccounts(String email) {
-        return registeredEmails.contains(email);
+    private void sendPasswordResetRequest(String email) {
+        apiClient.requestPasswordReset(email, new ApiClient.PasswordResetHelper() {
+            @Override
+            public void onSuccess(String tempToken) {
+                TokenManager tokenManager = new TokenManager(getActivity());
+                tokenManager.saveTempToken(tempToken);
+
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getActivity(), "Kode OTP dikirim, cek email Anda.", Toast.LENGTH_LONG).show();
+                        if (getActivity() instanceof MainActivity) {
+                            ((MainActivity) getActivity()).navigateToOTP();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailed(IOException e) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() ->
+                            Toast.makeText(getActivity(), "Request gagal: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                    );
+                }
+            }
+        });
     }
 }
