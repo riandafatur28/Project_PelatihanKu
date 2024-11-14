@@ -33,11 +33,11 @@ import java.util.ArrayList;
 
 public class DashboardFragment extends Fragment implements OnMapReadyCallback {
 
-    private static final String PREFS_NAME = "UserPrefs";
+    static final String PREFS_NAME = "UserPrefs";
     public static final String KEY_USER_NAME = "user_name";
     private static final String endPoint = "/dashboard/summary";
 
-    // UI components
+    // Komponen UI
     private ShapeableImageView imageUser;
     private GoogleMap mMap;
     private ImageView imagePage;
@@ -48,7 +48,7 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     private int currentIndex = 0;
 
     private Handler handler;
-    private final int CAROUSEL_DELAY = 2000;
+    private final int CAROUSEL_DELAY = 5000;
     private OnDashboardVisibleListener listener;
 
     public DashboardFragment() {}
@@ -59,7 +59,7 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         if (context instanceof OnDashboardVisibleListener) {
             listener = (OnDashboardVisibleListener) context;
         } else {
-            throw new ClassCastException(context.toString() + " must implement OnDashboardVisibleListener");
+            throw new ClassCastException(context.toString() + " harus mengimplementasikan OnDashboardVisibleListener");
         }
     }
 
@@ -87,17 +87,18 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        fecthData();
+        // Ambil data dashboard
+        fetchData();
+
         return view;
     }
 
-    private void fecthData() {
-        // Ambil token dari SharedPreferences
+    private void fetchData() {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
         String token = sharedPreferences.getString("token", null);
 
         if (token == null || token.equals("Token Tidak ditemukan")) {
-            Log.e("DashboardFragment", "Token not found in SharedPreferences");
+            Log.e("DashboardFragment", "Token tidak ditemukan di SharedPreferences");
             showErrorUI();
             return;
         }
@@ -108,46 +109,40 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         apiClient.fetchDashboard(token, endPoint, new ApiClient.DashboardDataHelper() {
             @Override
             public void onSuccess(ArrayList<DashboardData> data) {
-                requireActivity().runOnUiThread(() -> {
-                    // Update UI dengan data dashboard
-                    updateUIWithDashboardData(data);
-                });
+                requireActivity().runOnUiThread(() -> updateUIWithDashboardData(data));
             }
 
             @Override
             public void onFailed(IOException e) {
-                Log.e("DashboardFragment", "Failed to fetch data: " + e.getMessage());
-                requireActivity().runOnUiThread(() -> {
-                    // Tampilkan error di UI
-                    showErrorUI();
-                });
-            }
-
-            private void updateUIWithDashboardData(ArrayList<DashboardData> data) {
-                for (DashboardData item : data) {
-                    switch (item.getTableName()) {
-                        case "departments":
-                            totalDepartments.setText("Memiliki Total " + item.getTotal());
-                            break;
-                        case "programs":
-                            totalPrograms.setText("Memiliki Total " + item.getTotal());
-                            break;
-                        case "buildings":
-                            totalBuildings.setText("Memiliki Total " + item.getTotal());
-                            break;
-                        case "instructors":
-                            totalInstructors.setText("Memiliki Total " + item.getTotal());
-                            break;
-                        case "tools":
-                            totalTools.setText("Memiliki Total " + item.getTotal());
-                            break;
-                        default:
-                            Log.w("DashboardFragment", "Unknown table name: " + item.getTableName());
-                            break;
-                    }
-                }
+                Log.e("DashboardFragment", "Gagal mengambil data: " + e.getMessage());
+                requireActivity().runOnUiThread(() -> showErrorUI());
             }
         });
+    }
+
+    private void updateUIWithDashboardData(ArrayList<DashboardData> data) {
+        for (DashboardData item : data) {
+            switch (item.getTableName()) {
+                case "departments":
+                    totalDepartments.setText("Memiliki Total " + item.getTotal());
+                    break;
+                case "programs":
+                    totalPrograms.setText("Memiliki Total " + item.getTotal());
+                    break;
+                case "buildings":
+                    totalBuildings.setText("Memiliki Total " + item.getTotal());
+                    break;
+                case "instructors":
+                    totalInstructors.setText("Memiliki Total " + item.getTotal());
+                    break;
+                case "tools":
+                    totalTools.setText("Memiliki Total " + item.getTotal());
+                    break;
+                default:
+                    Log.w("DashboardFragment", "Nama tabel tidak dikenal: " + item.getTableName());
+                    break;
+            }
+        }
     }
 
     private void showErrorUI() {
@@ -157,7 +152,6 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         totalInstructors.setText("Error");
         totalTools.setText("Error");
     }
-
 
     private void initializeUI(View view) {
         imageUser = view.findViewById(R.id.imageUser);
@@ -173,25 +167,28 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
 
     private void loadUserData() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String firstName = sharedPreferences.getString(KEY_USER_NAME, "User");
-        salamText.setText("Halo, " + firstName);
 
+        // Menampilkan nama pengguna
+        salamText.setText("Halo, " + FragmentLogin.firstName);
+
+        // Memuat gambar pengguna jika ada
         String imageUriString = sharedPreferences.getString("image_uri", null);
         if (imageUriString != null) {
             try {
                 imageUser.setImageURI(Uri.parse(imageUriString));
             } catch (Exception e) {
                 imageUser.setImageResource(R.drawable.gambar_user);
-                Log.e("DashboardFragment", "Failed to load user image", e);
+                Log.e("DashboardFragment", "Gagal memuat gambar pengguna", e);
             }
         } else {
-            String gender = sharedPreferences.getString("gender", "Tidak diketahui");
+            String gender = sharedPreferences.getString("gender", "Tidak diketahui");  // Nilai default jika gender tidak ditemukan
+            Log.d("DashboardFragment", "Gender yang diambil: " + gender);  // Tambahkan log ini untuk debug
+
+            // Menentukan gambar profil berdasarkan gender
             if ("Laki-laki".equals(gender)) {
-                imageUser.setImageResource(R.drawable.img_men);
+                imageUser.setImageResource(R.drawable.img_men);  // Gambar untuk laki-laki
             } else if ("Perempuan".equals(gender)) {
-                imageUser.setImageResource(R.drawable.img_women);
-            } else {
-                imageUser.setImageResource(R.drawable.gambar_user);
+                imageUser.setImageResource(R.drawable.img_women);  // Gambar untuk perempuan
             }
         }
     }
