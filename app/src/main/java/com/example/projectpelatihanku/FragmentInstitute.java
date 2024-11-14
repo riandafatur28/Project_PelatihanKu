@@ -15,12 +15,14 @@ import androidx.fragment.app.Fragment;
 import com.example.projectpelatihanku.api.ApiClient;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FragmentInstitute extends Fragment {
     private String endPoint = "/institutes";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-    private static final SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+    private static final SimpleDateFormat apiDateFormat = new SimpleDateFormat("yyyy-MM-dd");  // Format dari API
     private TextView namaInstitusi, deskripsiInstitusi, notelpLembaga, emailLembaga, nomorFax, websiteLembaga, status, jenisLembaga, NoVin, thnBerdiri, namaPimpinan, kepemilikan, noSotk;
 
     @Override
@@ -72,7 +74,12 @@ public class FragmentInstitute extends Fragment {
                     websiteLembaga.setText(data[11]);
                     jenisLembaga.setText(data[9]);
                     NoVin.setText(data[7]);
-                    thnBerdiri.setText(data[13]);
+
+                    // Format dan set tanggal berdiri
+                    String thnBerdiriDate = data[13];  // Misalnya tanggal yang diterima dari API
+                    String formattedDate = formatDate(thnBerdiriDate);
+                    thnBerdiri.setText(formattedDate);
+
                     namaPimpinan.setText(data[2]);
                     kepemilikan.setText(data[3]);
                     noSotk.setText(data[8]);
@@ -85,5 +92,18 @@ public class FragmentInstitute extends Fragment {
                 Log.d("Failed", "onFailed: " + e.getMessage());
             }
         });
+    }
+
+    // Fungsi untuk mengubah format tanggal
+    private String formatDate(String dateString) {
+        try {
+            // Parse tanggal dari format API (yyyy-MM-dd)
+            Date date = apiDateFormat.parse(dateString);
+            // Format ke dd-MM-yyyy
+            return dateFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "Tanggal tidak valid";  // Return fallback jika terjadi error
+        }
     }
 }
