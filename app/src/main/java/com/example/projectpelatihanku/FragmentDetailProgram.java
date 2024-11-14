@@ -99,9 +99,10 @@ public class FragmentDetailProgram extends Fragment {
                             tglPendaftaran.setText(detailProgram.getTanggalMulai() + " - " + detailProgram.getTanggalAkhir());
 
                             // Display instructor details
-                            namaInstructor.setText(detailProgram.getIdInstructor());
-                            kontakInstructor.setText(detailProgram.getIdInstructor());
-                            alamatInstructor.setText(detailProgram.getIdInstructor());
+                            idInstructor.setText(detailProgram.getIdInstructor());
+                            namaInstructor.setText(detailProgram.getNamaInstructor());
+                            kontakInstructor.setText(detailProgram.getKontakInstructor());
+                            alamatInstructor.setText(detailProgram.getAlamatInstructor());
                         }
                     });
                 }
