@@ -3,8 +3,6 @@ package com.example.projectpelatihanku.api;
 
 import static android.content.ContentValues.TAG;
 
-import android.graphics.Bitmap;
-import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -19,13 +17,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -34,85 +32,60 @@ import okhttp3.Response;
 public class ApiClient {
     public static final String BASE_URL = "http://192.168.1.6:80/";
     public static final String BASE_URL_PUBLIC = "api/v1/public";
+    private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     // Inisialisasi OkHttpClient
     private OkHttpClient client = new OkHttpClient();
-
 
     public interface RegisterHelper {
         void onSuccess(String response);
         void onFailed(IOException e);
     }
 
-    public void Register(String endPoint, String nama, String jk, String ttl, String tlp, String email, String password, String konfirmPass, Bitmap fotoProfil, String alamat, RegisterHelper callback) throws JSONException {
-        // Membuat JSON untuk dikirim
-        JSONObject dataReg = new JSONObject();
-        dataReg.put("name", nama);
-        dataReg.put("jenis_kelamin", jk);
-        dataReg.put("tanggal_lahir", ttl);
-        dataReg.put("phone", tlp);
-        dataReg.put("email", email);
-        dataReg.put("password", password);
-        dataReg.put("alamat", alamat);
 
-        // Konversi gambar (Bitmap) menjadi Base64
+    public void Register(String endPoint, String nama, String gender, String tanggalLahir, String nomorTelepon, String email, String password, String konfirmasiPassword, byte[] fotoProfil, String alamat, RegisterHelper registerHelper) throws JSONException {
+
+        OkHttpClient client = new OkHttpClient();
+        MultipartBody.Builder bodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        // Menambahkan data form lainnya
+        bodyBuilder.addFormDataPart("nama", nama);
+        bodyBuilder.addFormDataPart("gender", gender);
+        bodyBuilder.addFormDataPart("tanggalLahir", tanggalLahir);
+        bodyBuilder.addFormDataPart("noTelp", nomorTelepon);
+        bodyBuilder.addFormDataPart("email", email);
+        bodyBuilder.addFormDataPart("password", password);
+        bodyBuilder.addFormDataPart("konfirmasiPassword", konfirmasiPassword);
+        bodyBuilder.addFormDataPart("alamat", alamat);
+
+        // Menambahkan gambar sebagai byte array dengan media type yang sesuai
         if (fotoProfil != null) {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            fotoProfil.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream); // Format JPEG, kompresi 100%
-            byte[] imageBytes = byteArrayOutputStream.toByteArray();
-            String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT); // Encode ke Base64
-            dataReg.put("pas_foto", encodedImage); // Tambahkan ke JSON
-        } else {
-            dataReg.put("pas_foto", JSONObject.NULL); // Jika gambar tidak ada, kirim null
+            bodyBuilder.addFormDataPart("fotoProfil", "profile_picture.jpg",
+                    RequestBody.create(MediaType.parse("image/jpeg"), fotoProfil));
         }
 
-        // Log JSON yang dikirim untuk debugging
-        Log.d("RegisterDebug", "JSON sent to server: " + dataReg.toString());
-
-        // Konversi JSON menjadi RequestBody
-        RequestBody body = RequestBody.create(
-                dataReg.toString(),
-                MediaType.parse("application/json; charset=utf-8")
-        );
-
-        // Membuat request dengan header Content-Type yang benar
+        RequestBody requestBody = bodyBuilder.build();
         Request request = new Request.Builder()
-                .url(BASE_URL + endPoint)
-                .post(body)
-                .addHeader("Content-Type", "application/json")  // Tambahkan header Content-Type
+                .url(BASE_URL + endPoint) // Ganti dengan endpoint API Anda
+                .post(requestBody)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.d("RegisterFailure", "onFailure: " + e.getMessage());
-                callback.onFailed(e);
+                registerHelper.onFailed(e);
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                String dataRegResponse = response.body().string();
-                Log.d("Server Response", dataRegResponse);
-
                 if (response.isSuccessful()) {
-                    try {
-                        JSONObject jsonData = new JSONObject(dataRegResponse);
-                        if (jsonData.has("status") && jsonData.getString("status").equalsIgnoreCase("success")) {
-                            String data = jsonData.optString("data", "");
-                            callback.onSuccess(data);
-                        } else {
-                            String errorMessage = jsonData.optString("message", "Unknown error");
-                            callback.onFailed(new IOException(errorMessage));
-                        }
-                    } catch (JSONException e) {
-                        Log.e("JSON Parsing Error", e.getMessage());
-                        callback.onFailed(new IOException("Failed to parse JSON response"));
-                    }
+                    registerHelper.onSuccess(response.body().string());
                 } else {
-                    callback.onFailed(new IOException("Request failed with status " + response.code()));
+                    registerHelper.onFailed(new IOException("Failed to register"));
                 }
             }
         });
-    }
+
+}
 
     // Adapter Login API
     public interface LoginHelper {
@@ -162,6 +135,293 @@ public class ApiClient {
 
         });
     }
+
+    // Interface untuk Callback Password Reset
+    public interface PasswordResetHelper {
+        void onSuccess(String token);
+        void onFailed(IOException e);
+    }
+
+    // Metode asinkron untuk request password reset di dalam ApiClient
+    public void requestPasswordReset(String email, PasswordResetHelper callback) {
+        // URL endpoint untuk request password reset
+        String url = BASE_URL + "password-reset/request";
+
+        // Membuat JSON body request
+        JSONObject json = new JSONObject();
+        try {
+            json.put("email", email);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Membuat RequestBody
+        RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json; charset=utf-8"));
+
+        // Membuat Request dengan URL dan body
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        // Melakukan request asinkron menggunakan enqueue
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                // Callback onFailed jika request gagal
+                Log.d("Password Reset", "Request failed: " + e.getMessage());
+                callback.onFailed(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                try {
+                    String responseData = response.body().string();
+                    if (response.isSuccessful()) {
+                        JSONObject jsonResponse = new JSONObject(responseData);
+                        // Periksa apakah respons mengandung "token"
+                        if (jsonResponse.has("token")) {
+                            String token = jsonResponse.getString("token");
+                            callback.onSuccess(token); // Callback onSuccess dengan token
+                        } else {
+                            callback.onFailed(new IOException("Token not found in response"));
+                        }
+                    } else {
+                        callback.onFailed(new IOException("Unexpected response code " + response.code()));
+                    }
+                } catch (IOException e) {
+                    callback.onFailed(new IOException("Error parsing response"));
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+
+    public interface PassResetHelper {
+        void onSuccess(String tempToken);
+        void onFailed(IOException e);
+    }
+
+    public interface OtpVerificationHelper {
+        void onSuccess(String finalToken);
+        void onFailed(IOException e);
+    }
+
+    public void requestPasswordReset(String email, PassResetHelper callback) {
+        String url = BASE_URL + "password-reset/request";
+        JSONObject json = new JSONObject();
+        try {
+            json.put("email", email);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json; charset=utf-8"));
+        Request request = new Request.Builder().url(url).post(body).build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d("Password Reset", "Request failed: " + e.getMessage());
+                callback.onFailed(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String responseData = response.body().string();
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(responseData);
+                        String tempToken = jsonResponse.getString("temp_token");
+                        callback.onSuccess(tempToken);
+                    } catch (JSONException e) {
+                        callback.onFailed(new IOException("Error parsing response"));
+                    }
+                } else {
+                    callback.onFailed(new IOException("Unexpected response code " + response.code()));
+                }
+            }
+        });
+    }
+
+    public void verifyOtp(String tempToken, String otp, OtpVerificationHelper callback) {
+        String url = BASE_URL + "password-reset/verify";
+        JSONObject json = new JSONObject();
+        try {
+            json.put("otp", otp);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json; charset=utf-8"));
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer " + tempToken)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d("OTP Verification", "Request failed: " + e.getMessage());
+                callback.onFailed(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String responseData = response.body().string();
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(responseData);
+                        String finalToken = jsonResponse.getString("token");
+                        callback.onSuccess(finalToken);
+                    } catch (JSONException e) {
+                        callback.onFailed(new IOException("Error parsing JSON"));
+                    }
+                } else {
+                    callback.onFailed(new IOException("Unexpected response code " + response.code()));
+                }
+            }
+        });
+    }
+
+    public interface ResendOtpHelper {
+        void onSuccess(String message);
+        void onFailed(IOException e);
+    }
+
+    // Metode untuk mengirim ulang OTP
+    public void resendOtp(String finalToken, ResendOtpHelper callback) {
+        String url = BASE_URL + "password-reset/resend";
+
+        // Membuat JSON body kosong atau tambahkan field sesuai kebutuhan server
+        JSONObject json = new JSONObject();
+        try {
+            json.put("action", "resend_otp"); // Sesuaikan dengan kebutuhan server jika ada data tambahan
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // Membuat RequestBody
+        RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json; charset=utf-8"));
+
+        // Membuat Request dengan URL, Authorization header, dan body
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer " + finalToken) // Kirim token final di header Authorization
+                .post(body)
+                .build();
+
+        Log.d("ResendOtp", "Request URL: " + url);
+        Log.d("ResendOtp", "Request JSON: " + json.toString());
+
+        // Melakukan request asinkron menggunakan enqueue
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d("ResendOtp", "Request failed: " + e.getMessage());
+                callback.onFailed(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String responseData = response.body() != null ? response.body().string() : "";
+                Log.d("ResendOtp", "Response code: " + response.code());
+                Log.d("ResendOtp", "Response data: " + responseData);
+
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(responseData);
+                        if (jsonResponse.has("message")) {
+                            String message = jsonResponse.getString("message");
+                            callback.onSuccess(message);
+                        } else {
+                            callback.onFailed(new IOException("Message not found in response"));
+                        }
+                    } catch (JSONException e) {
+                        callback.onFailed(new IOException("Error parsing JSON"));
+                    }
+                } else {
+                    callback.onFailed(new IOException("Unexpected response code " + response.code()));
+                }
+            }
+        });
+    }
+
+    public interface PasswordRessetHelper {
+        void onSuccess(String message);
+        void onFailed(IOException e);
+    }
+
+    // Metode untuk reset password
+    public void resetPassword(String finalToken, String newPassword, PasswordResetHelper callback) {
+        String url = BASE_URL + "password-reset/new";
+
+        // Membuat JSON body untuk permintaan reset password
+        JSONObject json = new JSONObject();
+        try {
+            json.put("password", newPassword); // Ganti "password" jika server mengharuskan field berbeda
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // Membuat RequestBody dari JSON
+        RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json; charset=utf-8"));
+
+        // Membuat Request dengan URL, Authorization header, dan body
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer " + finalToken) // Mengirim token final dalam header Authorization
+                .post(body)
+                .build();
+
+        Log.d("PasswordReset", "Request URL: " + url);
+        Log.d("PasswordReset", "Request JSON: " + json.toString());
+
+        // Melakukan request asinkron menggunakan enqueue
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d("PasswordReset", "Request failed: " + e.getMessage());
+                callback.onFailed(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String responseData = response.body() != null ? response.body().string() : "";
+                Log.d("PasswordReset", "Response code: " + response.code());
+                Log.d("PasswordReset", "Response data: " + responseData);
+
+                if (response.isSuccessful()) {
+                    if (!responseData.isEmpty()) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(responseData);
+                            if (jsonResponse.has("message")) {
+                                String message = jsonResponse.getString("message");
+                                callback.onSuccess(message); // Callback dengan pesan sukses
+                            } else {
+                                callback.onFailed(new IOException("Message not found in response"));
+                            }
+                        } catch (JSONException e) {
+                            callback.onFailed(new IOException("Error parsing JSON"));
+                        }
+                    } else {
+                        // Respons kosong, tangani dengan pesan default atau beri notifikasi ke pengguna
+                        callback.onSuccess("Password reset successful, but no additional message returned.");
+                    }
+                } else {
+                    callback.onFailed(new IOException("Unexpected response code " + response.code()));
+                }
+            }
+        });
+    }
+
+
 
     public interface DashboardDataHelper {
         void onSuccess(ArrayList<DashboardData> data);
@@ -402,15 +662,10 @@ public class ApiClient {
     public void fetchDetailProgram(String departmentId, DetailProgramHelper resDetailProgram, String programId) {
         String endPoint = "/api/v1/public/departments/" + departmentId + "/programs/" + programId;
 
-        // Debug log untuk memastikan URL yang dibangun benar
-        Log.d("Endpoint", "fetchDetailProgram: " + BASE_URL + BASE_URL_PUBLIC + endPoint);
-
-        // Membuat request untuk mengambil data program
         Request request = new Request.Builder()
                 .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
                 .build();
 
-        // Mengirim permintaan secara asynchronous
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -419,100 +674,46 @@ public class ApiClient {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    // Mendapatkan response body dalam bentuk string
-                    String data = response.body().string();
-                    Log.d("API Response", data);  // Debug log untuk melihat response body
-
+                if (response.isSuccessful() && response.body() != null) {
                     try {
-                        // Inisialisasi ArrayList untuk menampung detail program
                         ArrayList<DetailProgram> detailPrograms = new ArrayList<>();
-                        JSONObject jsonObject = new JSONObject(data);  // Parsing JSON response
+                        JSONObject jsonObject = new JSONObject(response.body().string());
+                        JSONArray programArray = jsonObject.getJSONArray("programs");
 
-                        // Debug log untuk melihat JSON response
-                        Log.d(TAG, "onResponse: fetch detailprogram" + jsonObject);
+                        for (int i = 0; i < programArray.length(); i++) {
+                            JSONObject program = programArray.getJSONObject(i);
 
-                        // Cek jika data program ada dan tidak kosong
-                        if (!jsonObject.getBoolean("isEmpty")) {
-                            // Ambil array "programs" dari JSON
-                            JSONArray programArray = jsonObject.getJSONArray("programs");
+                            DetailProgram detailProgram = new DetailProgram(
+                                    program.getString("id"),
+                                    program.getString("nama"),
+                                    program.getString("deskripsi"),
+                                    program.optString("imageUrl", ""),
+                                    program.optString("statusPendaftaran", "Unknown"),
+                                    program.optString("tanggalMulai", ""),
+                                    program.optString("tanggalAkhir", ""),
+                                    program.optString("standar", ""),
+                                    program.optString("peserta", ""),
+                                    program.optString("idInstructor", ""),
+                                    program.optString("idBuilding", ""),
+                                    program.optString("idDepartment", "")
+                            );
 
-                            // Loop untuk mengambil setiap data detail program
-                            for (int i = 0; i < programArray.length(); i++) {
-                                JSONObject program = programArray.getJSONObject(i);
-
-                                // Menyimpan data program ke dalam DetailProgram model
-                                String id = program.getString("id");
-                                String nama = program.getString("nama");
-                                String deskripsi = program.getString("deskripsi");
-
-                                // Ambil data lainnya sesuai dengan response API
-                                String imageUrl = program.optString("imageUrl", "");
-                                String statusPendaftaran = program.optString("statusPendaftaran", "Belum Pendaftaran");
-                                String tanggalMulai = program.optString("tanggalMulai", "Tanggal Mulai");
-                                String tanggalAkhir = program.optString("tanggalAkhir", "Tanggal Akhir");
-                                String standar = program.optString("standar", "Standar");
-                                String peserta = program.optString("peserta", "Peserta");
-
-                                // Membuat objek DetailProgram dan menambahkannya ke dalam list
-                                DetailProgram detailProgram = new DetailProgram(id, nama, deskripsi, imageUrl, statusPendaftaran,
-                                        tanggalMulai, tanggalAkhir, standar, peserta);
-                                detailPrograms.add(detailProgram);
-                            }
-
-                            // Mengirimkan data detail program ke listener jika berhasil
-                            resDetailProgram.onSuccess(detailPrograms);
-                        } else {
-                            // Mengirimkan error jika data kosong
-                            resDetailProgram.onFailed(new IOException("Data is empty"));
+                            detailPrograms.add(detailProgram);
                         }
-                    } catch (JSONException e) {
-                        // Menangani error JSON
-                        Log.e(TAG, "onResponse: JSON Parsing error", e);
-                        resDetailProgram.onFailed(new IOException("JSON Parsing error", e));
+
+                        resDetailProgram.onSuccess(detailPrograms);
+                    } catch (Exception e) {
+                        resDetailProgram.onFailed(new IOException("JSON Parsing Error: " + e.getMessage()));
                     }
                 } else {
-                    // Jika response tidak berhasil
-                    resDetailProgram.onFailed(new IOException("Response not successful"));
+                    resDetailProgram.onFailed(new IOException("Response not successful: " + response.code()));
                 }
             }
         });
     }
 
 
-
-    // Fungsi untuk parsing JSON
-    private String[] parseDetailProgramJson(String jsonData) throws JSONException {
-        JSONObject jsonObject = new JSONObject(jsonData);
-        if (!jsonObject.getBoolean("success")) {
-            throw new JSONException("Response success flag is false");
-        }
-
-        JSONArray detailProgram1 = jsonObject.getJSONArray("detailProgram1");
-        JSONObject detailProgram = detailProgram1.getJSONObject(0);
-
-        // Ambil data dari JSON dan simpan ke array
-        String[] dataDetailProgram = new String[14];
-        dataDetailProgram[0] = detailProgram.getString("id");
-        dataDetailProgram[1] = detailProgram.getString("nama");
-        dataDetailProgram[2] = detailProgram.getString("kejuruan");
-        dataDetailProgram[3] = detailProgram.getString("standar");
-        dataDetailProgram[4] = detailProgram.getString("peserta");
-        dataDetailProgram[5] = detailProgram.getString("gedung");
-        dataDetailProgram[6] = detailProgram.getString("deskripsi");
-        dataDetailProgram[7] = detailProgram.getString("idInstructor");
-        dataDetailProgram[8] = detailProgram.getString("namaInstructor");
-        dataDetailProgram[9] = detailProgram.getString("alamatInstructor");
-        dataDetailProgram[10] = detailProgram.getString("kontakInstructor");
-        dataDetailProgram[11] = detailProgram.getString("status");
-        dataDetailProgram[12] = detailProgram.getString("tglPendaftaran");
-
-        return dataDetailProgram;
-    }
-
-
-
-// Notifikasi adapter
+    // Notifikasi adapter
     public interface NotifikasiHelper {
         void onSuccess(ArrayList<MyNotification> data);
 
