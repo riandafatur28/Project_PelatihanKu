@@ -180,15 +180,15 @@
 
             <!-- Icon Visibility untuk Password -->
             <ImageView
-                android:id="@+id/iconinputpassword"
+                android:id="@+id/iconInputPassword"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="8dp"
+                app:tint="@color/font_tint"
                 android:clickable="true"
                 android:contentDescription="Toggle Password Visibility"
-                android:src="@drawable/vector_eye_open"
-                app:tint="@color/font_tint" />
+                android:src="@drawable/vector_eye_open" />
         </FrameLayout>
 
         <!-- FrameLayout for Confirm Password EditText and Eye Icon -->
@@ -214,16 +214,15 @@
 
             <!-- Icon Visibility untuk Konfirmasi Password -->
             <ImageView
-                android:id="@+id/iconkonfirmpassword"
+                android:id="@+id/iconConfirmPassword"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="end|center_vertical"
-                android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
+                app:tint="@color/font_tint"
                 android:clickable="true"
-                android:contentDescription="Toggle Confirm Password Visibility"
-                android:src="@drawable/vector_eye_open"
-                app:tint="@color/font_tint" />
+                android:contentDescription="Toggle Password Visibility"
+                android:src="@drawable/vector_eye_open" />
         </FrameLayout>
 
         <!-- Button Register -->
@@ -239,49 +238,7 @@
             android:textColor="@color/white_bg"
             android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/text_or"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/inter_regular"
-            android:gravity="center"
-            android:text="atau lanjut dengan"
-            android:textColor="@color/gray"
-            android:textSize="14sp" />
 
-        <!-- LinearLayout Login dengan Google -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/rounded_button_white"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingHorizontal="8dp">
-
-            <ImageView
-                android:id="@+id/google_icon"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:clickable="true"
-                android:contentDescription="Google icon"
-                android:focusable="true"
-                android:src="@drawable/vector_google" />
-
-            <TextView
-                android:id="@+id/text_google"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:fontFamily="@font/inter_semibold"
-                android:text="Google"
-                android:textColor="@color/orange"
-                android:textSize="20sp" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
