@@ -649,10 +649,8 @@ public class ApiClient {
         });
     }
 
-    //  Detail Program adapter
     public interface DetailProgramHelper {
         void onSuccess(ArrayList<DetailProgram> data);
-
         void onFailed(IOException e);
     }
 
@@ -708,6 +706,7 @@ public class ApiClient {
             }
         });
     }
+
 
 
     // Notifikasi adapter
