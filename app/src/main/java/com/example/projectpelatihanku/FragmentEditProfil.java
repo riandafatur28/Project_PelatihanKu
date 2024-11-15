@@ -3,6 +3,7 @@ package com.example.projectpelatihanku;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -26,12 +27,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.projectpelatihanku.FragmentProfil.*;
+
+import com.example.projectpelatihanku.api.ApiClient;
 
 public class FragmentEditProfil extends Fragment {
 
@@ -162,10 +166,31 @@ public class FragmentEditProfil extends Fragment {
         // Perbarui nama pada UI `namaUser` di FragmentEditProfil
         namaUser.setText(nama);
 
-        showToast("Perubahan disimpan!", 3000);
+        // Kirim data ke server
+        String userId = getUserId(); // Ganti dengan metode untuk mendapatkan ID pengguna
+        if (userId != null) {
+            ApiClient apiClient = new ApiClient();
+            apiClient.updateUserProfile(userId, nama, noTelp, alamat, new ApiClient.UserUpdateCallback() {
+                @Override
+                public void onSuccess(String message) {
+                    showToast("Perubahan disimpan ke server!", 3000);
+                    navigateBackToProfile();
+                }
 
-        // Navigasi kembali ke profil
-        navigateBackToProfile();
+                @Override
+                public void onFailed(IOException e) {
+                    showToast("Gagal menyimpan perubahan ke server: " + e.getMessage(), 3000);
+                }
+            });
+        } else {
+            showToast("User ID tidak ditemukan!", 3000);
+        }
+    }
+
+    // Metode untuk mendapatkan ID pengguna dari SharedPreferences
+    private String getUserId() {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("user_id", null); // Pastikan "user_id" adalah kunci yang benar
     }
 
     private void navigateBackToProfile() {
