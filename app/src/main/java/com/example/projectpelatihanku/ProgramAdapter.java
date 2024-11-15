@@ -1,6 +1,7 @@
 package com.example.projectpelatihanku;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +56,12 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
 
         // Set click listener for the button to navigate to FragmentDetailProgram
         if (holder.btnDetail != null) {
-            holder.btnDetail.setOnClickListener(v -> navigateToDetailProgram(holder));
+            holder.btnDetail.setOnClickListener(v -> {
+                // Save programId to SharedPreferences
+                saveProgramIdToPreferences(program.getId());
+                // Navigate to detail program fragment
+                navigateToDetailProgram(holder);
+            });
         } else {
             Log.d("ProgramAdapter", "button Detail not found in layout");
         }
@@ -84,6 +90,17 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
         transaction.replace(R.id.layoutprogram, fragmentDetailProgram);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    // Save programId to SharedPreferences
+    private void saveProgramIdToPreferences(String programId) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("programPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("programId", programId);
+        editor.apply();
+
+        // Log for debugging
+        Log.d("ProgramAdapter", "Saved programId: " + programId);
     }
 
     // ViewHolder class to represent each item in the RecyclerView
