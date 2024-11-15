@@ -118,6 +118,8 @@ public class FragmentProfil extends Fragment {
             public void onFailed(IOException e) {
 
             }
+
+
         });
     }
 
