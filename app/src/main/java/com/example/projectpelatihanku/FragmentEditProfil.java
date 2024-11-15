@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,15 +28,18 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
-import static com.example.projectpelatihanku.FragmentProfil.*;
 
-import com.example.projectpelatihanku.api.ApiClient;
+import static com.example.projectpelatihanku.FragmentProfil.address;
+import static com.example.projectpelatihanku.FragmentProfil.birth;
+import static com.example.projectpelatihanku.FragmentProfil.gender;
+import static com.example.projectpelatihanku.FragmentProfil.phone;
+import static com.example.projectpelatihanku.FragmentProfil.userEmail;
+import static com.example.projectpelatihanku.FragmentProfil.username;
 
 public class FragmentEditProfil extends Fragment {
 
@@ -63,12 +67,12 @@ public class FragmentEditProfil extends Fragment {
         imageSecond = view.findViewById(R.id.imageProfil);
         iconCamera = view.findViewById(R.id.iconCamera);
 
-        // Buat Tanggal Lahir dan Jenis Kelamin tidak bisa diubah
+        // Buat Tanggal Lahir, Email, dan Jenis Kelamin tidak bisa diubah
         editTTL.setEnabled(false);
         editGender.setEnabled(false);
         editEmail.setEnabled(false);
 
-        // Set value
+        // Set value dari data profil
         namaUser.setText(username);
         editNama.setText(username);
         editGender.setText(gender);
@@ -90,6 +94,9 @@ public class FragmentEditProfil extends Fragment {
             showToast("Format tanggal lahir tidak valid", 3000);
         }
 
+        // Muat gambar profil
+        loadProfileImage();
+
         // Tombol untuk menyimpan perubahan
         Button buttonUbah = view.findViewById(R.id.buttonubahProfil);
         buttonUbah.setOnClickListener(v -> simpanPerubahan());
@@ -108,6 +115,41 @@ public class FragmentEditProfil extends Fragment {
         iconCamera.setOnClickListener(v -> pilihGambar());
 
         return view;
+    }
+
+    // Fungsi untuk memuat gambar profil
+    private void loadProfileImage() {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
+        String imageUriString = sharedPreferences.getString("image_uri", null);
+        String gender = sharedPreferences.getString("gender", "Tidak diketahui");
+
+        if (imageUriString != null) {
+            try {
+                imageSecond.setImageURI(Uri.parse(imageUriString)); // Gambar dari URI
+                Log.d("FragmentEditProfil", "Loaded image from URI: " + imageUriString);
+            } catch (Exception e) {
+                imageSecond.setImageResource(R.drawable.gambar_user); // Default gambar pengguna
+                Log.e("FragmentEditProfil", "Failed to load image from URI", e);
+            }
+        } else {
+            Log.d("FragmentEditProfil", "No image URI found. Loading default image.");
+            if ("Laki-laki".equalsIgnoreCase(gender)) {
+                imageSecond.setImageResource(R.drawable.img_men); // Gambar default laki-laki
+            } else if ("Perempuan".equalsIgnoreCase(gender)) {
+                imageSecond.setImageResource(R.drawable.img_women); // Gambar default perempuan
+            } else {
+                imageSecond.setImageResource(R.drawable.gambar_user); // Gambar default jika gender tidak diketahui
+            }
+        }
+    }
+
+    // Fungsi untuk menyimpan URI gambar ke SharedPreferences
+    private void saveImageUriToPreferences(Uri imageUri) {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("image_uri", imageUri.toString()); // Simpan URI sebagai String
+        editor.apply(); // Simpan perubahan secara asinkron
+        Log.d("FragmentEditProfil", "Image URI saved: " + imageUri.toString());
     }
 
     // Fungsi untuk memilih gambar dari galeri
@@ -134,7 +176,8 @@ public class FragmentEditProfil extends Fragment {
                     cursor.close();
 
                     if (fileSizeInBytes <= 1 * 1024 * 1024) { // Maks 1 MB
-                        imageSecond.setImageURI(imageUri);
+                        imageSecond.setImageURI(imageUri); // Set gambar ke ImageView
+                        saveImageUriToPreferences(imageUri); // Simpan URI gambar
                     } else {
                         showToast("Ukuran gambar melebihi 1 MB!", 3000);
                     }
@@ -146,7 +189,6 @@ public class FragmentEditProfil extends Fragment {
         }
     }
 
-    // Fungsi untuk menyimpan perubahan profil
     private void simpanPerubahan() {
         String nama = editNama.getText().toString().trim();
         String noTelp = editNoTelp.getText().toString().trim();
@@ -158,39 +200,12 @@ public class FragmentEditProfil extends Fragment {
             return;
         }
 
-        if (!validasiNoTelp(noTelp)) {
-            showToast("No. Telepon harus hanya angka dan maksimal 15 digit!", 3000);
-            return;
-        }
 
         // Perbarui nama pada UI `namaUser` di FragmentEditProfil
         namaUser.setText(nama);
 
-        // Kirim data ke server
-        String userId = getUserId(); // Ganti dengan metode untuk mendapatkan ID pengguna
-        if (userId != null) {
-            ApiClient apiClient = new ApiClient();
-            apiClient.updateUserProfile(userId, nama, noTelp, alamat, new ApiClient.UserUpdateCallback() {
-                @Override
-                public void onSuccess(String message) {
-                    showToast("Perubahan disimpan ke server!", 3000);
-                    navigateBackToProfile();
-                }
-
-                @Override
-                public void onFailed(IOException e) {
-                    showToast("Gagal menyimpan perubahan ke server: " + e.getMessage(), 3000);
-                }
-            });
-        } else {
-            showToast("User ID tidak ditemukan!", 3000);
-        }
-    }
-
-    // Metode untuk mendapatkan ID pengguna dari SharedPreferences
-    private String getUserId() {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        return sharedPreferences.getString("user_id", null); // Pastikan "user_id" adalah kunci yang benar
+        // Simpan ke server
+        showToast("Perubahan berhasil disimpan!", 3000);
     }
 
     private void navigateBackToProfile() {
@@ -210,7 +225,4 @@ public class FragmentEditProfil extends Fragment {
         return nama.matches("[a-zA-Z ]+");
     }
 
-    private boolean validasiNoTelp(String noTelp) {
-        return noTelp.matches("\\d{1,15}");
-    }
 }
