@@ -85,7 +85,7 @@ public class ApiClient {
             }
         });
 
-}
+    }
 
     // Adapter Login API
     public interface LoginHelper {
@@ -135,6 +135,8 @@ public class ApiClient {
 
         });
     }
+
+
 
     // Interface untuk Callback Password Reset
     public interface PasswordResetHelper {
@@ -195,6 +197,8 @@ public class ApiClient {
                     throw new RuntimeException(e);
                 }
             }
+
+
         });
     }
 
@@ -287,6 +291,8 @@ public class ApiClient {
             }
         });
     }
+
+
 
     public interface ResendOtpHelper {
         void onSuccess(String message);
