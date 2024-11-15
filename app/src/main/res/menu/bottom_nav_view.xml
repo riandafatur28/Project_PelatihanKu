@@ -12,15 +12,11 @@
         android:icon="@drawable/vector_department"
         android:title=""
         />
-
     <item
         android:id="@+id/notifikasi"
         android:icon="@drawable/vector_notif"
         android:title=""
         />
-
-
-
     <item
         android:id="@+id/user"
         android:icon="@drawable/vector_user"
