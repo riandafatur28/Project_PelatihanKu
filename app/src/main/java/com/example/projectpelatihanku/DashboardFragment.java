@@ -185,9 +185,9 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
             Log.d("DashboardFragment", "Gender yang diambil: " + gender);  // Tambahkan log ini untuk debug
 
             // Menentukan gambar profil berdasarkan gender
-            if ("Laki-laki".equals(gender)) {
+            if ("Laki-laki".equalsIgnoreCase(gender)) {
                 imageUser.setImageResource(R.drawable.img_men);  // Gambar untuk laki-laki
-            } else if ("Perempuan".equals(gender)) {
+            } else if ("Perempuan".equalsIgnoreCase(gender)) {
                 imageUser.setImageResource(R.drawable.img_women);  // Gambar untuk perempuan
             }
         }
