@@ -358,12 +358,6 @@ public class ApiClient {
         });
     }
 
-    public interface PasswordRessetHelper {
-        void onSuccess(String message);
-        void onFailed(IOException e);
-    }
-
-    // Metode untuk reset password
     public void resetPassword(String finalToken, String newPassword, PasswordResetHelper callback) {
         String url = BASE_URL + "password-reset/new";
 
@@ -379,11 +373,11 @@ public class ApiClient {
         // Membuat RequestBody dari JSON
         RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json; charset=utf-8"));
 
-        // Membuat Request dengan URL, Authorization header, dan body
+        // Membuat Request dengan URL, Authorization header, dan menggunakan metode PUT
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Authorization", "Bearer " + finalToken) // Mengirim token final dalam header Authorization
-                .post(body)
+                .put(body) // Ubah dari .post(body) ke .put(body) untuk metode PUT
                 .build();
 
         Log.d("PasswordReset", "Request URL: " + url);
@@ -407,25 +401,22 @@ public class ApiClient {
                     if (!responseData.isEmpty()) {
                         try {
                             JSONObject jsonResponse = new JSONObject(responseData);
-                            if (jsonResponse.has("message")) {
-                                String message = jsonResponse.getString("message");
-                                callback.onSuccess(message); // Callback dengan pesan sukses
-                            } else {
-                                callback.onFailed(new IOException("Message not found in response"));
-                            }
+                            String message = jsonResponse.has("message") ? jsonResponse.getString("message") : "Password reset successful.";
+                            callback.onSuccess(message);
                         } catch (JSONException e) {
-                            callback.onFailed(new IOException("Error parsing JSON"));
+                            Log.d("PasswordReset", "JSON parsing error: " + e.getMessage());
+                            callback.onSuccess("Password reset successful, but no additional message returned.");
                         }
                     } else {
-                        // Respons kosong, tangani dengan pesan default atau beri notifikasi ke pengguna
                         callback.onSuccess("Password reset successful, but no additional message returned.");
                     }
                 } else {
-                    callback.onFailed(new IOException("Unexpected response code " + response.code()));
+                    callback.onFailed(new IOException("Unexpected response code " + response.code() + " with data: " + responseData));
                 }
             }
         });
     }
+
 
 
 
@@ -829,4 +820,53 @@ public class ApiClient {
             }
         });
     }
+    public interface UserUpdateCallback {
+        void onSuccess(String message);
+        void onFailed(IOException e);
+    }
+
+
+    public void updateUserProfile(String userId, String nama, String noTelp, String alamat, UserUpdateCallback callback) {
+        String url = BASE_URL + "user/updateUsers/" + userId;
+
+        // Membuat JSON body untuk permintaan
+        JSONObject json = new JSONObject();
+        try {
+            json.put("name", nama);
+            json.put("phone", noTelp);
+            json.put("address", alamat);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            callback.onFailed(new IOException("Error creating JSON"));
+            return;
+        }
+
+        // Membuat RequestBody dari JSON
+        RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json; charset=utf-8"));
+
+        // Membuat Request dengan URL dan body
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        // Melakukan request asinkron menggunakan enqueue
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                callback.onFailed(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseData = response.body() != null ? response.body().string() : "";
+                    callback.onSuccess(responseData);
+                } else {
+                    callback.onFailed(new IOException("Unexpected response code " + response.code()));
+                }
+            }
+        });
+    }
+
 }
