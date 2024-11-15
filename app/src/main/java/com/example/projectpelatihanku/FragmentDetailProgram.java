@@ -10,16 +10,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.projectpelatihanku.api.ApiClient;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 
 public class FragmentDetailProgram extends Fragment {
     private TextView namaProgram, deskripsiProgram, namaKejuruan, standar, peserta, gedung;
@@ -27,13 +25,13 @@ public class FragmentDetailProgram extends Fragment {
     private TextView status, tglPendaftaran;
     private String programId;
     private String departmentId;
-    private URL url;
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail_program, container, false);
 
-        // Initialize UI components
+        // Inisialisasi elemen UI
         namaProgram = view.findViewById(R.id.namaProgram);
         deskripsiProgram = view.findViewById(R.id.deskripsiProgram);
         namaKejuruan = view.findViewById(R.id.namaKejuruan);
@@ -47,15 +45,15 @@ public class FragmentDetailProgram extends Fragment {
         alamatInstructor = view.findViewById(R.id.alamatInstructor);
         tglPendaftaran = view.findViewById(R.id.tanggalPendaftaran);
 
-        // Retrieve programId and departmentId from SharedPreferences
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("programPrefs", Context.MODE_PRIVATE);
+        // Retrieve programId dan departmentId dari SharedPreferences
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("programPrefs", Context.MODE_PRIVATE);
         programId = sharedPreferences.getString("programId", null);
         departmentId = sharedPreferences.getString("departmentId", null);
 
         Log.d("FragmentDetailProgram", "programId: " + programId);
         Log.d("FragmentDetailProgram", "departmentId: " + departmentId);
 
-        // Check if both programId and departmentId are available
+        // Cek apakah programId dan departmentId tersedia
         if (programId != null && departmentId != null) {
             fetchDetailProgram(departmentId, programId);
         } else {
@@ -74,21 +72,18 @@ public class FragmentDetailProgram extends Fragment {
     }
 
     private void fetchDetailProgram(String departmentId, String programId) {
-        ApiClient api = new ApiClient();
+        ApiClient apiClient = new ApiClient();
+
+        // Pastikan departmentId dan programId valid
         if (departmentId != null && programId != null) {
-            String endPoint = "/api/v1/public/departments/" + departmentId + "/programs/" + programId;
-            Log.d("Endpoint", "fetchDetailProgram: " + ApiClient.BASE_URL + ApiClient.BASE_URL_PUBLIC + endPoint);
-            Request request = new Request.Builder().url(url).build();
-            OkHttpClient client = new OkHttpClient();
-            // Call the API to fetch program details
-            api.fetchDetailProgram(departmentId, new ApiClient.DetailProgramHelper() {
+            apiClient.fetchDetailProgram(departmentId, new ApiClient.DetailProgramHelper() {
                 @Override
                 public void onSuccess(ArrayList<DetailProgram> data) {
                     requireActivity().runOnUiThread(() -> {
                         if (isAdded() && data != null && !data.isEmpty()) {
                             DetailProgram detailProgram = data.get(0);
 
-                            // Display program details on UI
+                            // Tampilkan detail program ke UI
                             namaProgram.setText(detailProgram.getNama());
                             deskripsiProgram.setText(detailProgram.getDeskripsi());
                             namaKejuruan.setText(detailProgram.getStandar());
@@ -98,7 +93,7 @@ public class FragmentDetailProgram extends Fragment {
                             status.setText(detailProgram.getStatusPendaftaran());
                             tglPendaftaran.setText(detailProgram.getTanggalMulai() + " - " + detailProgram.getTanggalAkhir());
 
-                            // Display instructor details
+                            // Tampilkan detail instruktur
                             idInstructor.setText(detailProgram.getIdInstructor());
                             namaInstructor.setText(detailProgram.getNamaInstructor());
                             kontakInstructor.setText(detailProgram.getKontakInstructor());
@@ -109,7 +104,7 @@ public class FragmentDetailProgram extends Fragment {
 
                 @Override
                 public void onFailed(IOException e) {
-                    Log.d("FragmentDetailProgram", "Failed to fetch data: " + e.getMessage());
+                    Log.e("FragmentDetailProgram", "Failed to fetch data: " + e.getMessage());
                 }
             }, programId);
         }
