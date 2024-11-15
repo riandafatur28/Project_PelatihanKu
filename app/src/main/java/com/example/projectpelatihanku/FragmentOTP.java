@@ -26,12 +26,14 @@ public class FragmentOTP extends Fragment {
     private boolean isNavigating = false;
 
     private ApiClient apiClient;
+    private TokenManager tokenManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_otp, container, false);
 
         apiClient = new ApiClient();
+        tokenManager = new TokenManager(requireContext()); // Inisialisasi TokenManager
 
         sendButton = view.findViewById(R.id.button_kirim);
         textKembali = view.findViewById(R.id.text_Kembali);
@@ -112,8 +114,7 @@ public class FragmentOTP extends Fragment {
     // Metode untuk memverifikasi OTP dengan API
     private void verifyOtpWithApi() {
         // Mengambil token final dari TokenManager
-        TokenManager tokenManager = new TokenManager(requireContext());
-        String finalToken = tokenManager.getFinalToken();
+        String finalToken = tokenManager.getToken();
 
         // Mengambil input OTP dari field
         String inputOTP = getInputOTP();
@@ -154,8 +155,7 @@ public class FragmentOTP extends Fragment {
 
     // Metode untuk mengirim ulang OTP dengan API
     private void resendOtp() {
-        TokenManager tokenManager = new TokenManager(requireContext());
-        String finalToken = tokenManager.getFinalToken();
+        String finalToken = tokenManager.getToken();
 
         if (finalToken.isEmpty()) {
             Toast.makeText(getActivity(), "Token tidak ditemukan. Silakan coba lagi.", Toast.LENGTH_LONG).show();
