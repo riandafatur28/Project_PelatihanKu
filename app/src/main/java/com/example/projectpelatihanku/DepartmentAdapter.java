@@ -1,7 +1,9 @@
 package com.example.projectpelatihanku;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +38,16 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
     }
 
     private void navigateToProgram(String departmentId, String namaInstitusi) {
+        // Simpan departmentId ke SharedPreferences
+        SharedPreferences sharedPreferences = context.getSharedPreferences("programPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("departmentId", departmentId);
+        editor.apply(); // Simpan perubahan
+
+        // Log untuk memastikan nilai departmentId tersimpan
+        Log.d("DepartmentAdapter", "Saved departmentId: " + departmentId);
+
+        // Navigasi ke FragmentProgram
         FragmentActivity activity = (FragmentActivity) context;
         BottomNavigationView bottomNavigationView = activity.findViewById(R.id.bottomview);
         if (bottomNavigationView != null) {
@@ -54,6 +66,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull InstitusiViewHolder holder, int position) {
