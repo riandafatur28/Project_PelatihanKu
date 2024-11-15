@@ -4,52 +4,38 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-public class TokenManager {
-    private static final String PREF_NAME = "MyPrefs";
-    private static final String KEY_TEMP_TOKEN = "temp_token";
-    private static final String KEY_FINAL_TOKEN = "token";
+import android.content.Context;
+import android.content.SharedPreferences;
 
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
+public class TokenManager {
+    private static final String SHARED_PREFS_NAME = "token_prefs";
+    private static final String KEY_TOKEN = "auth_token";
+    private SharedPreferences prefs;
 
     public TokenManager(Context context) {
-        sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+        prefs = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE);
     }
 
-    // Simpan token sementara
-    public void saveTempToken(String tempToken) {
-        editor.putString(KEY_TEMP_TOKEN, tempToken);
-        editor.apply();
-        Log.d("TokenManager", "Token sementara disimpan: " + tempToken);
+    public void saveToken(String token) {
+        prefs.edit().putString(KEY_TOKEN, token).apply();
     }
 
-    // Dapatkan token sementara
-    public String getTempToken() {
-        String tempToken = sharedPreferences.getString(KEY_TEMP_TOKEN, "");
-        Log.d("TokenManager", "Token sementara diambil: " + tempToken);
-        return tempToken;
+    public String getToken() {
+        String token = prefs.getString(KEY_TOKEN, null);
+        if (isTokenExpired(token)) {
+            token = generateNewToken(); // generate token baru saat token kadaluarsa
+            saveToken(token);
+        }
+        return token;
     }
 
-    // Simpan token final setelah verifikasi OTP
-    public void saveFinalToken(String finalToken) {
-        editor.putString(KEY_FINAL_TOKEN, finalToken);
-        editor.apply();
-        Log.d("TokenManager", "Token final disimpan: " + finalToken);
+    private boolean isTokenExpired(String token) {
+        // Implementasikan logika untuk mengecek apakah token sudah kadaluarsa
+        return false; // ganti sesuai kebutuhan
     }
 
-    // Dapatkan token final
-    public String getFinalToken() {
-        String finalToken = sharedPreferences.getString(KEY_FINAL_TOKEN, "");
-        Log.d("TokenManager", "Token final diambil: " + finalToken);
-        return finalToken;
-    }
-
-    // Hapus semua token (untuk logout atau reset)
-    public void clearTokens() {
-        editor.remove(KEY_TEMP_TOKEN);
-        editor.remove(KEY_FINAL_TOKEN);
-        editor.apply();
-        Log.d("TokenManager", "Semua token dihapus");
+    private String generateNewToken() {
+        // Logika untuk menghasilkan token baru
+        return "newGeneratedToken"; // ganti sesuai kebutuhan Anda
     }
 }
