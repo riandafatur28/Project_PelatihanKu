@@ -27,8 +27,8 @@ public class FragmentResetPassword extends Fragment {
     private EditText confirmPasswordInput;
     private ImageView iconInputPassword;
     private ImageView iconConfirmPassword;
-    private String finalToken;
     private ApiClient apiClient;
+    private TokenManager tokenManager;
     private boolean isPasswordVisible = false;
     private boolean isConfirmPasswordVisible = false;
 
@@ -38,11 +38,7 @@ public class FragmentResetPassword extends Fragment {
         View view = inflater.inflate(R.layout.fragment_reset_password, container, false);
 
         apiClient = new ApiClient();
-
-        // Inisialisasi TokenManager dan ambil token final
-        TokenManager tokenManager = new TokenManager(requireContext());
-        finalToken = tokenManager.getFinalToken(); // Mengambil token final dari SharedPreferences
-        Log.d("FragmentResetPassword", "Final Token: " + finalToken);
+        tokenManager = new TokenManager(requireContext()); // Inisialisasi TokenManager
 
         sendButton = view.findViewById(R.id.button_kirim);
         backButton = view.findViewById(R.id.txtKembali);
@@ -60,7 +56,7 @@ public class FragmentResetPassword extends Fragment {
             } else if (!newPassword.equals(confirmPassword)) {
                 Toast.makeText(getActivity(), "Password tidak cocok.", Toast.LENGTH_LONG).show();
             } else {
-                resetPassword(finalToken, newPassword);
+                resetPassword(newPassword); // Memanggil resetPassword tanpa mengirim token secara langsung
             }
         });
 
@@ -71,19 +67,23 @@ public class FragmentResetPassword extends Fragment {
         });
 
         // Mengatur aksi klik pada ikon visibilitas untuk password baru
-        iconInputPassword.setOnClickListener(v -> {
-            togglePasswordVisibility(newPasswordInput, iconInputPassword);
-        });
+        iconInputPassword.setOnClickListener(v -> togglePasswordVisibility(newPasswordInput, iconInputPassword));
 
         // Mengatur aksi klik pada ikon visibilitas untuk konfirmasi password
-        iconConfirmPassword.setOnClickListener(v -> {
-            togglePasswordVisibility(confirmPasswordInput, iconConfirmPassword);
-        });
+        iconConfirmPassword.setOnClickListener(v -> togglePasswordVisibility(confirmPasswordInput, iconConfirmPassword));
 
         return view;
     }
 
-    private void resetPassword(String finalToken, String newPassword) {
+    private void resetPassword(String newPassword) {
+        // Ambil token terbaru dari TokenManager
+        String finalToken = tokenManager.getToken();
+
+        if (finalToken == null || finalToken.isEmpty()) {
+            Toast.makeText(getActivity(), "Token tidak ditemukan. Silakan coba lagi.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         apiClient.resetPassword(finalToken, newPassword, new ApiClient.PasswordResetHelper() {
             @Override
             public void onSuccess(String message) {
