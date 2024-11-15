@@ -51,7 +51,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layerpendaftaran">
+        app:layout_constraintTop_toBottomOf="@id/layerpendaftaran"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="130dp">
 
         <LinearLayout
             android:id="@+id/inputData"
@@ -339,15 +341,14 @@
                     android:id="@+id/textUnduhBukti"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="95dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="270dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginEnd="12dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:text="@string/unduh_bukti"
                     android:textColor="@color/orange"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
+                    android:textStyle="bold" />
 
             </LinearLayout>
         </LinearLayout>
