@@ -89,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="BUKTI PENDAFTARAN"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
             android:textSize="20sp"
             android:textStyle="bold"
             android:paddingBottom="2dp"
@@ -100,120 +100,332 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Data Diri"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:fontFamily="@font/inter_bold"
             android:textSize="14sp"
             android:gravity="left"/>
 
-        <!-- ID Peserta -->
-        <TextView
-            android:id="@+id/tvidpeserta"
+        <!-- Line 1 Id Pendaftaran -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="ID Pendaftaran"
-            android:layout_marginStart="14dp"
-            android:textColor="@color/black"
-            android:padding="6dp"/>
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="5dp"
+            android:orientation="horizontal">
 
-        <!-- Nama Lengkap -->
-        <TextView
-            android:id="@+id/tvNamaLengkap"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nama Pendaftar"
-            android:layout_marginStart="14dp"
-            android:textColor="@color/black"
-            android:padding="6dp"/>
+            <!-- Label di sebelah kiri -->
+            <TextView
+                android:id="@+id/label_id_pendaftaran"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:text="ID Pendaftaran          :"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
 
-        <!-- Tanggal Lahir -->
-        <TextView
-            android:id="@+id/tvTanggalLahir"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Tanggal Lahir"
-            android:layout_marginStart="14dp"
-            android:textColor="@color/black"
-            android:padding="6dp"/>
+            <!-- Nama di sebelah kanan -->
+            <TextView
+                android:id="@+id/id_pendaftaran"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+        </LinearLayout>
 
-        <!-- Jenis Kelamin -->
-        <TextView
-            android:id="@+id/tvJenisKelamin"
+        <!-- Line 1 Id Pendaftaran -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Jenis Kelamin"
-            android:layout_marginStart="14dp"
-            android:textColor="@color/black"
-            android:padding="6dp"/>
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="5dp"
+            android:orientation="horizontal">
 
-        <!-- Nomor Handphone -->
-        <TextView
-            android:id="@+id/tvNomorRegistrasi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nomer Handphone"
-            android:layout_marginStart="14dp"
-            android:textColor="@color/black"
-            android:padding="6dp"/>
+            <!-- Label di sebelah kiri -->
+            <TextView
+                android:id="@+id/label_nama_pendaftar"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:text="Nama Pendaftar        :"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
 
-        <!-- Email -->
-        <TextView
-            android:id="@+id/tvemail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email"
-            android:layout_marginStart="14dp"
-            android:textColor="@color/black"
-            android:padding="6dp"/>
+            <!-- Nama di sebelah kanan -->
+            <TextView
+                android:id="@+id/nama_pendaftar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+        </LinearLayout>
 
-        <!-- Alamat -->
-        <TextView
-            android:id="@+id/tvalamat"
+        <!-- Line 1 Id Pendaftaran -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Alamat"
-            android:layout_marginStart="14dp"
-            android:textColor="@color/black"
-            android:padding="6dp"/>
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="5dp"
+            android:orientation="horizontal">
+
+            <!-- Label di sebelah kiri -->
+            <TextView
+                android:id="@+id/label_ttl_pendaftar"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:text="Tanggal Lahir             :"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+
+            <!-- Nama di sebelah kanan -->
+            <TextView
+                android:id="@+id/birth_pendaftar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Line 1 Id Pendaftaran -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="5dp"
+            android:orientation="horizontal">
+
+            <!-- Label di sebelah kiri -->
+            <TextView
+                android:id="@+id/label_gender_pendaftar"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:text="Jenis Kelamin            :"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+
+            <!-- Nama di sebelah kanan -->
+            <TextView
+                android:id="@+id/gender_pendaftar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Line 1 Id Pendaftaran -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="5dp"
+            android:orientation="horizontal">
+
+            <!-- Label di sebelah kiri -->
+            <TextView
+                android:id="@+id/label_phone_pendaftar"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:text="Nomor Handphone   :"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+
+            <!-- Nama di sebelah kanan -->
+            <TextView
+                android:id="@+id/phone_pendaftar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Line 1 Id Pendaftaran -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="5dp"
+            android:orientation="horizontal">
+
+            <!-- Label di sebelah kiri -->
+            <TextView
+                android:id="@+id/label_email_pendaftar"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:text="Email                          :"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+
+            <!-- Nama di sebelah kanan -->
+            <TextView
+                android:id="@+id/email_pendaftar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Line 1 Id Pendaftaran -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="5dp"
+            android:orientation="horizontal">
+
+            <!-- Label di sebelah kiri -->
+            <TextView
+                android:id="@+id/label_address_pendaftar"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:text="Alamat Pendaftar      :"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+
+            <!-- Nama di sebelah kanan -->
+            <TextView
+                android:id="@+id/address_pendaftar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvKeteranganPendaftaran"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Program Kejuruan"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:fontFamily="@font/inter_bold"
             android:textSize="14sp"
             android:gravity="left"/>
 
         <!-- Kejuruan -->
-        <TextView
-            android:id="@+id/tvkejuruan"
+        <!-- Line 1 Id Pendaftaran -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Kejuruan"
-            android:layout_marginStart="14dp"
-            android:textColor="@color/black"
-            android:padding="6dp"/>
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="5dp"
+            android:orientation="horizontal">
 
-        <!-- Program -->
-        <TextView
-            android:id="@+id/tvprogram"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Program"
-            android:layout_marginStart="14dp"
-            android:textColor="@color/black"
-            android:padding="6dp"/>
+            <!-- Label di sebelah kiri -->
+            <TextView
+                android:id="@+id/label_department_pendaftar"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:text="Kejuruan                    :"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
 
-        <!-- Waktu Pendaftaran -->
-        <TextView
-            android:id="@+id/tvwaktupendaftaran"
+            <!-- Nama di sebelah kanan -->
+            <TextView
+                android:id="@+id/department_pendaftar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Line 1 Id Pendaftaran -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Waktu Pendaftaran"
-            android:layout_marginStart="14dp"
-            android:textColor="@color/black"
-            android:padding="6dp"/>
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="5dp"
+            android:orientation="horizontal">
+
+            <!-- Label di sebelah kiri -->
+            <TextView
+                android:id="@+id/label_program_pendaftar"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:text="Program                     :"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+
+            <!-- Nama di sebelah kanan -->
+            <TextView
+                android:id="@+id/program_pendaftar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Line 1 Id Pendaftaran -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="5dp"
+            android:orientation="horizontal">
+
+            <!-- Label di sebelah kiri -->
+            <TextView
+                android:id="@+id/label_time_pendaftar"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:text="Waktu Pendaftaran   :"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+
+            <!-- Nama di sebelah kanan -->
+            <TextView
+                android:id="@+id/time_pendaftar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_regular"
+                android:textColor="@color/font_black"
+                android:textSize="14sp" />
+        </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
