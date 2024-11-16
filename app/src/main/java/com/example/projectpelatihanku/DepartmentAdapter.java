@@ -38,16 +38,13 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
     }
 
     private void navigateToProgram(String departmentId, String namaInstitusi) {
-        // Simpan departmentId ke SharedPreferences
         SharedPreferences sharedPreferences = context.getSharedPreferences("programPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("departmentId", departmentId);
-        editor.apply(); // Simpan perubahan
+        editor.apply();
 
-        // Log untuk memastikan nilai departmentId tersimpan
         Log.d("DepartmentAdapter", "Saved departmentId: " + departmentId);
 
-        // Navigasi ke FragmentProgram
         FragmentActivity activity = (FragmentActivity) context;
         BottomNavigationView bottomNavigationView = activity.findViewById(R.id.bottomview);
         if (bottomNavigationView != null) {
@@ -74,16 +71,12 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
         holder.textNamaInstitusi.setText(department.getNama());
         holder.textDeskripsi.setText(department.getDeskripsi());
 
-        // Menampilkan gambar menggunakan Glide
         Glide.with(context).load(department.getImageUrl()).into(holder.imageInstitusi);
 
-        // Tombol "Lebih Banyak"
         holder.btnLihatProgram.setOnClickListener(v -> {
-            // Ambil departmentId langsung dari objek department
-            String departmentId = department.getId(); // Ambil ID dari objek department
+            String departmentId = department.getId();
             String namaInstitusi = department.getNama();
 
-            // Panggil navigateToProgram dengan parameter yang tepat
             navigateToProgram(departmentId, namaInstitusi);
         });
     }
