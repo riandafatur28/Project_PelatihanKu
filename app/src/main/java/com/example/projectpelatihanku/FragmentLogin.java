@@ -36,7 +36,6 @@ public class FragmentLogin extends Fragment {
     static String Name;
     static String firstName;
 
-    // End Point
     private String endPoint = "login";
 
     @Nullable
@@ -44,7 +43,6 @@ public class FragmentLogin extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        // Inisialisasi elemen UI
         buttonLogin = view.findViewById(R.id.button_login);
         textRegister = view.findViewById(R.id.text_register);
         textForgotPassword = view.findViewById(R.id.text_forgot_password);
@@ -52,7 +50,6 @@ public class FragmentLogin extends Fragment {
         passwordEditText = view.findViewById(R.id.passwordEditText);
         iconPassword = view.findViewById(R.id.icon_password);
 
-        // Fungsi untuk login
         buttonLogin.setOnClickListener(v -> {
             String email = emailEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
@@ -90,34 +87,28 @@ public class FragmentLogin extends Fragment {
             }
         });
 
-        // Toggle visibilitas password dengan listener
         iconPassword.setOnClickListener(v -> {
             togglePasswordVisibility(passwordEditText);
             iconPassword.setImageResource(isPasswordVisible ? R.drawable.vector_eye_close : R.drawable.vector_eye_open);
         });
 
-        // Listener untuk pindah ke halaman register
         textRegister.setOnClickListener(v -> {
             if (getActivity() instanceof MainActivity) {
                 ((MainActivity) getActivity()).navigateToRegister();
             } else {
-                Log.e("FragmentLogin", "MainActivity not found");
             }
         });
 
-        // Listener untuk pindah ke halaman lupa sandi
         textForgotPassword.setOnClickListener(v -> {
             if (getActivity() instanceof MainActivity) {
                 ((MainActivity) getActivity()).navigateToForgotPassword();
             } else {
-                Log.e("FragmentLogin", "MainActivity not found");
             }
         });
 
         return view;
     }
 
-    // Fungsi toggle visibilitas password
     private void togglePasswordVisibility(EditText passwordEditText) {
         isPasswordVisible = !isPasswordVisible;
         passwordEditText.setInputType(isPasswordVisible ?
