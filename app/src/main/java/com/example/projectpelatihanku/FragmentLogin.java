@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,8 @@ import androidx.fragment.app.Fragment;
 
 import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.JwtHelper;
+import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 
 
 import org.json.JSONException;
@@ -27,16 +30,16 @@ import java.io.IOException;
 import java.util.Map;
 
 public class FragmentLogin extends Fragment {
+
+    // Deklarasi Variable
     private Button buttonLogin;
     private TextView textRegister, textForgotPassword;
     private boolean isPasswordVisible = false;
     private EditText emailEditText, passwordEditText;
     private ImageView iconPassword;
-
     static String Name;
     static String firstName;
-
-    private String endPoint = "login";
+    private final String endPoint = "login";
 
     @Nullable
     @Override
@@ -50,65 +53,89 @@ public class FragmentLogin extends Fragment {
         passwordEditText = view.findViewById(R.id.passwordEditText);
         iconPassword = view.findViewById(R.id.icon_password);
 
+        loginButtonHandler(new ApiClient());
+        changeIconsPassword();
+        registerButtonHandler();
+        forgotPasswordHandler();
+
+        return view;
+    }
+
+    /**
+     * Handler untuk tombol login.
+     * @param apiClient Service class untuk melakukan request ke API
+     */
+    private void loginButtonHandler(ApiClient apiClient) {
         buttonLogin.setOnClickListener(v -> {
             String email = emailEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
-
-            ApiClient apiClient = new ApiClient();
             try {
                 apiClient.oauthLogin(endPoint, email, password, new ApiClient.LoginHelper() {
                     @Override
                     public void onSuccess(String token) {
                         getActivity().runOnUiThread(() -> {
-                            SharedPreferences preferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString("token", token);
-                            editor.apply();
-                            JWT jwt = new JWT(token);
-                            String username = jwt.getClaim("users").asObject(Map.class).get("username").toString();
-                            Name = username;
+                            SharedPreferencesHelper.saveToken(getActivity(), token);
+                            Name = JwtHelper.getUserData(token, "users", "username");
                             firstName = Name.split(" ")[0];
                             if (getActivity() instanceof MainActivity) {
                                 ((MainActivity) getActivity()).navigateToDashboard();
                             } else {
-                                Log.e("FragmentLogin", "MainActivity not found");
+                                Toast.makeText(getActivity(), "MainActivity not found",
+                                        Toast.LENGTH_SHORT).show();
                             }
                         });
-
                     }
 
                     @Override
                     public void onFailed(IOException e) {
-                        Log.d("Failed", "onFailed " + e.getMessage());
+                        Toast.makeText(getActivity(), "Login Gagal", Toast.LENGTH_SHORT).show();
                     }
                 });
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
         });
+    }
 
-        iconPassword.setOnClickListener(v -> {
-            togglePasswordVisibility(passwordEditText);
-            iconPassword.setImageResource(isPasswordVisible ? R.drawable.vector_eye_close : R.drawable.vector_eye_open);
-        });
-
+    /**
+     * Handler untuk tombol register.
+     */
+    private void registerButtonHandler() {
         textRegister.setOnClickListener(v -> {
             if (getActivity() instanceof MainActivity) {
                 ((MainActivity) getActivity()).navigateToRegister();
             } else {
             }
         });
+    }
 
+    /**
+     * Handler untuk icon password.
+     */
+    private void changeIconsPassword() {
+        iconPassword.setOnClickListener(v -> {
+            togglePasswordVisibility(passwordEditText);
+            iconPassword.setImageResource(isPasswordVisible ? R.drawable.vector_eye_close : R.drawable.vector_eye_open);
+        });
+    }
+
+    /**
+     * Handler untuk tombol lupa password.
+     */
+    private void forgotPasswordHandler() {
         textForgotPassword.setOnClickListener(v -> {
             if (getActivity() instanceof MainActivity) {
                 ((MainActivity) getActivity()).navigateToForgotPassword();
             } else {
             }
         });
-
-        return view;
     }
 
+    /**
+     * Mengatur visibilitas password.
+     *
+     * @param passwordEditText EditText untuk password
+     */
     private void togglePasswordVisibility(EditText passwordEditText) {
         isPasswordVisible = !isPasswordVisible;
         passwordEditText.setInputType(isPasswordVisible ?
