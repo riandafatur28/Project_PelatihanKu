@@ -24,7 +24,6 @@ public class FragmentDepartment extends Fragment {
     private DepartmentAdapter adapter;
     private List<Department> departmentList = new ArrayList<>();
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_department, container, false);
@@ -40,7 +39,6 @@ public class FragmentDepartment extends Fragment {
     }
 
     public void fetchData() {
-        // Get token dari shared preference
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
         String token = sharedPreferences.getString("token", "Token Tidak ditemukan");
         ApiClient apiClient = new ApiClient();
@@ -61,7 +59,6 @@ public class FragmentDepartment extends Fragment {
                     }
                 });
             }
-
 
             @Override
             public void onFailed(IOException e) {
