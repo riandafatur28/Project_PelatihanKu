@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    android:padding="12dp"
+    android:layout_marginTop="8dp"
     tools:context=".FragmentProfil">
 
     <!-- Header Profil -->
@@ -23,14 +23,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:layout_marginStart="12dp"
             android:fontFamily="@font/inter_medium"
             android:text="Ubah Profil"
-            android:textSize="28sp" />
+            android:textSize="24sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="6dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             android:background="@color/font_tint" />
     </LinearLayout>
 
