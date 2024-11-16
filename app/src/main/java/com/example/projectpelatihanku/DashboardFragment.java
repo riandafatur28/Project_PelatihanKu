@@ -37,16 +37,13 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     public static final String KEY_USER_NAME = "user_name";
     private static final String endPoint = "/dashboard/summary";
 
-    // Komponen UI
     private ShapeableImageView imageUser;
     private GoogleMap mMap;
     private ImageView imagePage;
     private TextView totalDepartments, totalPrograms, totalBuildings, totalInstructors, totalTools, salamText;
-
     private LatLng initialLocation = new LatLng(-7.600671315258253, 111.88837430296729);
     private int[] images = {R.drawable.slide_1, R.drawable.slide_2, R.drawable.slide_3};
     private int currentIndex = 0;
-
     private Handler handler;
     private final int CAROUSEL_DELAY = 5000;
     private OnDashboardVisibleListener listener;
@@ -67,27 +64,17 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
-
-        // Inisialisasi komponen UI
         initializeUI(view);
-
-        // Mengambil data pengguna dari SharedPreferences
         loadUserData();
-
-        // Inisialisasi peta
         initializeMap();
-
-        // Mulai carousel otomatis
         startAutoSlide();
 
-        // Tombol "Lebih Banyak"
         view.findViewById(R.id.btn_lebihBanyak).setOnClickListener(v -> {
             if (getActivity() instanceof MainActivity) {
                 ((MainActivity) getActivity()).navigateToInstitute();
             }
         });
 
-        // Ambil data dashboard
         fetchData();
 
         return view;
@@ -105,7 +92,6 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
 
         ApiClient apiClient = new ApiClient();
 
-        // Panggil API untuk mendapatkan data dashboard
         apiClient.fetchDashboard(token, endPoint, new ApiClient.DashboardDataHelper() {
             @Override
             public void onSuccess(ArrayList<DashboardData> data) {
@@ -168,10 +154,7 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     private void loadUserData() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
-        // Menampilkan nama pengguna
         salamText.setText("Halo, " + FragmentLogin.firstName);
-
-        // Memuat gambar pengguna jika ada
         String imageUriString = sharedPreferences.getString("image_uri", null);
         if (imageUriString != null) {
             try {
@@ -181,14 +164,12 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
                 Log.e("DashboardFragment", "Gagal memuat gambar pengguna", e);
             }
         } else {
-            String gender = sharedPreferences.getString("gender", "Tidak diketahui");  // Nilai default jika gender tidak ditemukan
-            Log.d("DashboardFragment", "Gender yang diambil: " + gender);  // Tambahkan log ini untuk debug
+            String gender = sharedPreferences.getString("gender", "Tidak diketahui");
 
-            // Menentukan gambar profil berdasarkan gender
             if ("Laki-laki".equalsIgnoreCase(gender)) {
-                imageUser.setImageResource(R.drawable.img_men);  // Gambar untuk laki-laki
+                imageUser.setImageResource(R.drawable.img_men);
             } else if ("Perempuan".equalsIgnoreCase(gender)) {
-                imageUser.setImageResource(R.drawable.img_women);  // Gambar untuk perempuan
+                imageUser.setImageResource(R.drawable.img_women);
             }
         }
     }
