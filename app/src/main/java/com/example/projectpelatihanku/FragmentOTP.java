@@ -26,14 +26,12 @@ public class FragmentOTP extends Fragment {
     private boolean isNavigating = false;
 
     private ApiClient apiClient;
-    private TokenManager tokenManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_otp, container, false);
 
         apiClient = new ApiClient();
-        tokenManager = new TokenManager(requireContext()); // Inisialisasi TokenManager
 
         sendButton = view.findViewById(R.id.button_kirim);
         textKembali = view.findViewById(R.id.text_Kembali);
@@ -65,7 +63,7 @@ public class FragmentOTP extends Fragment {
 
         // Mengatur tindakan saat tombol "Kirim Ulang" ditekan
         textKirimUlang.setOnClickListener(v -> {
-            resendOtp(); // Memanggil metode untuk mengirim ulang OTP
+//            resendOtp(); // Memanggil metode untuk mengirim ulang OTP
         });
 
         // Menambahkan TextWatcher pada setiap field OTP
@@ -113,16 +111,10 @@ public class FragmentOTP extends Fragment {
 
     // Metode untuk memverifikasi OTP dengan API
     private void verifyOtpWithApi() {
-        // Mengambil token final dari TokenManager
-        String finalToken = tokenManager.getToken();
 
         // Mengambil input OTP dari field
         String inputOTP = getInputOTP();
 
-        if (finalToken.isEmpty()) {
-            Toast.makeText(getActivity(), "Token tidak ditemukan. Silakan coba lagi.", Toast.LENGTH_LONG).show();
-            return;
-        }
 
         if (inputOTP.isEmpty()) {
             Toast.makeText(getActivity(), "OTP tidak boleh kosong.", Toast.LENGTH_LONG).show();
@@ -130,7 +122,7 @@ public class FragmentOTP extends Fragment {
         }
 
         // Melakukan verifikasi OTP dengan ApiClient
-        apiClient.verifyOtp(finalToken, inputOTP, new ApiClient.OtpVerificationHelper() {
+        apiClient.verifyOtp(inputOTP, new ApiClient.OtpVerificationHelper() {
             @Override
             public void onSuccess(String message) {
                 if (getActivity() != null) {
@@ -154,32 +146,32 @@ public class FragmentOTP extends Fragment {
     }
 
     // Metode untuk mengirim ulang OTP dengan API
-    private void resendOtp() {
-        String finalToken = tokenManager.getToken();
-
-        if (finalToken.isEmpty()) {
-            Toast.makeText(getActivity(), "Token tidak ditemukan. Silakan coba lagi.", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        apiClient.resendOtp(finalToken, new ApiClient.ResendOtpHelper() {
-            @Override
-            public void onSuccess(String message) {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() ->
-                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show()
-                    );
-                }
-            }
-
-            @Override
-            public void onFailed(IOException e) {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() ->
-                            Toast.makeText(getActivity(), "Gagal mengirim ulang OTP: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                    );
-                }
-            }
-        });
-    }
+//    private void resendOtp() {
+//        String finalToken = tokenManager.getToken();
+//
+//        if (finalToken.isEmpty()) {
+//            Toast.makeText(getActivity(), "Token tidak ditemukan. Silakan coba lagi.", Toast.LENGTH_LONG).show();
+//            return;
+//        }
+//
+//        apiClient.resendOtp(finalToken, new ApiClient.ResendOtpHelper() {
+//            @Override
+//            public void onSuccess(String message) {
+//                if (getActivity() != null) {
+//                    getActivity().runOnUiThread(() ->
+//                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show()
+//                    );
+//                }
+//            }
+//
+//            @Override
+//            public void onFailed(IOException e) {
+//                if (getActivity() != null) {
+//                    getActivity().runOnUiThread(() ->
+//                            Toast.makeText(getActivity(), "Gagal mengirim ulang OTP: " + e.getMessage(), Toast.LENGTH_LONG).show()
+//                    );
+//                }
+//            }
+//        });
+//    }
 }

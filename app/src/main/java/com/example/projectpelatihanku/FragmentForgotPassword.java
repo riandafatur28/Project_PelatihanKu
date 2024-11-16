@@ -21,14 +21,12 @@ public class FragmentForgotPassword extends Fragment {
     private LinearLayout txtKembali;
     private EditText editTextEmail;
     private ApiClient apiClient;
-    private TokenManager tokenManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_forgot_password, container, false);
 
         apiClient = new ApiClient();
-        tokenManager = new TokenManager(getActivity()); // Inisialisasi TokenManager
 
         buttonKirim = view.findViewById(R.id.button_kirim);
         txtKembali = view.findViewById(R.id.txtKembali);
@@ -56,13 +54,10 @@ public class FragmentForgotPassword extends Fragment {
     }
 
     private void sendPasswordResetRequest(String email) {
-        // Dapatkan token dan cek kadaluarsa
-        String token = tokenManager.getToken();
 
         apiClient.requestPasswordReset(email, new ApiClient.PasswordResetHelper() {
             @Override
             public void onSuccess(String tempToken) {
-                tokenManager.saveToken(tempToken); // Simpan token baru jika sukses
 
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {

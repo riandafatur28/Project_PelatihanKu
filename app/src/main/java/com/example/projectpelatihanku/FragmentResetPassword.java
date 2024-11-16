@@ -28,7 +28,6 @@ public class FragmentResetPassword extends Fragment {
     private ImageView iconInputPassword;
     private ImageView iconConfirmPassword;
     private ApiClient apiClient;
-    private TokenManager tokenManager;
     private boolean isPasswordVisible = false;
     private boolean isConfirmPasswordVisible = false;
 
@@ -38,7 +37,6 @@ public class FragmentResetPassword extends Fragment {
         View view = inflater.inflate(R.layout.fragment_reset_password, container, false);
 
         apiClient = new ApiClient();
-        tokenManager = new TokenManager(requireContext()); // Inisialisasi TokenManager
 
         sendButton = view.findViewById(R.id.button_kirim);
         backButton = view.findViewById(R.id.txtKembali);
@@ -76,36 +74,34 @@ public class FragmentResetPassword extends Fragment {
     }
 
     private void resetPassword(String newPassword) {
-        // Ambil token terbaru dari TokenManager
-        String finalToken = tokenManager.getToken();
 
-        if (finalToken == null || finalToken.isEmpty()) {
-            Toast.makeText(getActivity(), "Token tidak ditemukan. Silakan coba lagi.", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        apiClient.resetPassword(finalToken, newPassword, new ApiClient.PasswordResetHelper() {
-            @Override
-            public void onSuccess(String message) {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> {
-                        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                        if (getActivity() instanceof MainActivity) {
-                            ((MainActivity) getActivity()).navigateToConfirmPassword();
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onFailed(IOException e) {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() ->
-                            Toast.makeText(getActivity(), "Reset password gagal: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                    );
-                }
-            }
-        });
+//        if (finalToken == null || finalToken.isEmpty()) {
+//            Toast.makeText(getActivity(), "Token tidak ditemukan. Silakan coba lagi.", Toast.LENGTH_LONG).show();
+//            return;
+//        }
+//
+//        apiClient.resetPassword(finalToken, newPassword, new ApiClient.PasswordResetHelper() {
+//            @Override
+//            public void onSuccess(String message) {
+//                if (getActivity() != null) {
+//                    getActivity().runOnUiThread(() -> {
+//                        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+//                        if (getActivity() instanceof MainActivity) {
+//                            ((MainActivity) getActivity()).navigateToConfirmPassword();
+//                        }
+//                    });
+//                }
+//            }
+//
+//            @Override
+//            public void onFailed(IOException e) {
+//                if (getActivity() != null) {
+//                    getActivity().runOnUiThread(() ->
+//                            Toast.makeText(getActivity(), "Reset password gagal: " + e.getMessage(), Toast.LENGTH_LONG).show()
+//                    );
+//                }
+//            }
+//        });
     }
 
     // Metode untuk mengatur visibilitas password
