@@ -1,7 +1,6 @@
 package com.example.projectpelatihanku;
 
 import static com.example.projectpelatihanku.DashboardFragment.KEY_USER_NAME;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
