@@ -30,7 +30,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ApiClient {
-    public static final String BASE_URL = "http://192.168.1.8:80/";
+    public static final String BASE_URL = "https://alive-fluent-sponge.ngrok-free.app/";
     public static final String BASE_URL_PUBLIC = "api/v1/public";
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     // Inisialisasi OkHttpClient
@@ -250,7 +250,7 @@ public class ApiClient {
         });
     }
 
-    public void verifyOtp(String tempToken, String otp, OtpVerificationHelper callback) {
+    public void verifyOtp(String otp, OtpVerificationHelper callback) {
         String url = BASE_URL + "password-reset/verify";
         JSONObject json = new JSONObject();
         try {
@@ -263,7 +263,7 @@ public class ApiClient {
         RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json; charset=utf-8"));
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Authorization", "Bearer " + tempToken)
+                .addHeader("Authorization", "Bearer ")
                 .post(body)
                 .build();
 
@@ -782,7 +782,7 @@ public class ApiClient {
     }
 
     // PROFILE
-    public void FetchProfile(String id, String token, String endPoint, ProfileHelper callback) {
+    public void FetchProfile(int id, String token, String endPoint, ProfileHelper callback) {
         Log.d(TAG, "EndPoint : " + BASE_URL + BASE_URL_PUBLIC + endPoint);
         Request request = new Request.Builder()
                 .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
