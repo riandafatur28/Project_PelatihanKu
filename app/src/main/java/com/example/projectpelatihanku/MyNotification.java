@@ -3,14 +3,14 @@ package com.example.projectpelatihanku;
 public class MyNotification {
     private String title;
     private boolean isRead;
-    private boolean checked;// Untuk status CheckBox
+    private boolean checked;
     private String id;
 
     public MyNotification(String id, String title, boolean isRead) {
         this.title = title;
         this.isRead = isRead;
         this.id = id;
-        this.checked = false; // Default tidak dicentang
+        this.checked = false;
     }
 
     public String getTitle() {
@@ -22,7 +22,7 @@ public class MyNotification {
     }
 
     public void markAsRead() {
-        this.isRead = true; // Menandai notifikasi sebagai sudah dibaca
+        this.isRead = true;
     }
 
     public boolean isChecked() {
