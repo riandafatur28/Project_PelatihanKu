@@ -23,7 +23,6 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
     private final List<Program> programList;
     private final Context context;
 
-    // Constructor for ProgramAdapter
     public ProgramAdapter(List<Program> programList, Context context) {
         this.programList = programList;
         this.context = context;
@@ -32,38 +31,29 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
     @NonNull
     @Override
     public ProgramViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate the item layout for each program item
         View view = LayoutInflater.from(context).inflate(R.layout.item_program, parent, false);
         return new ProgramViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ProgramViewHolder holder, int position) {
-        // Bind the program data to each item view
         Program program = programList.get(position);
         holder.textNamaProgram.setText(program.getNama());
         holder.textDeskripsi.setText(program.getDeskripsi());
 
-        // Load the program image using Glide
         Glide.with(holder.itemView.getContext()).load(program.getImageUrl()).into(holder.imageProgram);
 
-        // Set click listener for the arrow image to navigate to FragmentDepartment
         if (holder.imageArrow2 != null) {
             holder.imageArrow2.setOnClickListener(v -> navigateToDepartment(holder));
         } else {
-            Log.d("ProgramAdapter", "imageArrow2 not found in layout");
         }
 
-        // Set click listener for the button to navigate to FragmentDetailProgram
         if (holder.btnDetail != null) {
             holder.btnDetail.setOnClickListener(v -> {
-                // Save programId to SharedPreferences
                 saveProgramIdToPreferences(program.getId());
-                // Navigate to detail program fragment
                 navigateToDetailProgram(holder);
             });
         } else {
-            Log.d("ProgramAdapter", "button Detail not found in layout");
         }
     }
 
@@ -72,7 +62,6 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
         return programList.size();
     }
 
-    // Navigate to FragmentDepartment
     private void navigateToDepartment(ProgramViewHolder holder) {
         FragmentDepartment fragmentDepartment = new FragmentDepartment();
         FragmentActivity activity = (FragmentActivity) holder.itemView.getContext();
@@ -82,7 +71,6 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
         transaction.commit();
     }
 
-    // Navigate to FragmentDetailProgram
     private void navigateToDetailProgram(ProgramViewHolder holder) {
         FragmentDetailProgram fragmentDetailProgram = new FragmentDetailProgram();
         FragmentActivity activity = (FragmentActivity) holder.itemView.getContext();
@@ -92,18 +80,13 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
         transaction.commit();
     }
 
-    // Save programId to SharedPreferences
     private void saveProgramIdToPreferences(String programId) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("programPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("programId", programId);
         editor.apply();
-
-        // Log for debugging
-        Log.d("ProgramAdapter", "Saved programId: " + programId);
     }
 
-    // ViewHolder class to represent each item in the RecyclerView
     static class ProgramViewHolder extends RecyclerView.ViewHolder {
         ShapeableImageView imageProgram;
         TextView textNamaProgram, textDeskripsi, btnDetail;
@@ -111,7 +94,6 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
 
         ProgramViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Initialize view components
             imageProgram = itemView.findViewById(R.id.imageprogram);
             textNamaProgram = itemView.findViewById(R.id.text_nama_program);
             textDeskripsi = itemView.findViewById(R.id.text_deskripsi_program);
