@@ -30,7 +30,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ApiClient {
-    public static final String BASE_URL = "http://192.168.1.4:80/";
+    public static final String BASE_URL = "http://192.168.1.8:80/";
     public static final String BASE_URL_PUBLIC = "api/v1/public";
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     // Inisialisasi OkHttpClient
