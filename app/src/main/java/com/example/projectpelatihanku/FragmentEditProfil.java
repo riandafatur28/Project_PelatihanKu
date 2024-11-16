@@ -33,7 +33,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
-
 import static com.example.projectpelatihanku.FragmentProfil.address;
 import static com.example.projectpelatihanku.FragmentProfil.birth;
 import static com.example.projectpelatihanku.FragmentProfil.gender;
@@ -43,10 +42,17 @@ import static com.example.projectpelatihanku.FragmentProfil.username;
 
 public class FragmentEditProfil extends Fragment {
 
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private static final String IMAGE_URI_KEY = "image_uri";
+    private static final String ACCOUNT_TOKEN_PREFS = "accountToken";
+    private static final String GENDER_KEY = "gender";
+    private static final String DEFAULT_IMAGE = "gambar_user";
+    private static final String MALE_IMAGE = "img_men";
+    private static final String FEMALE_IMAGE = "img_women";
+
     private EditText editNama, editEmail, editTTL, editNoTelp, editAlamat, editGender;
     private TextView namaUser;
     private ImageView imageSecond, iconCamera;
-    private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
     private SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
     private SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -55,8 +61,14 @@ public class FragmentEditProfil extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_profil, container, false);
+        initializeUIComponents(view);
+        setProfileData();
+        checkPermissionsAndLoadImage();
+        setButtonListeners(view);
+        return view;
+    }
 
-        // Inisialisasi komponen UI
+    private void initializeUIComponents(View view) {
         namaUser = view.findViewById(R.id.namaUser);
         editNama = view.findViewById(R.id.editnamaProfil);
         editEmail = view.findViewById(R.id.editemailProfil);
@@ -67,12 +79,14 @@ public class FragmentEditProfil extends Fragment {
         imageSecond = view.findViewById(R.id.imageProfil);
         iconCamera = view.findViewById(R.id.iconCamera);
 
-        // Buat Tanggal Lahir, Email, dan Jenis Kelamin tidak bisa diubah
+        // Disable editing for certain fields
         editTTL.setEnabled(false);
         editGender.setEnabled(false);
         editEmail.setEnabled(false);
+    }
 
-        // Set value dari data profil
+    private void setProfileData() {
+        // Set data from FragmentProfil
         namaUser.setText(username);
         editNama.setText(username);
         editGender.setText(gender);
@@ -80,7 +94,7 @@ public class FragmentEditProfil extends Fragment {
         editNoTelp.setText(phone);
         editAlamat.setText(address);
 
-        // Format tanggal lahir dari yyyy-MM-dd ke dd-MM-yyyy
+        // Format birth date
         try {
             if (!TextUtils.isEmpty(birth)) {
                 Date birthDate = inputFormat.parse(birth);
@@ -93,66 +107,57 @@ public class FragmentEditProfil extends Fragment {
             e.printStackTrace();
             showToast("Format tanggal lahir tidak valid", 3000);
         }
+    }
 
-        // Muat gambar profil
-        loadProfileImage();
-
-        // Tombol untuk menyimpan perubahan
-        Button buttonUbah = view.findViewById(R.id.buttonubahProfil);
-        buttonUbah.setOnClickListener(v -> simpanPerubahan());
-
-        // Tombol untuk kembali
-        LinearLayout txtKembali = view.findViewById(R.id.txtKembali);
-        txtKembali.setOnClickListener(v -> navigateBackToProfile());
-
-        // Izin akses galeri
+    private void checkPermissionsAndLoadImage() {
+        // Request permission for external storage if not granted
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
 
-        // Listener untuk memilih gambar
-        imageSecond.setOnClickListener(v -> pilihGambar());
-        iconCamera.setOnClickListener(v -> pilihGambar());
-
-        return view;
+        // Load profile image
+        loadProfileImage();
     }
 
-    // Fungsi untuk memuat gambar profil
     private void loadProfileImage() {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
-        String imageUriString = sharedPreferences.getString("image_uri", null);
-        String gender = sharedPreferences.getString("gender", "Tidak diketahui");
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(ACCOUNT_TOKEN_PREFS, Context.MODE_PRIVATE);
+        String imageUriString = sharedPreferences.getString(IMAGE_URI_KEY, null);
+        String gender = sharedPreferences.getString(GENDER_KEY, "Tidak diketahui");
 
         if (imageUriString != null) {
             try {
-                imageSecond.setImageURI(Uri.parse(imageUriString)); // Gambar dari URI
+                imageSecond.setImageURI(Uri.parse(imageUriString));
                 Log.d("FragmentEditProfil", "Loaded image from URI: " + imageUriString);
             } catch (Exception e) {
-                imageSecond.setImageResource(R.drawable.gambar_user); // Default gambar pengguna
+                setDefaultImage(gender);
                 Log.e("FragmentEditProfil", "Failed to load image from URI", e);
             }
         } else {
-            Log.d("FragmentEditProfil", "No image URI found. Loading default image.");
-            if ("Laki-laki".equalsIgnoreCase(gender)) {
-                imageSecond.setImageResource(R.drawable.img_men); // Gambar default laki-laki
-            } else if ("Perempuan".equalsIgnoreCase(gender)) {
-                imageSecond.setImageResource(R.drawable.img_women); // Gambar default perempuan
-            } else {
-                imageSecond.setImageResource(R.drawable.gambar_user); // Gambar default jika gender tidak diketahui
-            }
+            setDefaultImage(gender);
         }
     }
 
-    // Fungsi untuk menyimpan URI gambar ke SharedPreferences
-    private void saveImageUriToPreferences(Uri imageUri) {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("image_uri", imageUri.toString()); // Simpan URI sebagai String
-        editor.apply(); // Simpan perubahan secara asinkron
-        Log.d("FragmentEditProfil", "Image URI saved: " + imageUri.toString());
+    private void setDefaultImage(String gender) {
+        if ("Laki-laki".equalsIgnoreCase(gender)) {
+            imageSecond.setImageResource(R.drawable.img_men);
+        } else if ("Perempuan".equalsIgnoreCase(gender)) {
+            imageSecond.setImageResource(R.drawable.img_women);
+        } else {
+            imageSecond.setImageResource(R.drawable.gambar_user);
+        }
     }
 
-    // Fungsi untuk memilih gambar dari galeri
+    private void setButtonListeners(View view) {
+        Button buttonUbah = view.findViewById(R.id.buttonubahProfil);
+        buttonUbah.setOnClickListener(v -> simpanPerubahan());
+
+        LinearLayout txtKembali = view.findViewById(R.id.txtKembali);
+        txtKembali.setOnClickListener(v -> navigateBackToProfile());
+
+        imageSecond.setOnClickListener(v -> pilihGambar());
+        iconCamera.setOnClickListener(v -> pilihGambar());
+    }
+
     private void pilihGambar() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
@@ -161,32 +166,42 @@ public class FragmentEditProfil extends Fragment {
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
-    // Menangani hasil pemilihan gambar
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
-            try {
-                Cursor cursor = getActivity().getContentResolver().query(imageUri, null, null, null, null);
-                if (cursor != null && cursor.moveToFirst()) {
-                    int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
-                    long fileSizeInBytes = cursor.getLong(sizeIndex);
-                    cursor.close();
-
-                    if (fileSizeInBytes <= 1 * 1024 * 1024) { // Maks 1 MB
-                        imageSecond.setImageURI(imageUri); // Set gambar ke ImageView
-                        saveImageUriToPreferences(imageUri); // Simpan URI gambar
-                    } else {
-                        showToast("Ukuran gambar melebihi 1 MB!", 3000);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                showToast("Gagal memuat gambar!", 3000);
-            }
+            handleImageSelection();
         }
+    }
+
+    private void handleImageSelection() {
+        try {
+            Cursor cursor = getActivity().getContentResolver().query(imageUri, null, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+                long fileSizeInBytes = cursor.getLong(sizeIndex);
+                cursor.close();
+
+                if (fileSizeInBytes <= 1 * 1024 * 1024) { // Maks 1 MB
+                    imageSecond.setImageURI(imageUri); // Set image to ImageView
+                    saveImageUriToPreferences(imageUri); // Save image URI
+                } else {
+                    showToast("Ukuran gambar melebihi 1 MB!", 3000);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showToast("Gagal memuat gambar!", 3000);
+        }
+    }
+
+    private void saveImageUriToPreferences(Uri imageUri) {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(ACCOUNT_TOKEN_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(IMAGE_URI_KEY, imageUri.toString());
+        editor.apply(); // Asynchronously save the changes
+        Log.d("FragmentEditProfil", "Image URI saved: " + imageUri.toString());
     }
 
     private void simpanPerubahan() {
@@ -200,11 +215,8 @@ public class FragmentEditProfil extends Fragment {
             return;
         }
 
-
         // Perbarui nama pada UI `namaUser` di FragmentEditProfil
         namaUser.setText(nama);
-
-        // Simpan ke server
         showToast("Perubahan berhasil disimpan!", 3000);
     }
 
@@ -224,5 +236,4 @@ public class FragmentEditProfil extends Fragment {
     private boolean validasiNama(String nama) {
         return nama.matches("[a-zA-Z ]+");
     }
-
 }
