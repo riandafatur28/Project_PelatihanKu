@@ -64,6 +64,5 @@ dependencies {
     implementation ("com.tbuonomo:dotsindicator:4.3")
 
 
-    implementation ("com.github.CastorFlex.skeleton:library:1.0.0")
 
 }
