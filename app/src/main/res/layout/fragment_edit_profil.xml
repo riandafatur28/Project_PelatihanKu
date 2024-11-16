@@ -111,6 +111,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_regular"
                     android:hint="Nama Panjang"
+                    android:backgroundTint="#EEF2F6"
                     android:textColor="@color/font_black"
                     android:textSize="16sp" />
 
@@ -131,6 +132,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_regular"
                     android:hint="Jenis Kelamin"
+                    android:backgroundTint="#EEF2F6"
                     android:textColor="@color/font_black"
                     android:textSize="16sp" />
 
@@ -151,6 +153,7 @@
                     android:layout_height="wrap_content"
                     android:enabled="false"
                     android:focusable="false"
+                    android:backgroundTint="#EEF2F6"
                     android:fontFamily="@font/inter_regular"
                     android:hint="Email"
                     android:textColor="@color/font_black"
@@ -173,6 +176,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_regular"
                     android:hint="No. Telp"
+                    android:backgroundTint="#EEF2F6"
                     android:textColor="@color/font_black"
                     android:textSize="16sp" />
 
@@ -193,6 +197,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_regular"
                     android:hint="Tanggal Lahir"
+                    android:backgroundTint="#EEF2F6"
                     android:textColor="@color/font_black"
                     android:textSize="16sp" />
 
@@ -213,6 +218,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_regular"
                     android:hint="Alamat"
+                    android:backgroundTint="#EEF2F6"
                     android:textColor="@color/font_black"
                     android:textSize="16sp" />
             </LinearLayout>
