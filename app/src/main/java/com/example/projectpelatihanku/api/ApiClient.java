@@ -4,6 +4,7 @@ package com.example.projectpelatihanku.api;
 import static android.content.ContentValues.TAG;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -38,6 +39,7 @@ public class ApiClient {
 
     public interface RegisterHelper {
         void onSuccess(String response);
+
         void onFailed(IOException e);
     }
 
@@ -87,14 +89,23 @@ public class ApiClient {
 
     }
 
-    // Adapter Login API
+    /**
+     * Interface untuk Callback Login
+     */
     public interface LoginHelper {
         void onSuccess(String token);
 
         void onFailed(IOException e);
     }
 
-    // Login
+    /**
+     * Mengirim permintaan login ke server.
+     * @param endPoint URL endpoint untuk login
+     * @param email alamat email user
+     * @param password password user
+     * @param callback callback untuk hasil login
+     * @throws JSONException jika terjadi kesalahan dalam parsing JSON
+     */
     public void oauthLogin(String endPoint, String email, String password, LoginHelper callback) throws JSONException {
 
         // Buat Object untuk menampung data user
@@ -106,6 +117,7 @@ public class ApiClient {
                 data.toString(),
                 MediaType.parse("application/json; charset=utf-8")
         );
+
         Request request = new Request.Builder().url(BASE_URL + endPoint).post(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -137,10 +149,10 @@ public class ApiClient {
     }
 
 
-
     // Interface untuk Callback Password Reset
     public interface PasswordResetHelper {
         void onSuccess(String token);
+
         void onFailed(IOException e);
     }
 
@@ -204,11 +216,13 @@ public class ApiClient {
 
     public interface PassResetHelper {
         void onSuccess(String tempToken);
+
         void onFailed(IOException e);
     }
 
     public interface OtpVerificationHelper {
         void onSuccess(String finalToken);
+
         void onFailed(IOException e);
     }
 
@@ -293,9 +307,9 @@ public class ApiClient {
     }
 
 
-
     public interface ResendOtpHelper {
         void onSuccess(String message);
+
         void onFailed(IOException e);
     }
 
@@ -418,10 +432,9 @@ public class ApiClient {
     }
 
 
-
-
     public interface DashboardDataHelper {
         void onSuccess(ArrayList<DashboardData> data);
+
         void onFailed(IOException e);
     }
 
@@ -651,6 +664,7 @@ public class ApiClient {
 
     public interface DetailProgramHelper {
         void onSuccess(ArrayList<DetailProgram> data);
+
         void onFailed(IOException e);
     }
 
@@ -706,7 +720,6 @@ public class ApiClient {
             }
         });
     }
-
 
 
     // Notifikasi adapter
@@ -819,8 +832,10 @@ public class ApiClient {
             }
         });
     }
+
     public interface UserUpdateCallback {
         void onSuccess(String message);
+
         void onFailed(IOException e);
     }
 
