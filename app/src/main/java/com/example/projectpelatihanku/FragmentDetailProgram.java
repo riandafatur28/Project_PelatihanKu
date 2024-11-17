@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -184,10 +185,10 @@ public class FragmentDetailProgram extends Fragment {
     /**
      * Handler Metode untuk button kembali
      *
-     * @see FragmentHelper#handleBackButton(FragmentActivity, ImageView)
+     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button)
      */
     private void backButtonHandler(View view) {
         ImageView backButton = view.findViewById(R.id.imageArrow3);
-        FragmentHelper.handleBackButton(getActivity(), backButton);
+        FragmentHelper.backNavigation(getActivity(), backButton, null);
     }
 }

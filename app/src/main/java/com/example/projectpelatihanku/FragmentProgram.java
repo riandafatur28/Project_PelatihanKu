@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,7 +83,7 @@ public class FragmentProgram extends Fragment {
 
     /**
      * Navigasi ke FragmentDepartment
-     * @see FragmentHelper#handleBackButton(FragmentActivity, ImageView)
+     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button)
      */
     private void navigateToDepartment() {
         FragmentActivity activity = getActivity();
@@ -91,7 +92,7 @@ public class FragmentProgram extends Fragment {
             if (bottomNavigationView != null) {
                 bottomNavigationView.setVisibility(View.VISIBLE);
             }
-            FragmentHelper.handleBackButton(activity, backButton);
+            FragmentHelper.backNavigation(activity, backButton, null);
         }
     }
 
