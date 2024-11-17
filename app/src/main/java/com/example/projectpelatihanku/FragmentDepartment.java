@@ -1,18 +1,18 @@
 package com.example.projectpelatihanku;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectpelatihanku.Models.Department;
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,35 +34,35 @@ public class FragmentDepartment extends Fragment {
         adapter = new DepartmentAdapter(departmentList, getContext());
         recyclerView.setAdapter(adapter);
 
-        fetchData();
+        fetchData(new ApiClient());
         return view;
     }
 
-    public void fetchData() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString("token", "Token Tidak ditemukan");
-        ApiClient apiClient = new ApiClient();
+    /**
+     * Mengambil data dari API
+     *
+     * @param apiClient Service Class untuk mengambil data dari API
+     */
+    public void fetchData(ApiClient apiClient) {
+        String token = SharedPreferencesHelper.getToken(getContext());
 
-        // get data
         apiClient.fetchDepartment(token, endPoint, new ApiClient.DepartmentHelper() {
             @Override
             public void onSuccess(ArrayList<Department> data) {
                 requireActivity().runOnUiThread(() -> {
-                    Log.d("Department", "Jumlah data diterima: " + data.size()); // Periksa jumlah data
                     if (data != null && !data.isEmpty()) {
                         departmentList.clear();
                         departmentList.addAll(data);
-                        Log.d("Department", "Data setelah ditambahkan: " + departmentList.size());
                         adapter.notifyDataSetChanged();
-                    } else {
-                        Log.d("Department", "Data kosong.");
                     }
                 });
             }
 
             @Override
             public void onFailed(IOException e) {
-                Log.d("Failed", "onFailed: " + e.getMessage());
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(),  e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }
