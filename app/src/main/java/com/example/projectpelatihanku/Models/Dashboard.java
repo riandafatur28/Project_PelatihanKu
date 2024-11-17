@@ -1,10 +1,10 @@
-package com.example.projectpelatihanku;
+package com.example.projectpelatihanku.Models;
 
-public class DashboardData {
+public class Dashboard {
     private final String tableName;
     private final int total;
 
-    public DashboardData(String tableName, int total) {
+    public Dashboard(String tableName, int total) {
         this.tableName = tableName;
         this.total = total;
     }

@@ -1,4 +1,4 @@
-package com.example.projectpelatihanku;
+package com.example.projectpelatihanku.Models;
 
 import java.io.Serializable;
 
