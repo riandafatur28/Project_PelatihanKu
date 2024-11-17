@@ -470,41 +470,14 @@
                             android:text="Persyaratan"
                             android:textSize="16sp" />
 
-                        <TextView
-                            android:id="@+id/syarat1"
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewRequirements"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="1dp"
-                            android:layout_marginTop="12dp"
-                            android:layout_marginEnd="5dp"
-                            android:fontFamily="@font/inter_regular"
-                            android:text="1. Scan KTP"
-                            android:textColor="@color/font_black"
-                            android:textSize="12sp" />
+                            android:layout_marginTop="16dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp" />
 
-                        <TextView
-                            android:id="@+id/syarat2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="1dp"
-                            android:layout_marginTop="3dp"
-                            android:layout_marginEnd="5dp"
-                            android:fontFamily="@font/inter_regular"
-                            android:text="2. Scan Kartu Keluarga (KK)"
-                            android:textColor="@color/font_black"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/syarat3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="1dp"
-                            android:layout_marginTop="3dp"
-                            android:layout_marginEnd="5dp"
-                            android:fontFamily="@font/inter_regular"
-                            android:text="3. Scan Ijazah Terakhir"
-                            android:textColor="@color/font_black"
-                            android:textSize="12sp" />
                     </LinearLayout>
                 </LinearLayout>
 
