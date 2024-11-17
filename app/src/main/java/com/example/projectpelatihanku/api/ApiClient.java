@@ -4,15 +4,14 @@ package com.example.projectpelatihanku.api;
 import static android.content.ContentValues.TAG;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.example.projectpelatihanku.DashboardData;
-import com.example.projectpelatihanku.Department;
-import com.example.projectpelatihanku.DetailProgram;
+import com.example.projectpelatihanku.Models.Dashboard;
+import com.example.projectpelatihanku.Models.Department;
+import com.example.projectpelatihanku.Models.DetailProgram;
 import com.example.projectpelatihanku.MyNotification;
-import com.example.projectpelatihanku.Program;
+import com.example.projectpelatihanku.Models.Program;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +33,79 @@ public class ApiClient {
     public static final String BASE_URL = "https://alive-fluent-sponge.ngrok-free.app/";
     public static final String BASE_URL_PUBLIC = "api/v1/public";
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+
+    /**
+     * Callback Class
+     */
+
+    /**
+     * Interface untuk Callback Login
+     */
+    public interface LoginHelper {
+        void onSuccess(String token);
+
+        void onFailed(IOException e);
+    }
+
+    /**
+     * Interface untuk Callback Department
+     */
+    public interface DepartmentHelper {
+        /**
+         * Callback untuk menerima hasil dari request
+         * @param data daftar department yang berhasil diambil
+         * @see Department
+         */
+        void onSuccess(ArrayList<Department> data);
+
+        /**
+         * Callback untuk menerima error dari request
+         * @param e error yang terjadi saat request
+         *          gunakan e.message untuk mendapatkan pesan error
+         */
+        void onFailed(IOException e);
+    }
+
+    /**
+     * Interface untuk Callback Program
+     */
+    public interface ProgramHelper {
+        /**
+         * Callback untuk menerima hasil dari request
+         * @param data daftar program yang berhasil diambil
+         * @see Program
+         */
+        void onSuccess(ArrayList<Program> data);
+
+        /**
+         * Callback untuk menerima error dari request
+         * @param e error yang terjadi saat request
+         *          gunakan e.message untuk mendapatkan pesan error
+         */
+        void onFailed(IOException e);
+    }
+
+    /**
+     * Interface untuk Callback Detail Program
+     */
+    public interface DetailProgramHelper {
+        /**
+         * Callback untuk menerima hasil dari request
+         * @param data daftar detail program yang berhasil diambil
+         * @see DetailProgram
+         */
+        void onSuccess(ArrayList<DetailProgram> data);
+
+        /**
+         * Callback untuk menerima error dari request
+         * @param e error yang terjadi saat request
+         *          gunakan e.message untuk mendapatkan pesan error
+         */
+        void onFailed(IOException e);
+    }
+
+
+
     // Inisialisasi OkHttpClient
     private OkHttpClient client = new OkHttpClient();
 
@@ -90,18 +162,10 @@ public class ApiClient {
     }
 
     /**
-     * Interface untuk Callback Login
-     */
-    public interface LoginHelper {
-        void onSuccess(String token);
-
-        void onFailed(IOException e);
-    }
-
-    /**
-     * Mengirim permintaan login ke server.
+     * Service Metode untuk mengirim permintaan login ke server.
+     *
      * @param endPoint URL endpoint untuk login
-     * @param email alamat email user
+     * @param email    alamat email user
      * @param password password user
      * @param callback callback untuk hasil login
      * @throws JSONException jika terjadi kesalahan dalam parsing JSON
@@ -433,7 +497,7 @@ public class ApiClient {
 
 
     public interface DashboardDataHelper {
-        void onSuccess(ArrayList<DashboardData> data);
+        void onSuccess(ArrayList<Dashboard> data);
 
         void onFailed(IOException e);
     }
@@ -453,8 +517,8 @@ public class ApiClient {
                 if (response.isSuccessful() && response.body() != null) {
                     String jsonData = response.body().string();
                     try {
-                        ArrayList<DashboardData> dashboardDataList = parseDashboardJson(jsonData);
-                        callback.onSuccess(dashboardDataList);
+                        ArrayList<Dashboard> dashboardList = parseDashboardJson(jsonData);
+                        callback.onSuccess(dashboardList);
                     } catch (JSONException e) {
                         callback.onFailed(new IOException("JSON Parsing Error", e));
                     }
@@ -470,23 +534,23 @@ public class ApiClient {
         });
     }
 
-    private ArrayList<DashboardData> parseDashboardJson(String jsonData) throws JSONException {
+    private ArrayList<Dashboard> parseDashboardJson(String jsonData) throws JSONException {
         JSONObject jsonObject = new JSONObject(jsonData);
         if (!jsonObject.getBoolean("success")) {
             throw new JSONException("Response not successful");
         }
 
         JSONArray dataArray = jsonObject.getJSONArray("data");
-        ArrayList<DashboardData> dashboardDataList = new ArrayList<>();
+        ArrayList<Dashboard> dashboardList = new ArrayList<>();
 
         for (int i = 0; i < dataArray.length(); i++) {
             JSONObject dataObject = dataArray.getJSONObject(i);
             String tableName = dataObject.getString("table_name");
             int total = dataObject.getInt("total");
-            dashboardDataList.add(new DashboardData(tableName, total));
+            dashboardList.add(new Dashboard(tableName, total));
         }
 
-        return dashboardDataList;
+        return dashboardList;
     }
 
 
@@ -563,15 +627,18 @@ public class ApiClient {
         });
     }
 
-    //    Department adapter
-    public interface DepartmentHelper {
-        void onSuccess(ArrayList<Department> data);
-
-        void onFailed(IOException e);
-    }
-
-    // GET Departments
-    public void fetchDepartment(String token, String endPoint, DepartmentHelper listener) {
+    /**
+     * Service Metode untuk mengirim permintaan ke server
+     * Gunakan untuk mengambil daftar department yang tersedia
+     *
+     * @param token    token JWT, sertakan dalam header Authorization
+     * @param endPoint endpoint untuk mengambil daftar department
+     * @param callback callback untuk menerima hasil dari permintaan
+     * @see DepartmentHelper#onSuccess(ArrayList<Department>)
+     * @see DepartmentHelper#onFailed(IOException)
+     *
+     */
+    public void fetchDepartment(String token, String endPoint, DepartmentHelper callback) {
         Request request = new Request.Builder()
                 .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
                 .addHeader("Authorization", "Bearer " + token)
@@ -580,7 +647,7 @@ public class ApiClient {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                listener.onFailed(e);
+                callback.onFailed(new IOException("Gagal Mengirim Request: " + e.getMessage()));
             }
 
             @Override
@@ -590,38 +657,45 @@ public class ApiClient {
                     try {
                         ArrayList<Department> dataDepartments = new ArrayList<>();
                         JSONObject jsonObject = new JSONObject(data);
-                        if (!jsonObject.getBoolean("isEmpty")) {
+
+                        if (jsonObject.has("isEmpty") && !jsonObject.getBoolean("isEmpty")) {
                             JSONArray departments = jsonObject.getJSONArray("departments");
                             for (int i = 0; i < departments.length(); i++) {
                                 JSONObject department = departments.getJSONObject(i);
                                 String id = department.getString("id");
                                 String nama = department.getString("nama");
                                 String deskripsi = department.getString("deskripsi");
-                                dataDepartments.add(new Department(id, nama, deskripsi, null));
+                                String imageUrl = BASE_URL + department.getString("image_path");
+                                dataDepartments.add(new Department(id, nama, deskripsi, imageUrl));
                             }
-                            listener.onSuccess(dataDepartments);
+
+                            callback.onSuccess(dataDepartments);
+                        } else {
+                            callback.onFailed(new IOException("No departments found."));
                         }
+
                     } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                        callback.onFailed(new IOException("Gagal saat parsing JSON: " + e.getMessage()));
                     }
                 } else {
-                    Log.e("Network Error", "Response unsuccessful or empty body");
+                    callback.onFailed(new IOException("Gagal dengan kode response: " + response.code()));
                 }
             }
-
         });
     }
 
-    //    Program adapter
-    public interface ProgramHelper {
-        void onSuccess(ArrayList<Program> data);
-
-        void onFailed(IOException e);
-    }
-
-    // GET Programs
-    public void fetchProgram(String token, String endPoint, ProgramHelper listener) {
-        Log.d("Endpoint", "fetchProgram: " + BASE_URL + BASE_URL_PUBLIC + endPoint);
+    /**
+     * Service Metode untuk mengirim permintaan ke server
+     * Gunakan untuk mengambil data daftar program dari berdasarkan deparment id
+     * Kirim token ke header Authorization untuk mengakses endpoint
+     *
+     * @param token    token JWT, sertakan dalam header Authorization
+     * @param endPoint endpoint untuk mengambil daftar program
+     * @param callback callback untuk menerima hasil dari permintaan
+     * @see ProgramHelper#onSuccess(ArrayList<Program>)
+     * @see ProgramHelper#onFailed(IOException)
+     */
+    public void fetchProgram(String token, String endPoint, ProgramHelper callback) {
         Request request = new Request.Builder()
                 .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
                 .addHeader("Authorization", "Bearer " + token)
@@ -630,17 +704,17 @@ public class ApiClient {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                listener.onFailed(e);
+                callback.onFailed(e);
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String data = response.body().string();
+                    Log.d(TAG, "onResponse: " + data);
                     try {
                         ArrayList<Program> dataPrograms = new ArrayList<>();
                         JSONObject jsonObject = new JSONObject(data);
-                        Log.d(TAG, "onResponse: fetch program" + jsonObject);
                         if (!jsonObject.getBoolean("isEmpty")) {
                             JSONArray programs = jsonObject.getJSONArray("programs");
                             for (int i = 0; i < programs.length(); i++) {
@@ -648,74 +722,87 @@ public class ApiClient {
                                 String id = program.getString("id");
                                 String nama = program.getString("nama");
                                 String deskripsi = program.getString("deskripsi");
-                                dataPrograms.add(new Program(id, nama, deskripsi, null));
+                                String imageUri = BASE_URL + program.getString("image_path");
+                                String departmentId = program.getString("department_id");
+                                dataPrograms.add(new Program(id, nama, deskripsi, imageUri, departmentId));
                             }
-                            listener.onSuccess(dataPrograms);
+                            callback.onSuccess(dataPrograms);
+                        } else {
+                            callback.onFailed(new IOException("No departments found."));
                         }
                     } catch (JSONException e) {
-                        Log.e("Network Error", "JSON Parsing error: " + e.getMessage());
+                        callback.onFailed(new IOException("Gagal saat parsing JSON: " + e.getMessage()));
                     }
                 } else {
-                    Log.e("Network Error", "Respon gagal: " + response.message());
+                    callback.onFailed(new IOException("Gagal dengan kode response: " + response.code()));
                 }
             }
         });
     }
 
-    public interface DetailProgramHelper {
-        void onSuccess(ArrayList<DetailProgram> data);
-
-        void onFailed(IOException e);
-    }
-
-    public void fetchDetailProgram(String departmentId, DetailProgramHelper resDetailProgram, String programId) {
-        String endPoint = "/api/v1/public/departments/" + departmentId + "/programs/" + programId;
-
+    /**
+     * Service Metode untuk mengirim permintaan ke server
+     * Gunakan untuk mengambil data detail program
+     *
+     * @param token    token JWT, sertakan dalam header Authorization
+     * @param endPoint endpoint untuk mengambil data detail program
+     * @param callback callback untuk menerima hasil dari permintaan
+     * @see DetailProgramHelper#onSuccess(ArrayList)
+     * @see DetailProgramHelper#onFailed(IOException)
+     */
+    public void fetchDetailProgram(String token, String endPoint, DetailProgramHelper callback) {
         Request request = new Request.Builder()
                 .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
+                .addHeader("Authorization", "Bearer " + token)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                resDetailProgram.onFailed(new IOException("Request Failed: " + e.getMessage()));
+                callback.onFailed(new IOException("Gagal mengirim request: " + e.getMessage()));
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
+                        String data = response.body().string();
                         ArrayList<DetailProgram> detailPrograms = new ArrayList<>();
-                        JSONObject jsonObject = new JSONObject(response.body().string());
-                        JSONArray programArray = jsonObject.getJSONArray("programs");
+                        JSONObject jsonObject = new JSONObject(data);
+                        JSONArray programs = jsonObject.getJSONArray("programs");
+                        JSONObject program = programs.getJSONObject(0);
 
-                        for (int i = 0; i < programArray.length(); i++) {
-                            JSONObject program = programArray.getJSONObject(i);
+                        String id = program.getString("id");
+                        String nama = program.getString("nama");
+                        String statusPendaftaran = program.getString("status_pendaftaran");
+                        String tanggalMulai = program.getString("tgl_mulai_pendaftaran");
+                        String tanggalAkhir = program.getString("tgl_akhir_pendaftaran");
+                        String standar = program.getString("standar");
+                        String jmlPeserta = program.getString("jml_peserta");
+                        String deskripsi = program.getString("deskripsi");
+                        String programImageUri = BASE_URL + program.getString("image_path");
+                        String instructorId = program.getString("instructor_id");
+                        String buildingId = program.getString("building_id");
+                        String departmentId = program.getString("department_id");
+                        String instructorName = program.getString("instructor_name");
+                        String instructorAddress = program.getString("instructor_address");
+                        String instructorContact = program.getString("instructor_contact");
+                        String instructorImageUri = BASE_URL + program.getString("instructor_image");
+                        String buildingName = program.getString("building_name");
+                        String departmentName = program.getString("department_name");
 
-                            DetailProgram detailProgram = new DetailProgram(
-                                    program.getString("id"),
-                                    program.getString("nama"),
-                                    program.getString("deskripsi"),
-                                    program.optString("imageUrl", ""),
-                                    program.optString("statusPendaftaran", "Unknown"),
-                                    program.optString("tanggalMulai", ""),
-                                    program.optString("tanggalAkhir", ""),
-                                    program.optString("standar", ""),
-                                    program.optString("peserta", ""),
-                                    program.optString("idInstructor", ""),
-                                    program.optString("idBuilding", ""),
-                                    program.optString("idDepartment", "")
-                            );
+                        detailPrograms.add(new DetailProgram(id, nama, statusPendaftaran,
+                                tanggalMulai, tanggalAkhir, standar, jmlPeserta, deskripsi,
+                                programImageUri, instructorId, buildingId, departmentId,
+                                instructorName, instructorAddress, instructorContact,
+                                instructorImageUri, buildingName, departmentName));
 
-                            detailPrograms.add(detailProgram);
-                        }
-
-                        resDetailProgram.onSuccess(detailPrograms);
+                        callback.onSuccess(detailPrograms);
                     } catch (Exception e) {
-                        resDetailProgram.onFailed(new IOException("JSON Parsing Error: " + e.getMessage()));
+                        callback.onFailed(new IOException("Gagal saat parsing JSON: " + e.getMessage()));
                     }
                 } else {
-                    resDetailProgram.onFailed(new IOException("Response not successful: " + response.code()));
+                    callback.onFailed(new IOException("Response gagal dengan status code: " + response.code()));
                 }
             }
         });
