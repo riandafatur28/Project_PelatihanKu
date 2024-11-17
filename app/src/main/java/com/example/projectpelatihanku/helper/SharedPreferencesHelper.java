@@ -22,4 +22,15 @@ public class SharedPreferencesHelper {
         editor.apply();
     }
 
+    /**
+     * Mengambil token JWT dari shared preferences
+     * @param context konteks aplikasi
+     * @return token JWT
+     */
+    public static String getToken(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME,
+                Context.MODE_PRIVATE);
+        return preferences.getString("token", "Token Tidak ditemukan");
+    }
+
 }
