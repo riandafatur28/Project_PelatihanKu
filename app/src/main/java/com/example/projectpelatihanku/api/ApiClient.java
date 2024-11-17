@@ -132,6 +132,26 @@ public class ApiClient {
         void onFailed(IOException e);
     }
 
+    /**
+     * Interface untuk Callback Request Reset Password
+     */
+    public interface RequestResetPassword {
+        /**
+         * Callback untuk menerima hasil dari request.
+         * Ambil dan gunakan token dari response untuk lanjut ke tahap verifikasi OTP
+         *
+         * @param token token yang berhasil diambil
+         */
+        void onSuccess(String token);
+
+        /**
+         * Callback untuk menerima error dari request
+         *
+         * @param e error yang terjadi saat request.
+         *          Gunakan e.message untuk mendapatkan pesan error
+         */
+        void onFailed(IOException e);
+    }
 
     // Inisialisasi OkHttpClient
     private OkHttpClient client = new OkHttpClient();
@@ -239,20 +259,18 @@ public class ApiClient {
         });
     }
 
-
-    // Interface untuk Callback Password Reset
-    public interface PasswordResetHelper {
-        void onSuccess(String token);
-
-        void onFailed(IOException e);
-    }
-
-    // Metode asinkron untuk request password reset di dalam ApiClient
-    public void requestPasswordReset(String email, PasswordResetHelper callback) {
-        // URL endpoint untuk request password reset
+    /**
+     * Service Metode untuk mengirim permintaan kode OTP ke server.
+     * Kode OTP dikirim ke email user yang dikirim.
+     * Server memberikan response berisi token yang digunakan untuk verifikasi OTP
+     *
+     * @param email    alamat email user yang akan dikirimkan kode OTP.
+     *                 email yang digunakan adalah email yang terdaftar di aplikasi.
+     * @param callback callback untuk hasil request reset kode otp
+     */
+    public void sendRequestOtp(String email, RequestResetPassword callback) {
         String url = BASE_URL + "password-reset/request";
 
-        // Membuat JSON body request
         JSONObject json = new JSONObject();
         try {
             json.put("email", email);
@@ -260,48 +278,43 @@ public class ApiClient {
             e.printStackTrace();
         }
 
-        // Membuat RequestBody
         RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json; charset=utf-8"));
 
-        // Membuat Request dengan URL dan body
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
                 .build();
 
-        // Melakukan request asinkron menggunakan enqueue
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                // Callback onFailed jika request gagal
-                Log.d("Password Reset", "Request failed: " + e.getMessage());
-                callback.onFailed(e);
+                callback.onFailed(new IOException("Gagal Mengirim Request: " + e.getMessage()));
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
                 try {
                     String responseData = response.body().string();
+                    JSONObject jsonResponse = new JSONObject(responseData);
                     if (response.isSuccessful()) {
-                        JSONObject jsonResponse = new JSONObject(responseData);
-                        // Periksa apakah respons mengandung "token"
                         if (jsonResponse.has("token")) {
                             String token = jsonResponse.getString("token");
-                            callback.onSuccess(token); // Callback onSuccess dengan token
+                            callback.onSuccess(token);
                         } else {
-                            callback.onFailed(new IOException("Token not found in response"));
+                            callback.onFailed(new IOException("Token Tidak ditemukan"));
                         }
+                    } else if (response.code() == 401) {
+                        String message = jsonResponse.getString("message");
+                        callback.onFailed(new IOException(message));
                     } else {
-                        callback.onFailed(new IOException("Unexpected response code " + response.code()));
+                        callback.onFailed(new IOException("Gagal dengan code response: " + response.code()));
                     }
-                } catch (IOException e) {
-                    callback.onFailed(new IOException("Error parsing response"));
                 } catch (JSONException e) {
-                    throw new RuntimeException(e);
+                    callback.onFailed(new IOException("Error saat parsing JSON: " + e.getMessage()));
+                } catch (IOException e) {
+                    callback.onFailed(new IOException(e.getMessage()));
                 }
             }
-
-
         });
     }
 
@@ -463,7 +476,7 @@ public class ApiClient {
         });
     }
 
-    public void resetPassword(String finalToken, String newPassword, PasswordResetHelper callback) {
+    public void resetPassword(String finalToken, String newPassword, RequestResetPassword callback) {
         String url = BASE_URL + "password-reset/new";
 
         // Membuat JSON body untuk permintaan reset password
