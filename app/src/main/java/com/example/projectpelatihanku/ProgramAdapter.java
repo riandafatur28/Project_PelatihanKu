@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectpelatihanku.Models.Program;
 import com.example.projectpelatihanku.helper.FragmentHelper;
+import com.example.projectpelatihanku.helper.FunctionHelper;
 import com.example.projectpelatihanku.helper.GlideHelper;
 import com.google.android.material.imageview.ShapeableImageView;
 
@@ -32,6 +33,7 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
      *
      * @param programList daftar program dari department
      * @param context     konteks aplikasi
+     * @see Program
      */
     public ProgramAdapter(List<Program> programList, Context context) {
         this.programList = programList;
@@ -64,7 +66,8 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
     public void onBindViewHolder(@NonNull ProgramViewHolder holder, int position) {
         Program program = programList.get(position);
         holder.textNamaProgram.setText(program.getNama());
-        holder.textDeskripsi.setText(program.getDeskripsi());
+        String deskripsi = FunctionHelper.potongString(program.getDeskripsi(), 4);
+        holder.textDeskripsi.setText(deskripsi);
 
         GlideHelper.loadImage(holder.itemView.getContext(), holder.imageProgram, program.getImageUrl());
 
