@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import com.example.projectpelatihanku.Models.Dashboard;
 import com.example.projectpelatihanku.Models.Department;
 import com.example.projectpelatihanku.Models.DetailProgram;
+import com.example.projectpelatihanku.Models.Requirements;
 import com.example.projectpelatihanku.MyNotification;
 import com.example.projectpelatihanku.Models.Program;
 
@@ -53,6 +54,7 @@ public class ApiClient {
     public interface DepartmentHelper {
         /**
          * Callback untuk menerima hasil dari request
+         *
          * @param data daftar department yang berhasil diambil
          * @see Department
          */
@@ -60,6 +62,7 @@ public class ApiClient {
 
         /**
          * Callback untuk menerima error dari request
+         *
          * @param e error yang terjadi saat request
          *          gunakan e.message untuk mendapatkan pesan error
          */
@@ -72,6 +75,7 @@ public class ApiClient {
     public interface ProgramHelper {
         /**
          * Callback untuk menerima hasil dari request
+         *
          * @param data daftar program yang berhasil diambil
          * @see Program
          */
@@ -79,6 +83,7 @@ public class ApiClient {
 
         /**
          * Callback untuk menerima error dari request
+         *
          * @param e error yang terjadi saat request
          *          gunakan e.message untuk mendapatkan pesan error
          */
@@ -91,6 +96,7 @@ public class ApiClient {
     public interface DetailProgramHelper {
         /**
          * Callback untuk menerima hasil dari request
+         *
          * @param data daftar detail program yang berhasil diambil
          * @see DetailProgram
          */
@@ -98,12 +104,33 @@ public class ApiClient {
 
         /**
          * Callback untuk menerima error dari request
+         *
          * @param e error yang terjadi saat request
          *          gunakan e.message untuk mendapatkan pesan error
          */
         void onFailed(IOException e);
     }
 
+    /**
+     * Interface untuk Callback Requirements
+     */
+    public interface requirementsHelper {
+        /**
+         * Callback untuk menerima hasil dari request
+         *
+         * @param data daftar requirements program yang berhasil diambil
+         * @see Requirements
+         */
+        void onSuccess(ArrayList<Requirements> data);
+
+        /**
+         * Callback untuk menerima error dari request
+         *
+         * @param e error yang terjadi saat request
+         *          gunakan e.message untuk mendapatkan pesan error
+         */
+        void onFailed(IOException e);
+    }
 
 
     // Inisialisasi OkHttpClient
@@ -636,7 +663,6 @@ public class ApiClient {
      * @param callback callback untuk menerima hasil dari permintaan
      * @see DepartmentHelper#onSuccess(ArrayList<Department>)
      * @see DepartmentHelper#onFailed(IOException)
-     *
      */
     public void fetchDepartment(String token, String endPoint, DepartmentHelper callback) {
         Request request = new Request.Builder()
@@ -804,6 +830,53 @@ public class ApiClient {
                 } else {
                     callback.onFailed(new IOException("Response gagal dengan status code: " + response.code()));
                 }
+            }
+        });
+    }
+
+    /**
+     * Service Metode untuk mengirim permintaan ke server
+     * Gunakan untuk mengambil data requirements suatu program
+     *
+     * @param token    token JWT, sertakan dalam header Authorization
+     * @param endPoint endpoint untuk mengambil data requirements
+     * @param callback callback untuk menerima hasil dari permintaan
+     * @see requirementsHelper#onSuccess(ArrayList)
+     * @see requirementsHelper#onFailed(IOException)
+     */
+    public void fetchRequirements(String token, String endPoint, requirementsHelper callback) {
+        Request request = new Request.Builder()
+                .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String data = response.body().string();
+                        ArrayList<Requirements> requirements = new ArrayList<>();
+                        JSONObject jsonObject = new JSONObject(data);
+                        JSONArray arrayRequirements = jsonObject.getJSONArray("requirements");
+                        JSONObject ObjectRequirements = arrayRequirements.getJSONObject(0);
+                        String requirement = ObjectRequirements.getString("requirement");
+                        requirements.add(new Requirements(requirement));
+
+                        callback.onSuccess(requirements);
+
+                    } catch (Exception e) {
+                        callback.onFailed(new IOException("Gagal saat parsing JSON: " + e.getMessage()));
+                    }
+                } else {
+                    callback.onFailed(new IOException("Response gagal dengan status code: " + response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                callback.onFailed(new IOException("Gagal mengirim request: " + e.getMessage()));
             }
         });
     }
