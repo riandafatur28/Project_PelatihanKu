@@ -16,7 +16,7 @@ public class Program implements  Serializable{
      * @param deskripsi Deskripsi program
      * @param imageUrl URL gambar program
      */
-    public Program(String id, String nama, String deskripsi, String imageUrl) {
+    public Program(String id, String nama, String deskripsi, String imageUrl, String departmentId) {
         this.id = id;
         this.nama = nama;
         this.deskripsi = deskripsi;
@@ -57,7 +57,7 @@ public class Program implements  Serializable{
     }
 
     /**
-     * Getter untuk mengambil id department
+     * Getter untuk mengambil id department program
      * @return id department
      */
     public String getDepartmentId() {

@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.projectpelatihanku.Models.Dashboard;
 import com.example.projectpelatihanku.api.ApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -94,7 +95,7 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
 
         apiClient.fetchDashboard(token, endPoint, new ApiClient.DashboardDataHelper() {
             @Override
-            public void onSuccess(ArrayList<DashboardData> data) {
+            public void onSuccess(ArrayList<Dashboard> data) {
                 requireActivity().runOnUiThread(() -> updateUIWithDashboardData(data));
             }
 
@@ -106,8 +107,8 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    private void updateUIWithDashboardData(ArrayList<DashboardData> data) {
-        for (DashboardData item : data) {
+    private void updateUIWithDashboardData(ArrayList<Dashboard> data) {
+        for (Dashboard item : data) {
             switch (item.getTableName()) {
                 case "departments":
                     totalDepartments.setText("Memiliki Total " + item.getTotal());

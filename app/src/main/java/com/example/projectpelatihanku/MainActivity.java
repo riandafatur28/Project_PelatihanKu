@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     private FragmentProfil fragmentProfil = new FragmentProfil();
     private FragmentLogin fragmentLogin = new FragmentLogin();
     private FragmentInstitute fragmentInstitute = new FragmentInstitute();
-    private FragmentProgram fragmentProgram = new FragmentProgram(null);
+    private FragmentProgram fragmentProgram = new FragmentProgram();
     private FragmentSplash splashFragment = new FragmentSplash();
     private FragmentRegister fragmentRegister = new FragmentRegister();
     private FragmentForgotPassword fragmentForgotPassword = new FragmentForgotPassword();
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
         if (!(currentFragment instanceof FragmentProgram)) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new FragmentProgram(null))
+                    .replace(R.id.fragment_container, new FragmentProgram())
                     .commit();
 
             // Menyembunyikan BottomNavigationView setelah mengganti fragment
@@ -205,12 +205,6 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomview); // Sesuaikan ID BottomNavigationView
         bottomNavigationView.setVisibility(View.VISIBLE);
     }
-
-    public void onLoginSuccess() {
-        navigateToDashboard();
-        showBottomNavigation();
-    }
-
 
     public void hideBottomNavigationView() {
         bottomNavigationView.setVisibility(View.GONE);
