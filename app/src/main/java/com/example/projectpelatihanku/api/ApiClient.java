@@ -153,6 +153,47 @@ public class ApiClient {
         void onFailed(IOException e);
     }
 
+    /**
+     * Interface untuk Callback Verifikasi OTP
+     */
+    public interface OtpVerificationHelper {
+        /**
+         * Callback untuk menerima hasil dari request.
+         * Ambil dan gunakan token dari response untuk lanjut ke tahap reset password
+         *
+         * @param token token yang berhasil diambil
+         */
+        void onSuccess(String token);
+
+        /**
+         * Callback untuk menerima error dari request
+         *
+         * @param e error yang terjadi saat request.
+         *          Gunakan e.message untuk mendapatkan pesan error
+         */
+        void onFailed(IOException e);
+    }
+
+    /**
+     * Interface untuk Callback Resend OTP
+     */
+    public interface ResendOtpHelper {
+        /**
+         * Callback untuk menerima hasil dari request
+         *
+         * @param message pesan dari server
+         */
+        void onSuccess(String message);
+
+        /**
+         * Callback untuk menerima error dari request
+         *
+         * @param e error yang terjadi saat request
+         *          gunakan e.message untuk mendapatkan pesan error
+         */
+        void onFailed(IOException e);
+    }
+
     // Inisialisasi OkHttpClient
     private OkHttpClient client = new OkHttpClient();
 
@@ -324,11 +365,6 @@ public class ApiClient {
         void onFailed(IOException e);
     }
 
-    public interface OtpVerificationHelper {
-        void onSuccess(String finalToken);
-
-        void onFailed(IOException e);
-    }
 
     public void requestPasswordReset(String email, PassResetHelper callback) {
         String url = BASE_URL + "password-reset/request";
@@ -368,8 +404,18 @@ public class ApiClient {
         });
     }
 
-    public void verifyOtp(String otp, OtpVerificationHelper callback) {
+
+    /**
+     * Service Metode untuk mengirim permintaan verifikasi kode OTP ke server.
+     *
+     * @param otp      kode OTP yang akan diverifikasi
+     * @param token    token yang digunakan untuk verifikasi OTP. token di ambil dari response saat
+     *                 request OTP
+     * @param callback callback untuk hasil request verifikasi OTP
+     */
+    public void verifyOtp(String otp, String token, OtpVerificationHelper callback) {
         String url = BASE_URL + "password-reset/verify";
+
         JSONObject json = new JSONObject();
         try {
             json.put("otp", otp);
@@ -381,96 +427,77 @@ public class ApiClient {
         RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json; charset=utf-8"));
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Authorization", "Bearer ")
+                .addHeader("Authorization", "Bearer " + token)
                 .post(body)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.d("OTP Verification", "Request failed: " + e.getMessage());
-                callback.onFailed(e);
+                callback.onFailed(new IOException(e.getMessage()));
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
                 String responseData = response.body().string();
-                if (response.isSuccessful()) {
-                    try {
-                        JSONObject jsonResponse = new JSONObject(responseData);
-                        String finalToken = jsonResponse.getString("token");
-                        callback.onSuccess(finalToken);
-                    } catch (JSONException e) {
-                        callback.onFailed(new IOException("Error parsing JSON"));
+                try {
+                    JSONObject jsonResponse = new JSONObject(responseData);
+                    if (response.isSuccessful()) {
+                        String token = jsonResponse.getString("token");
+                        callback.onSuccess(token);
+                    } else if (response.code() == 400) {
+                        callback.onFailed(new IOException("OTP tidak valid"));
+                    } else if (response.code() == 401) {
+                        callback.onFailed(new IOException("Token tidak valid atau kadaluarsa"));
+                    } else {
+                        callback.onFailed(new IOException("Gagal dengan code response: " + response.code()));
                     }
-                } else {
-                    callback.onFailed(new IOException("Unexpected response code " + response.code()));
+                } catch (JSONException e) {
+                    callback.onFailed(new IOException("Error saat parsing JSON: " + e.getMessage()));
                 }
+
             }
         });
     }
 
-
-    public interface ResendOtpHelper {
-        void onSuccess(String message);
-
-        void onFailed(IOException e);
-    }
-
-    // Metode untuk mengirim ulang OTP
-    public void resendOtp(String finalToken, ResendOtpHelper callback) {
+    /**
+     * Service Metode untuk mengirim permintaan kirim ulang kode OTP ke server.
+     *
+     * @param token    Token yang diambil dari response saat request OTP
+     * @param callback callback untuk hasil request kirim ulang OTP
+     */
+    public void resendOtp(String token, ResendOtpHelper callback) {
         String url = BASE_URL + "password-reset/resend";
+        RequestBody body = RequestBody.create("", null);
 
-        // Membuat JSON body kosong atau tambahkan field sesuai kebutuhan server
-        JSONObject json = new JSONObject();
-        try {
-            json.put("action", "resend_otp"); // Sesuaikan dengan kebutuhan server jika ada data tambahan
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        // Membuat RequestBody
-        RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json; charset=utf-8"));
-
-        // Membuat Request dengan URL, Authorization header, dan body
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Authorization", "Bearer " + finalToken) // Kirim token final di header Authorization
                 .post(body)
+                .addHeader("Authorization", "Bearer " + token)
                 .build();
 
-        Log.d("ResendOtp", "Request URL: " + url);
-        Log.d("ResendOtp", "Request JSON: " + json.toString());
-
-        // Melakukan request asinkron menggunakan enqueue
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.d("ResendOtp", "Request failed: " + e.getMessage());
-                callback.onFailed(e);
+                callback.onFailed(new IOException(e.getMessage()));
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                String responseData = response.body() != null ? response.body().string() : "";
-                Log.d("ResendOtp", "Response code: " + response.code());
-                Log.d("ResendOtp", "Response data: " + responseData);
-
+                String data = response.body().string();
                 if (response.isSuccessful()) {
                     try {
-                        JSONObject jsonResponse = new JSONObject(responseData);
-                        if (jsonResponse.has("message")) {
-                            String message = jsonResponse.getString("message");
-                            callback.onSuccess(message);
-                        } else {
-                            callback.onFailed(new IOException("Message not found in response"));
-                        }
+                        JSONObject jsonResponse = new JSONObject(data);
+                        String message = jsonResponse.getString("message");
+                        callback.onSuccess(message);
                     } catch (JSONException e) {
                         callback.onFailed(new IOException("Error parsing JSON"));
                     }
+                } else if (response.code() == 401) {
+                    callback.onFailed(new IOException("Token tidak valid atau kadaluarsa"));
                 } else {
-                    callback.onFailed(new IOException("Unexpected response code " + response.code()));
+                    callback.onFailed(new IOException("Gagal dengan status code:" + response.code()));
                 }
             }
         });
