@@ -359,52 +359,6 @@ public class ApiClient {
         });
     }
 
-    public interface PassResetHelper {
-        void onSuccess(String tempToken);
-
-        void onFailed(IOException e);
-    }
-
-
-    public void requestPasswordReset(String email, PassResetHelper callback) {
-        String url = BASE_URL + "password-reset/request";
-        JSONObject json = new JSONObject();
-        try {
-            json.put("email", email);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json; charset=utf-8"));
-        Request request = new Request.Builder().url(url).post(body).build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.d("Password Reset", "Request failed: " + e.getMessage());
-                callback.onFailed(e);
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                String responseData = response.body().string();
-                if (response.isSuccessful()) {
-                    try {
-                        JSONObject jsonResponse = new JSONObject(responseData);
-                        String tempToken = jsonResponse.getString("temp_token");
-                        callback.onSuccess(tempToken);
-                    } catch (JSONException e) {
-                        callback.onFailed(new IOException("Error parsing response"));
-                    }
-                } else {
-                    callback.onFailed(new IOException("Unexpected response code " + response.code()));
-                }
-            }
-        });
-    }
-
-
     /**
      * Service Metode untuk mengirim permintaan verifikasi kode OTP ke server.
      *
@@ -503,60 +457,46 @@ public class ApiClient {
         });
     }
 
-    public void resetPassword(String finalToken, String newPassword, RequestResetPassword callback) {
+    public void resetPassword(String token, String password, RequestResetPassword callback) {
         String url = BASE_URL + "password-reset/new";
 
-        // Membuat JSON body untuk permintaan reset password
         JSONObject json = new JSONObject();
         try {
-            json.put("password", newPassword); // Ganti "password" jika server mengharuskan field berbeda
+            json.put("password", password);
         } catch (JSONException e) {
             e.printStackTrace();
             return;
         }
 
-        // Membuat RequestBody dari JSON
         RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json; charset=utf-8"));
 
-        // Membuat Request dengan URL, Authorization header, dan menggunakan metode PUT
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Authorization", "Bearer " + finalToken) // Mengirim token final dalam header Authorization
-                .put(body) // Ubah dari .post(body) ke .put(body) untuk metode PUT
+                .addHeader("Authorization", "Bearer " + token)
+                .put(body)
                 .build();
 
-        Log.d("PasswordReset", "Request URL: " + url);
-        Log.d("PasswordReset", "Request JSON: " + json.toString());
-
-        // Melakukan request asinkron menggunakan enqueue
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.d("PasswordReset", "Request failed: " + e.getMessage());
-                callback.onFailed(e);
+                callback.onFailed(new IOException(e.getMessage()));
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                String responseData = response.body() != null ? response.body().string() : "";
-                Log.d("PasswordReset", "Response code: " + response.code());
-                Log.d("PasswordReset", "Response data: " + responseData);
-
+                String data = response.body().string();
                 if (response.isSuccessful()) {
-                    if (!responseData.isEmpty()) {
-                        try {
-                            JSONObject jsonResponse = new JSONObject(responseData);
-                            String message = jsonResponse.has("message") ? jsonResponse.getString("message") : "Password reset successful.";
-                            callback.onSuccess(message);
-                        } catch (JSONException e) {
-                            Log.d("PasswordReset", "JSON parsing error: " + e.getMessage());
-                            callback.onSuccess("Password reset successful, but no additional message returned.");
-                        }
-                    } else {
-                        callback.onSuccess("Password reset successful, but no additional message returned.");
+                    try {
+                        JSONObject json = new JSONObject(data);
+                        String message = json.getString("message");
+                        callback.onSuccess(message);
+                    } catch (JSONException e) {
+                        callback.onSuccess("Gagal saat parsing Json: " +e.getMessage());
                     }
+                } else if (response.code() == 401) {
+                    callback.onFailed(new IOException("Token tidak valid atau kadaluarsa"));
                 } else {
-                    callback.onFailed(new IOException("Unexpected response code " + response.code() + " with data: " + responseData));
+                    callback.onFailed(new IOException("Gagal dengan status code: " + response.code()));
                 }
             }
         });
