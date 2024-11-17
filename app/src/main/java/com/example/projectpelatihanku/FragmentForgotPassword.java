@@ -56,12 +56,12 @@ public class FragmentForgotPassword extends Fragment {
     private void sendRequestOTP(ApiClient apiClient, String email) {
         apiClient.sendRequestOtp(email, new ApiClient.RequestResetPassword() {
             @Override
-            public void onSuccess(String tempToken) {
+            public void onSuccess(String token) {
                 getActivity().runOnUiThread(() -> {
                     Toast.makeText(getActivity(), "Kode OTP berhasil dikirim, Cek email anda.",
                             Toast.LENGTH_LONG).show();
                     FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity,
-                            new FragmentOTP(), true, null);
+                            new FragmentOTP(token), true, null);
                 });
             }
 
