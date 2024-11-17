@@ -10,6 +10,9 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+
+import com.example.projectpelatihanku.helper.FragmentHelper;
 
 public class FragmentConfirmPassword extends Fragment {
 
@@ -21,15 +24,17 @@ public class FragmentConfirmPassword extends Fragment {
         View view = inflater.inflate(R.layout.fragment_confirm_password, container, false);
 
         backButton = view.findViewById(R.id.buttonconfirmpass);
-
-        backButton.setOnClickListener(v -> {
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) requireActivity()).navigateToLogin();
-            } else {
-                Log.e("FragmentConfirmPassword", "MainActivity not found");
-            }
-        });
+        backButton.setOnClickListener(v -> backHandler());
 
         return view;
+    }
+
+    /**
+     * Handler button kembali untuk navigasi ke fragment login.
+     * @see FragmentHelper#navigateToFragment(FragmentActivity, int, Fragment, boolean, String)
+     * @see FragmentLogin
+     */
+    private void backHandler(){
+        FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, new FragmentLogin(), true, null);
     }
 }
