@@ -1,5 +1,6 @@
 package com.example.projectpelatihanku;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fragment untuk menampilkan daftar department
+ * @see SharedPreferencesHelper
+ * @see ApiClient
+ * @see Department
+ * @see DepartmentAdapter
+ */
 public class FragmentDepartment extends Fragment {
     private String endPoint = "/departments";
     private RecyclerView recyclerView;
@@ -42,6 +50,10 @@ public class FragmentDepartment extends Fragment {
      * Mengambil data dari API
      *
      * @param apiClient Service Class untuk mengambil data dari API
+     * @see ApiClient
+     * @see Department
+     * @see SharedPreferencesHelper#getToken(Context)
+     *
      */
     public void fetchData(ApiClient apiClient) {
         String token = SharedPreferencesHelper.getToken(getContext());

@@ -1,14 +1,13 @@
 package com.example.projectpelatihanku;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,7 +16,10 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectpelatihanku.Models.Program;
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.FragmentHelper;
+import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.IOException;
@@ -26,26 +28,39 @@ import java.util.List;
 
 public class FragmentProgram extends Fragment {
 
-    private String endPoint;
     private RecyclerView recyclerView;
     private ProgramAdapter adapter;
+    private ImageView backButton;
     private List<Program> programList = new ArrayList<>();
+    private String departmentId;
+    private String departmentName;
+    private String endPoint;
 
-    public FragmentProgram(String departmentId) {
-        this.endPoint = "/departments/" + departmentId + "/programs";
+    /**
+     * Constructor untuk kelas FragmentProgram (default constructor)
+     */
+    public FragmentProgram() {
+
+    }
+
+    /**
+     * Constructor untuk kelas FragmentProgram
+     * Gunakan contructor ini untuk mengambil data program dari department yang dipilih
+     *
+     * @param departmentId   id department dari program yang dipilih
+     * @param departmentName nama department dari program yang dipilih
+     */
+    public FragmentProgram(String departmentId, String departmentName) {
+        this.departmentId = departmentId;
+        this.departmentName = departmentName;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_program, container, false);
 
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            String namaInstitusi = bundle.getString("namaInstitusi");
-            TextView textNamaInstitusi = view.findViewById(R.id.texttentang);
-            String displayText = "Program di Kejuruan " + namaInstitusi;
-            textNamaInstitusi.setText(displayText);
-        }
+        TextView textNamaInstitusi = view.findViewById(R.id.texttentang);
+        textNamaInstitusi.setText("Program di Kejuruan " + departmentName);
 
         BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottomview);
         if (bottomNavigationView != null) {
@@ -56,13 +71,19 @@ public class FragmentProgram extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new ProgramAdapter(programList, getContext());
         recyclerView.setAdapter(adapter);
-        ImageView imageArrow2 = view.findViewById(R.id.imageArrow2);
-        imageArrow2.setOnClickListener(v -> navigateToDepartment());
-        fetchData();
+
+        backButton = view.findViewById(R.id.imageArrow2);
+
+        navigateToDepartment();
+        fetchData(new ApiClient());
 
         return view;
     }
 
+    /**
+     * Navigasi ke FragmentDepartment
+     * @see FragmentHelper#handleBackButton(FragmentActivity, ImageView)
+     */
     private void navigateToDepartment() {
         FragmentActivity activity = getActivity();
         if (activity != null) {
@@ -70,20 +91,21 @@ public class FragmentProgram extends Fragment {
             if (bottomNavigationView != null) {
                 bottomNavigationView.setVisibility(View.VISIBLE);
             }
-
-            FragmentDepartment fragmentDepartment = new FragmentDepartment();
-            FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.layoutprogram, fragmentDepartment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+            FragmentHelper.handleBackButton(activity, backButton);
         }
     }
 
-    public void fetchData() {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString("token", "Token Tidak ditemukan");
-
-        ApiClient apiClient = new ApiClient();
+    /**
+     * Mengambil data dari API
+     * Kirim token dari SharedPreferences ke ApiClient untuk mengambil data dari API
+     *
+     * @param apiClient Service Class untuk mengambil data dari API
+     * @see SharedPreferencesHelper#getToken(Context)
+     * @see ApiClient#fetchProgram(String, String, ApiClient.ProgramHelper)
+     */
+    public void fetchData(ApiClient apiClient) {
+        String token = SharedPreferencesHelper.getToken(getContext());
+        endPoint = "/departments/" + departmentId + "/programs";
         apiClient.fetchProgram(token, endPoint, new ApiClient.ProgramHelper() {
             @Override
             public void onSuccess(ArrayList<Program> data) {
@@ -92,13 +114,15 @@ public class FragmentProgram extends Fragment {
                         programList.clear();
                         programList.addAll(data);
                         adapter.notifyDataSetChanged();
-                    } else {
                     }
                 });
             }
 
             @Override
             public void onFailed(IOException e) {
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }

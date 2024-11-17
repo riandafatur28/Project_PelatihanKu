@@ -1,8 +1,6 @@
 package com.example.projectpelatihanku;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,24 +8,44 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
+import com.example.projectpelatihanku.Models.Program;
+import com.example.projectpelatihanku.helper.FragmentHelper;
+import com.example.projectpelatihanku.helper.GlideHelper;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.List;
 
+/**
+ * Adapter RecyclerView Program untuk menampilkan daftar program
+ * dari department yang dipilih pengguna
+ */
 public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramViewHolder> {
     private final List<Program> programList;
     private final Context context;
 
+    /**
+     * Constructor untuk kelas ProgramAdapter
+     *
+     * @param programList daftar program dari department
+     * @param context     konteks aplikasi
+     */
     public ProgramAdapter(List<Program> programList, Context context) {
         this.programList = programList;
         this.context = context;
     }
 
+    /**
+     * Membuat ViewHolder untuk setiap item dalam RecyclerView
+     * Layout inflater digunakan untuk membuat view dari layout XML item_program
+     *
+     * @param parent   referensi ke parent tempat item akan ditempatkan (RecyclerView)
+     * @param viewType Tipe view yang akan dibuat.
+     * @return ViewHolder yang telah dibuat.
+     */
     @NonNull
     @Override
     public ProgramViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -35,58 +53,57 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
         return new ProgramViewHolder(view);
     }
 
+    /**
+     * Mengisi data dari program ke ViewHolder
+     *
+     * @param holder   ViewHolder yang berisi data program
+     * @param position posisi item dalam daftar program
+     * @see GlideHelper#loadImage(Context, ImageView, String)
+     */
     @Override
     public void onBindViewHolder(@NonNull ProgramViewHolder holder, int position) {
         Program program = programList.get(position);
         holder.textNamaProgram.setText(program.getNama());
         holder.textDeskripsi.setText(program.getDeskripsi());
 
-        Glide.with(holder.itemView.getContext()).load(program.getImageUrl()).into(holder.imageProgram);
-
-        if (holder.imageArrow2 != null) {
-            holder.imageArrow2.setOnClickListener(v -> navigateToDepartment(holder));
-        } else {
-        }
+        GlideHelper.loadImage(holder.itemView.getContext(), holder.imageProgram, program.getImageUrl());
 
         if (holder.btnDetail != null) {
             holder.btnDetail.setOnClickListener(v -> {
-                saveProgramIdToPreferences(program.getId());
-                navigateToDetailProgram(holder);
+                navigateToDetailProgram(holder, program.getId());
             });
         } else {
         }
     }
 
+    /**
+     * Mengembalikan jumlah item dalam daftar program
+     *
+     * @return jumlah item dalam daftar program
+     */
     @Override
     public int getItemCount() {
         return programList.size();
     }
 
-    private void navigateToDepartment(ProgramViewHolder holder) {
-        FragmentDepartment fragmentDepartment = new FragmentDepartment();
+    /**
+     * Navigasi ke FragmentDetailProgram
+     *
+     * @param holder     ViewHolder yang berisi data program
+     * @param programsId id program yang dipilih
+     * @see FragmentDetailProgram#FragmentDetailProgram(String)
+     * @see FragmentHelper#navigateToFragment(FragmentActivity, int, Fragment, boolean, String)
+     */
+    private void navigateToDetailProgram(ProgramViewHolder holder, String programsId) {
+        FragmentDetailProgram fragmentDetailProgram = new FragmentDetailProgram(programsId);
         FragmentActivity activity = (FragmentActivity) holder.itemView.getContext();
-        FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.layoutprogram, fragmentDepartment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        FragmentHelper.navigateToFragment(activity, R.id.layoutprogram, fragmentDetailProgram,
+                true, null);
     }
 
-    private void navigateToDetailProgram(ProgramViewHolder holder) {
-        FragmentDetailProgram fragmentDetailProgram = new FragmentDetailProgram();
-        FragmentActivity activity = (FragmentActivity) holder.itemView.getContext();
-        FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.layoutprogram, fragmentDetailProgram);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    private void saveProgramIdToPreferences(String programId) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("programPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("programId", programId);
-        editor.apply();
-    }
-
+    /**
+     * ViewHolder untuk setiap item dalam RecyclerView
+     */
     static class ProgramViewHolder extends RecyclerView.ViewHolder {
         ShapeableImageView imageProgram;
         TextView textNamaProgram, textDeskripsi, btnDetail;

@@ -14,11 +14,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.api.ApiClient;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
@@ -27,22 +31,30 @@ import java.util.Map;
 
 public class FragmentProfil extends Fragment {
 
-    // Deklarasi variabel untuk komponen UI
+    // Deklarasi Variabel
     private TextView namaUser, namaProfil, jkProfil, ttlProfil, emailProfil, noTelpProfil, alamatProfil;
     private ImageView imageProfil;
-    private String userId;
+    private final String endPoint = "/users/";
+    private int userId;
     public static String username;
     public static String gender;
     public static String birth;
     public static String phone;
     public static String userEmail;
     public static String address;
+    private String token;
+    private SharedPreferences sharedPreferences;
 
+    /**
+     * @see #backButtonHandler(View)
+     * @see #updateButtonHandler(View)
+     *
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profil, container, false);
-        // Inisialisasi komponen UI
+
         namaUser = view.findViewById(R.id.namaUser);
         namaProfil = view.findViewById(R.id.namaProfil);
         jkProfil = view.findViewById(R.id.JKProfil);
@@ -52,52 +64,40 @@ public class FragmentProfil extends Fragment {
         alamatProfil = view.findViewById(R.id.alamatProfil);
         imageProfil = view.findViewById(R.id.imageProfil);
 
-        // Menyiapkan tombol untuk memperbarui profil
-        Button buttonPerbaruiProfil = view.findViewById(R.id.buttonPerbaruiProfil);
-        buttonPerbaruiProfil.setOnClickListener(v -> {
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).navigateToEditProfil();
-            }
-        });
-
-        loadUserData();
-
-        // Menyiapkan tombol untuk kembali ke halaman login
-        LinearLayout txtKembali = view.findViewById(R.id.txtKembali);
-        txtKembali.setOnClickListener(v -> {
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).navigateToLogin();
-            }
-        });
-
-        return view; // Mengembalikan tampilan fragment
+        // Panggil Metode untuk Handler Button dan load data profile
+        loadUserData(new ApiClient());
+        backButtonHandler(view);
+        updateButtonHandler(view);
+        return view;
     }
 
-    private void loadUserData() {
-        ApiClient api = new ApiClient();
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString("token", "Token Tidak ditemukan");
+    /**
+     * Ambil data profile user
+     * @param api ApiClient untuk mengambil data dari server
+     */
+    private void loadUserData(ApiClient api) {
+        sharedPreferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
+        token = sharedPreferences.getString("token", "Token Tidak ditemukan");
         JWT jwt = new JWT(token);
-        userId = jwt.getClaim("users").asObject(Map.class).get("id").toString();
-        String endPoint = "/users/" + userId;
+        Double userIdDouble = (Double) jwt.getClaim("users").asObject(Map.class).get("id");
+        userId = userIdDouble.intValue();
 
-        api.FetchProfile(userId, token, endPoint, new ApiClient.ProfileHelper() {
+        api.FetchProfile(userId, token, endPoint + userId, new ApiClient.ProfileHelper() {
             @Override
             public void onSuccess(String name, String jk, String ttl, String tlp, String email, String alamat) {
                 getActivity().runOnUiThread(() -> {
-                    // Mengubah format tanggal dari yyyy-MM-dd ke dd-MM-yyyy
-                    String formattedDate = formatDate(ttl);
+                    String tanggalLahir = formatDate(ttl);
 
                     // Menampilkan data ke UI
                     namaUser.setText(name);
                     namaProfil.setText(name);
                     jkProfil.setText(jk);
-                    ttlProfil.setText(formattedDate);  // Menampilkan tanggal yang telah diformat
+                    ttlProfil.setText(tanggalLahir);
                     noTelpProfil.setText(tlp);
                     emailProfil.setText(email);
                     alamatProfil.setText(alamat);
 
-                    // Menyimpan data ke variabel statis
+                    // Menyimpan value ke variable Statis
                     username = name;
                     phone = tlp;
                     gender = jk;
@@ -106,10 +106,10 @@ public class FragmentProfil extends Fragment {
                     address = alamat;
 
                     // Menyimpan gender ke SharedPreferences
-                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                    sharedPreferences = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("gender", jk);  // Menyimpan gender
-                    editor.apply();  // Apply changes asynchronously
+                    editor.putString("gender", jk);
+                    editor.apply();
 
                     // Log to confirm the data is saved
                     Log.d("DashboardFragment", "Gender saved: " + jk);
@@ -126,61 +126,83 @@ public class FragmentProfil extends Fragment {
         });
     }
 
-    // Memuat gambar profil berdasarkan kondisi
+    /**
+     * @param gender
+     */
     private void loadProfileImage(String gender) {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
         String imageUriString = sharedPreferences.getString("image_uri", null);
 
         if (imageUriString != null) {
             try {
-                imageProfil.setImageURI(Uri.parse(imageUriString));  // Menampilkan gambar yang diunggah pengguna
+                imageProfil.setImageURI(Uri.parse(imageUriString));
             } catch (Exception e) {
-                imageProfil.setImageResource(R.drawable.gambar_user);  // Gambar default jika ada kesalahan
-                Log.e("DashboardFragment", "Gagal memuat gambar pengguna", e);
+                imageProfil.setImageResource(R.drawable.gambar_user);
             }
         } else {
-            Log.d("DashboardFragment", "Gender yang diambil: " + gender);
-
-            // Menentukan gambar profil berdasarkan gender
-            if ("Laki-laki".equalsIgnoreCase(gender)) {
-                imageProfil.setImageResource(R.drawable.img_men);  // Gambar default untuk laki-laki
-            } else if ("Perempuan".equalsIgnoreCase(gender)) {
-                imageProfil.setImageResource(R.drawable.img_women);  // Gambar default untuk perempuan
-            } else {
-                imageProfil.setImageResource(R.drawable.gambar_user);  // Gambar default jika gender tidak diketahui
-            }
+            setProfileByGender(gender);
         }
     }
 
-    private void saveImageUriToPreferences(Uri imageUri) {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("image_uri", imageUri.toString()); // Simpan URI sebagai String
-        editor.apply(); // Simpan perubahan secara asinkron
-        Log.d("FragmentEditProfil", "Image URI saved to SharedPreferences: " + imageUri.toString());
+    /**
+     * Mengatur gambar profil berdasarkan gender.
+     *
+     * @param gender Genger users untuk set foto profile jika foto profile berlum diperbarui
+     */
+    private void setProfileByGender(String gender) {
+        if ("Laki-laki".equalsIgnoreCase(gender)) {
+            imageProfil.setImageResource(R.drawable.img_men);
+        } else if ("Perempuan".equalsIgnoreCase(gender)) {
+            imageProfil.setImageResource(R.drawable.img_women);
+        } else {
+            imageProfil.setImageResource(R.drawable.gambar_user);
+        }
     }
 
-
-
-    // Metode untuk mengubah format tanggal
+    /**
+     * Mengubah format tanggal dari yyyy-MM-dd ke dd-MM-yyyy.
+     *
+     * @param ttl tempat tanggal lahir yang akan diformat
+     * @return ttl yang telah diformat atau tanggal original jika gagal.
+     */
     private String formatDate(String ttl) {
         try {
-            // Membuat SimpleDateFormat untuk format input (yyyy-MM-dd)
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-            // Membuat SimpleDateFormat untuk format output (dd-MM-yyyy)
             SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
 
-            // Mengubah String menjadi Date
             Date date = inputFormat.parse(ttl);
-
-            // Mengubah Date menjadi String dengan format baru
             return outputFormat.format(date);
 
         } catch (ParseException e) {
-            // Menangani error jika format tanggal tidak sesuai
-            Log.e("DateFormatError", "Error parsing date: " + e.getMessage());
-            return ttl;  // Jika gagal, kembalikan tanggal original
+            Toast.makeText(requireActivity(), "Gagal Parsing Tanggal", Toast.LENGTH_SHORT).show();
+            return ttl;
         }
+    }
+
+    /**
+     * Handler untuk tombol kembali.
+     * @param view profile
+     */
+    private void backButtonHandler(View view){
+        LinearLayout txtKembali = view.findViewById(R.id.txtKembali);
+        txtKembali.setOnClickListener(v -> {
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).navigateToLogin();
+            }
+        });
+    }
+
+    /**
+     * Handler untuk tombol perbarui profil.
+     * @param view profile
+     */
+    private void updateButtonHandler(View view){
+        Button buttonPerbaruiProfil = view.findViewById(R.id.buttonPerbaruiProfil);
+        buttonPerbaruiProfil.setOnClickListener(v -> {
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).navigateToEditProfil();
+            }
+        });
     }
 }

@@ -1,35 +1,54 @@
 package com.example.projectpelatihanku;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
+import com.example.projectpelatihanku.Models.Department;
+import com.example.projectpelatihanku.helper.FragmentHelper;
+import com.example.projectpelatihanku.helper.GlideHelper;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 
+/**
+ * Adapter untuk RecyclerView Department
+ *
+ * @see Department
+ * @see GlideHelper
+ * @see FragmentHelper
+ */
 public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.InstitusiViewHolder> {
-    private List<Department> institusiList;
+    private List<Department> departmentList;
     private Context context;
-    private String departmentId;
 
+    /**
+     * Constructor untuk kelas DepartmentAdapter
+     *
+     * @param departmentList daftar department
+     * @param context        konteks aplikasi
+     */
     public DepartmentAdapter(List<Department> departmentList, Context context) {
-        this.institusiList = departmentList;
+        this.departmentList = departmentList;
         this.context = context;
     }
 
+    /**
+     * Membuat ViewHolder untuk setiap item dalam RecyclerView
+     * Layout inflater digunakan untuk membuat view dari layout XML item_department
+     *
+     * @param parent   referensi ke parent tempat item akan ditempatkan (RecyclerView)
+     * @param viewType Tipe view yang akan dibuat.
+     * @return ViewHolder yang telah dibuat.
+     */
     @NonNull
     @Override
     public InstitusiViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -37,64 +56,77 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
         return new InstitusiViewHolder(view);
     }
 
-    private void navigateToProgram(String departmentId, String namaInstitusi) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("programPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("departmentId", departmentId);
-        editor.apply();
-
-        Log.d("DepartmentAdapter", "Saved departmentId: " + departmentId);
+    /**
+     * Navigasi ke FragmentProgram
+     *
+     * @param departmentId   id department yang dipilih
+     * @param departmentName nama department yang dipilih
+     * @see FragmentProgram#FragmentProgram(String, String)
+     * @see FragmentHelper#navigateToFragment
+     */
+    private void navigateToProgram(String departmentId, String departmentName) {
 
         FragmentActivity activity = (FragmentActivity) context;
         BottomNavigationView bottomNavigationView = activity.findViewById(R.id.bottomview);
+
         if (bottomNavigationView != null) {
             bottomNavigationView.setVisibility(View.GONE);
         }
 
-        FragmentProgram fragmentProgram = new FragmentProgram(departmentId);
-
-        Bundle bundle = new Bundle();
-        bundle.putString("namaInstitusi", namaInstitusi);
-
-        fragmentProgram.setArguments(bundle);
-
-        FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.layoutDepartment, fragmentProgram);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        FragmentProgram fragmentProgram = new FragmentProgram(departmentId, departmentName);
+        FragmentHelper.navigateToFragment(activity, R.id.layoutDepartment, fragmentProgram, true,
+                null);
     }
 
 
+    /**
+     * Mengisi data dari department ke ViewHolder
+     *
+     * @param holder   ViewHolder yang akan diisi data
+     * @param position posisi item dalam daftar
+     * @see Department
+     * @see InstitusiViewHolder
+     * @see GlideHelper#loadImage(Context, ImageView, String)
+     * @see #navigateToProgram(String, String)
+     */
     @Override
     public void onBindViewHolder(@NonNull InstitusiViewHolder holder, int position) {
-        Department department = institusiList.get(position);
-        holder.textNamaInstitusi.setText(department.getNama());
+        Department department = departmentList.get(position);
+        holder.txtNamaDepartment.setText(department.getNama());
         holder.textDeskripsi.setText(department.getDeskripsi());
 
-        Glide.with(context).load(department.getImageUrl()).into(holder.imageInstitusi);
+        GlideHelper.loadImage(context, holder.departmentImage, department.getImageUrl());
 
         holder.btnLihatProgram.setOnClickListener(v -> {
             String departmentId = department.getId();
-            String namaInstitusi = department.getNama();
+            String departmentName = department.getNama();
 
-            navigateToProgram(departmentId, namaInstitusi);
+            navigateToProgram(departmentId, departmentName);
         });
     }
 
 
+    /**
+     * Mengambil jumlah item dalam daftar department
+     *
+     * @return jumlah item dalam daftar department
+     */
     @Override
     public int getItemCount() {
-        return institusiList.size();
+        return departmentList.size();
     }
 
+    /**
+     * ViewHolder untuk setiap item dalam RecyclerView
+     */
     static class InstitusiViewHolder extends RecyclerView.ViewHolder {
-        ShapeableImageView imageInstitusi;
-        TextView textNamaInstitusi, textDeskripsi, btnLihatProgram;
+        ShapeableImageView departmentImage;
+        TextView txtNamaDepartment, textDeskripsi, btnLihatProgram;
 
         InstitusiViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageInstitusi = itemView.findViewById(R.id.imageDepartment);
-            textNamaInstitusi = itemView.findViewById(R.id.text_nama_department);
+            departmentImage = itemView.findViewById(R.id.imageDepartment);
+            txtNamaDepartment = itemView.findViewById(R.id.text_nama_department);
             textDeskripsi = itemView.findViewById(R.id.text_deskripsi);
             btnLihatProgram = itemView.findViewById(R.id.btn_lihat_program);
         }
