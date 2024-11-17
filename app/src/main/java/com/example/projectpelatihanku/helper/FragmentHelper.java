@@ -1,5 +1,6 @@
 package com.example.projectpelatihanku.helper;
 
+import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
@@ -52,21 +53,43 @@ public class FragmentHelper {
     /**
      * Navigasi ke backstack sebelumnya
      *
-     * @param activity:     Activity yang sedang aktif
-     *                      Activity class : this,
-     *                      Fragment class : getActivity()
-     * @param imageView Image view digunakan sebagai button back
+     * @param activity: Activity yang sedang aktif.
+     *                  Gunakan .this jika berada di activity.
+     *                  Gunakan getActivity() jika berada di fragment
+     * @param imageView Image view yang digunakan sebagai button back.
+     *                  imageView : null jika tidak digunakan.
+     * @param button    Button yang digunakan sebagai button back.
+     *                  button : null jika tidak digunakan.
      */
-    public static void handleBackButton(FragmentActivity activity, ImageView imageView) {
+    public static void backNavigation(FragmentActivity activity, ImageView imageView,
+                                      Button button) {
         if (activity == null) return;
-        imageView.setOnClickListener(v -> {
-            FragmentManager fragmentManager = activity.getSupportFragmentManager();
 
-            if (fragmentManager.getBackStackEntryCount() > 0) {
-                fragmentManager.popBackStack();
-            } else {
-                activity.onBackPressed();
-            }
-        });
+        if (imageView != null) {
+            imageView.setOnClickListener(v -> backHandler(activity));
+        } else if (button != null) {
+            button.setOnClickListener(view -> backHandler(activity));
+        }
+    }
+
+    /**
+     * Main method untuk navigasi ke backstack sebelumnya
+     *
+     * @param activity FragmentActivity yang sedang aktif.
+     */
+    private static void backHandler(FragmentActivity activity) {
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.setCustomAnimations(
+                    android.R.anim.slide_in_left,
+                    android.R.anim.slide_out_right
+            );
+            transaction.commit();
+            fragmentManager.popBackStack();
+        } else {
+            activity.onBackPressed();
+        }
     }
 }
