@@ -248,7 +248,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/deskripsiProgram"
+                        android:id="@+id/LabeldeskripsiProgram"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
@@ -258,7 +258,7 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/DeskripsiProgram"
+                        android:id="@+id/deskripsiProgram"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
@@ -266,7 +266,7 @@
                         android:layout_marginEnd="12dp"
                         android:fontFamily="@font/inter_regular"
                         android:justificationMode="inter_word"
-                        android:text="Berdirinya UPT Balai Latihan Kerja (BLK) Nganjuk pada tanggal 07 Juli 1983 dengan nama KLK (Kursus Latihan Kerja). Pada tahun 1985 berubah menjadi BLKIP LLK-UKM (Lokal Latihan Kerja Usaha Kecil, Menengah). Pada era otonomi daerah tahun 2000 menjadi BLKUKM Disnaker Provinsi Jawa Timur berdasarkan perda No. 35/2000. Berdasarkan Peraturan Gubernur No. 62/2018 berganti nama menjadi Unit Pelaksana Teknis Balai Latihan Kerja (BLK) Nganjuk Disnakertrans Provinsi Jawa Timur."
+                        android:text=""
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -302,7 +302,7 @@
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:id="@+id/imageTentang"
+                            android:id="@+id/imageInstructor"
                             android:layout_width="180dp"
                             android:layout_height="180dp"
                             android:layout_marginStart="12dp"
@@ -544,7 +544,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="5dp"
                         android:fontFamily="@font/inter_regular"
-                        android:text="Status : Dibuka"
+                        android:text=""
                         android:textColor="@color/font_black"
                         android:textSize="14sp" />
 
@@ -556,7 +556,7 @@
                         android:layout_marginTop="3dp"
                         android:layout_marginEnd="5dp"
                         android:fontFamily="@font/inter_regular"
-                        android:text="Tanggal Pendaftaran : 10 Desember 2024 - 10 Januari 2025"
+                        android:text=""
                         android:textColor="@color/font_black"
                         android:textSize="14sp" />
 
