@@ -129,7 +129,8 @@ public class FragmentOTP extends Fragment {
      * Mengirimkan request ke API untuk melakukan verifikasi OTP
      *
      * @param apiClient Service Class untuk mengirim request ke server
-     * @see  ApiClient#verifyOtp(String, String, ApiClient.OtpVerificationHelper) 
+     * @see  ApiClient#verifyOtp(String, String, ApiClient.OtpVerificationHelper)
+     * @see FragmentResetPassword#FragmentResetPassword(String)
      */
     private void verifyOtp(ApiClient apiClient) {
         String otp = getInputOTP();
@@ -141,12 +142,12 @@ public class FragmentOTP extends Fragment {
 
         apiClient.verifyOtp(otp, token, new ApiClient.OtpVerificationHelper() {
             @Override
-            public void onSuccess(String message) {
+            public void onSuccess(String token) {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getActivity(), "Verifikasi berhasil", Toast.LENGTH_LONG).show();
                         FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity,
-                                new FragmentResetPassword(), true, null);
+                                new FragmentResetPassword(token), true, null);
                     });
                 }
             }
