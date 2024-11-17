@@ -2,7 +2,6 @@ package com.example.projectpelatihanku;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
+import com.example.projectpelatihanku.Adapter.RequirementsAdapter;
+import com.example.projectpelatihanku.Models.Requirements;
 import com.example.projectpelatihanku.api.ApiClient;
 import com.example.projectpelatihanku.Models.DetailProgram;
 import com.example.projectpelatihanku.helper.FragmentHelper;
@@ -26,6 +27,7 @@ import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Fragment untuk menampilkan detail program berdasarkan programId.
@@ -37,6 +39,9 @@ public class FragmentDetailProgram extends Fragment {
     private String programId;
     private String token;
     private ImageView programImage, instructorImage;
+    private RecyclerView recyclerView;
+    private RequirementsAdapter adapter;
+    private List<Requirements> requirementsList = new ArrayList<>();
 
     /**
      * Default constructor
@@ -78,7 +83,13 @@ public class FragmentDetailProgram extends Fragment {
         programImage = view.findViewById(R.id.imageDetailProgram);
         instructorImage = view.findViewById(R.id.imageInstructor);
 
+        recyclerView = view.findViewById(R.id.recyclerViewRequirements);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new RequirementsAdapter(requirementsList, getContext());
+        recyclerView.setAdapter(adapter);
+
         fetchDetailProgram(new ApiClient());
+        fetchRequirements(new ApiClient());
         backButtonHandler(view);
 
         return view;
@@ -138,6 +149,36 @@ public class FragmentDetailProgram extends Fragment {
                         }
                     }
                 });
+    }
+
+    /**
+     * Metode untuk mengambil persyaratan program berdasarkan programId
+     *
+     * @param apiClient Service Class untuk mengambil data dari API
+     * @see ApiClient#fetchRequirements(String, String, ApiClient.requirementsHelper)
+     * @see SharedPreferencesHelper#getToken(Context)
+     */
+    private void fetchRequirements(ApiClient apiClient) {
+        token = SharedPreferencesHelper.getToken(getContext());
+        apiClient.fetchRequirements(token, "/programs/" + programId + "/requirements", new ApiClient.requirementsHelper() {
+            @Override
+            public void onSuccess(ArrayList<Requirements> data) {
+                requireActivity().runOnUiThread(() -> {
+                    if (data != null && !data.isEmpty()) {
+                        requirementsList.clear();
+                        requirementsList.addAll(data);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+
+            @Override
+            public void onFailed(IOException e) {
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
     }
 
     /**
