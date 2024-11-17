@@ -1,5 +1,6 @@
 package com.example.projectpelatihanku;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,32 +10,49 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.FragmentHelper;
 
 import java.io.IOException;
 
 public class FragmentOTP extends Fragment {
 
-    private TextView textKembali, textKirimUlang;
-    private Button sendButton;
+    private TextView textKirimUlang;
+    private Button sendButton, btnBack;
     private EditText[] otpFields;
-    private boolean isNavigating = false;
+    private String token;
 
-    private ApiClient apiClient;
+    /**
+     * Contructor default untuk fragment OTP
+     * Gunakan contructor ini jika tidak ingin mengirimkan parameter
+     */
+    public FragmentOTP() {
 
+    }
+
+    /**
+     * Contructor untuk fragment OTP
+     * Wajib digunakan jika untuk fungsional reset password
+     *
+     * @param token token yang digunakan untuk request verify kode OTP
+     */
+    public FragmentOTP(String token) {
+        this.token = token;
+    }
+
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_otp, container, false);
 
-        apiClient = new ApiClient();
-
         sendButton = view.findViewById(R.id.button_kirim);
-        textKembali = view.findViewById(R.id.text_Kembali);
         textKirimUlang = view.findViewById(R.id.kirimUlang);
 
         otpFields = new EditText[]{
@@ -46,32 +64,26 @@ public class FragmentOTP extends Fragment {
                 view.findViewById(R.id.kodeOtp6)
         };
 
-        // Mengatur tindakan saat tombol "Kirim" ditekan
+        backHandler(view);
+
         sendButton.setOnClickListener(v -> {
-            verifyOtpWithApi(); // Memanggil metode untuk verifikasi OTP
+            verifyOtp(new ApiClient());
         });
 
-        // Mengatur tindakan saat tombol "Kembali" ditekan
-        textKembali.setOnClickListener(v -> {
-            isNavigating = true;
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).navigateToForgotPassword();
-            } else {
-                Log.e("FragmentOTP", "MainActivity not found");
-            }
-        });
 
-        // Mengatur tindakan saat tombol "Kirim Ulang" ditekan
         textKirimUlang.setOnClickListener(v -> {
-//            resendOtp(); // Memanggil metode untuk mengirim ulang OTP
+            resendOtp(new ApiClient());
         });
 
-        // Menambahkan TextWatcher pada setiap field OTP
         setOTPInputListeners();
 
         return view;
     }
 
+    /**
+     * Mengatur listener untuk setiap field OTP untuk berpindah ke field berikutnya atau
+     * sebelumnya jika field kosong
+     */
     private void setOTPInputListeners() {
         for (int i = 0; i < otpFields.length; i++) {
             final int index = i;
@@ -100,7 +112,11 @@ public class FragmentOTP extends Fragment {
         }
     }
 
-    // Mengambil OTP dari input pengguna
+    /**
+     * Mengambil input OTP dari setiap field dan mengembalikannya sebagai (string) kode OTP
+     *
+     * @return kode OTP yang diambil dari setiap field
+     */
     private String getInputOTP() {
         StringBuilder otpBuilder = new StringBuilder();
         for (EditText otpField : otpFields) {
@@ -109,27 +125,28 @@ public class FragmentOTP extends Fragment {
         return otpBuilder.toString();
     }
 
-    // Metode untuk memverifikasi OTP dengan API
-    private void verifyOtpWithApi() {
+    /**
+     * Mengirimkan request ke API untuk melakukan verifikasi OTP
+     *
+     * @param apiClient Service Class untuk mengirim request ke server
+     * @see  ApiClient#verifyOtp(String, String, ApiClient.OtpVerificationHelper) 
+     */
+    private void verifyOtp(ApiClient apiClient) {
+        String otp = getInputOTP();
 
-        // Mengambil input OTP dari field
-        String inputOTP = getInputOTP();
-
-
-        if (inputOTP.isEmpty()) {
-            Toast.makeText(getActivity(), "OTP tidak boleh kosong.", Toast.LENGTH_LONG).show();
+        if (otp.isEmpty()) {
+            Toast.makeText(getActivity(), "Kode OTP tidak boleh kosong.", Toast.LENGTH_LONG).show();
             return;
         }
 
-        // Melakukan verifikasi OTP dengan ApiClient
-        apiClient.verifyOtp(inputOTP, new ApiClient.OtpVerificationHelper() {
+        apiClient.verifyOtp(otp, token, new ApiClient.OtpVerificationHelper() {
             @Override
             public void onSuccess(String message) {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getActivity(), "Verifikasi berhasil", Toast.LENGTH_LONG).show();
-                        // Navigasi ke halaman reset password setelah verifikasi berhasil
-                        ((MainActivity) requireActivity()).navigateToResetPassword();
+                        FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity,
+                                new FragmentResetPassword(), true, null);
                     });
                 }
             }
@@ -138,40 +155,49 @@ public class FragmentOTP extends Fragment {
             public void onFailed(IOException e) {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() ->
-                            Toast.makeText(getActivity(), "Verifikasi gagal: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show()
                     );
                 }
             }
         });
     }
 
-    // Metode untuk mengirim ulang OTP dengan API
-//    private void resendOtp() {
-//        String finalToken = tokenManager.getToken();
-//
-//        if (finalToken.isEmpty()) {
-//            Toast.makeText(getActivity(), "Token tidak ditemukan. Silakan coba lagi.", Toast.LENGTH_LONG).show();
-//            return;
-//        }
-//
-//        apiClient.resendOtp(finalToken, new ApiClient.ResendOtpHelper() {
-//            @Override
-//            public void onSuccess(String message) {
-//                if (getActivity() != null) {
-//                    getActivity().runOnUiThread(() ->
-//                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show()
-//                    );
-//                }
-//            }
-//
-//            @Override
-//            public void onFailed(IOException e) {
-//                if (getActivity() != null) {
-//                    getActivity().runOnUiThread(() ->
-//                            Toast.makeText(getActivity(), "Gagal mengirim ulang OTP: " + e.getMessage(), Toast.LENGTH_LONG).show()
-//                    );
-//                }
-//            }
-//        });
-//    }
+    /**
+     * Mengirimkan request ke API untuk melakukan resend kode OTP
+     *
+     * @param apiClient Service Class untuk mengirim request ke server
+     * @see ApiClient#resendOtp(String, ApiClient.ResendOtpHelper)
+     */
+    private void resendOtp(ApiClient apiClient) {
+
+        apiClient.resendOtp(token, new ApiClient.ResendOtpHelper() {
+            @Override
+            public void onSuccess(String message) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() ->
+                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show()
+                    );
+                }
+            }
+            @Override
+            public void onFailed(IOException e) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() ->
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show()
+                    );
+                }
+            }
+        });
+    }
+
+    /**
+     * Handler untuk tombol kembali
+     *
+     * @param view View tempat tombol kembali berada
+     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button) 
+     */
+    private void backHandler(View view) {
+        btnBack = view.findViewById(R.id.btnBack);
+        FragmentHelper.backNavigation(getActivity(), null, btnBack);
+    }
 }
