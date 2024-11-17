@@ -196,30 +196,21 @@
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
 
-            <LinearLayout
-                android:id="@+id/txtKembali"
+            <Button
+                android:id="@+id/btnBack"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/rounded_button_white"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/text_Kembali"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:fontFamily="@font/inter_semibold"
-                    android:padding="8dp"
-                    android:text="Kembali"
-                    android:textColor="@color/orange"
-                    android:textSize="16sp" />
-            </LinearLayout>
+                android:fontFamily="@font/inter_semibold"
+                android:text="Kembali"
+                android:textAlignment="center"
+                android:textColor="#FE9128"
+                android:textSize="16sp"
+                app:backgroundTint="@color/common_google_signin_btn_tint"
+                app:cornerRadius="50dp"
+                app:rippleColor="#E1E1E1"
+                app:strokeColor="#FFA726"
+                app:strokeWidth="1.2dp" />
 
         </LinearLayout>
     </LinearLayout>
