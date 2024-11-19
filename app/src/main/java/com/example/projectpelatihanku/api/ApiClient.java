@@ -18,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -210,6 +211,91 @@ public class ApiClient {
          *
          * @param e error yang terjadi saat request.
          *          Gunakan e.message untuk mendapatkan pesan error
+         */
+        void onFailed(IOException e);
+    }
+
+    /**
+     * Interface untuk Callback Profile
+     */
+    public interface ProfileHelper {
+        /**
+         * Callback untuk menerima hasil dari request GET data profile.
+         *
+         * @param name     Nama Pengguna
+         * @param jk       Jenis Kelamin Pengguna
+         * @param ttl      Tempat, Tanggal Lahir Pengguna
+         * @param tlp      Telephone Pengguna
+         * @param email    Email Pengguna
+         * @param alamat   Alamat Pengguna
+         * @param imageUri Uri Foto Profile Pengguna
+         */
+        void onSuccess(String name, String jk, String ttl, String tlp, String email,
+                       String alamat, String imageUri);
+
+        /**
+         * Callback untuk menerima error dari request
+         *
+         * @param e error yang terjadi saat request
+         *          gunakan e.message untuk mendapatkan pesan error
+         */
+        void onFailed(IOException e);
+    }
+
+    /**
+     * Interface untuk Callback institusi
+     */
+    public interface InstituteHelper {
+        /**
+         * Callback untuk menerima hasil dari request.
+         *
+         * @param data data institusi yang terdiri dari beberapa informasi terkait institusi.
+         *             Akses tiap data institusi dengan index yang telah ditentukan sebagai
+         *             berikut:
+         *             <ul>
+         *               <li><b>dataInstitute[0]</b> = id (ID institusi)</li>
+         *               <li><b>dataInstitute[1]</b> = nama (Nama institusi)</li>
+         *               <li><b>dataInstitute[2]</b> = pimpinan (Nama pimpinan institusi)</li>
+         *               <li><b>dataInstitute[3]</b> = kepemilikan (Jenis kepemilikan institusi)</li>
+         *               <li><b>dataInstitute[4]</b> = status_beroperasi (Status apakah institusi sedang beroperasi)</li>
+         *               <li><b>dataInstitute[5]</b> = email (Alamat email institusi)</li>
+         *               <li><b>dataInstitute[6]</b> = no_tlp (Nomor telepon institusi)</li>
+         *               <li><b>dataInstitute[7]</b> = no_vin (Nomor VIN, jika relevan)</li>
+         *               <li><b>dataInstitute[8]</b> = no_sotk (Nomor SOTK institusi)</li>
+         *               <li><b>dataInstitute[9]</b> = tipe (Tipe institusi)</li>
+         *               <li><b>dataInstitute[10]</b> = no_fax (Nomor fax institusi)</li>
+         *               <li><b>dataInstitute[11]</b> = website (Website institusi)</li>
+         *               <li><b>dataInstitute[12]</b> = deskripsi (Deskripsi institusi)</li>
+         *               <li><b>dataInstitute[13]</b> = thnBerdiriString (Tahun berdiri institusi dalam format string)</li>
+         *             </ul>
+         */
+
+        void onSuccess(String data[]);
+
+        /**
+         * Callback untuk menerima error dari request
+         *
+         * @param e error yang terjadi saat request
+         *          gunakan e.message untuk mendapatkan pesan error
+         */
+        void onFailed(IOException e);
+    }
+
+    /**
+     * Interface callback untuk menerima hasil dari permintaan
+     */
+    public interface updateProfileHelper {
+        /**
+         * Callback untuk menerima message dari permintaan
+         *
+         * @param message message dari permintaan
+         */
+        void onSuccess(String message);
+
+        /**
+         * Callback untuk menerima error dari permintaan
+         *
+         * @param e error dari permintaan. Gunakan e.getMessage() untuk mendapatkan pesan error
          */
         void onFailed(IOException e);
     }
@@ -477,6 +563,14 @@ public class ApiClient {
         });
     }
 
+    /**
+     * Service Metode untuk mengirim permintaan reset password ke server.
+     *
+     * @param token    Token yang diambil dari response saat Authentication Kode OTP, Sertakan di
+     *                 header Authorization.
+     * @param password Password baru.
+     * @param callback callback untuk hasil request reset password
+     */
     public void resetPassword(String token, String password, RequestResetPassword callback) {
         String url = BASE_URL + "password-reset/new";
 
@@ -522,74 +616,16 @@ public class ApiClient {
         });
     }
 
-
-    public interface DashboardDataHelper {
-        void onSuccess(ArrayList<Dashboard> data);
-
-        void onFailed(IOException e);
-    }
-
-    public void fetchDashboard(String token, String endPoint, DashboardDataHelper callback) {
-        String url = BASE_URL + BASE_URL_PUBLIC + endPoint;
-
-        Request request = new Request.Builder()
-                .url(url)
-                .addHeader("Authorization", "Bearer " + token)
-                .addHeader("Content-Type", "application/json")
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful() && response.body() != null) {
-                    String jsonData = response.body().string();
-                    try {
-                        ArrayList<Dashboard> dashboardList = parseDashboardJson(jsonData);
-                        callback.onSuccess(dashboardList);
-                    } catch (JSONException e) {
-                        callback.onFailed(new IOException("JSON Parsing Error", e));
-                    }
-                } else {
-                    callback.onFailed(new IOException("Response not successful or body is null"));
-                }
-            }
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                callback.onFailed(e);
-            }
-        });
-    }
-
-    private ArrayList<Dashboard> parseDashboardJson(String jsonData) throws JSONException {
-        JSONObject jsonObject = new JSONObject(jsonData);
-        if (!jsonObject.getBoolean("success")) {
-            throw new JSONException("Response not successful");
-        }
-
-        JSONArray dataArray = jsonObject.getJSONArray("data");
-        ArrayList<Dashboard> dashboardList = new ArrayList<>();
-
-        for (int i = 0; i < dataArray.length(); i++) {
-            JSONObject dataObject = dataArray.getJSONObject(i);
-            String tableName = dataObject.getString("table_name");
-            int total = dataObject.getInt("total");
-            dashboardList.add(new Dashboard(tableName, total));
-        }
-
-        return dashboardList;
-    }
-
-
-    public interface InstituteHelper {
-        void onSuccess(String data[]);
-
-        void onFailed(IOException e);
-    }
-
-    // institusi
-    public void fetchInstitusi(String endPoint, String token, InstituteHelper resInstitute) {
-        Log.d("fetch", "fetchInstitusi: " + BASE_URL + BASE_URL_PUBLIC + endPoint);
+    /**
+     * Service Metode untuk mengirim permintaan GET data institusi ke server
+     *
+     * @param endPoint endpoint untuk mengambil data institusi
+     * @param token    token JWT, sertakan dalam header Authorization
+     * @param callback callback untuk menerima hasil dari permintaan
+     * @see InstituteHelper#onSuccess(String[])
+     * @see InstituteHelper#onFailed(IOException)
+     */
+    public void fetchInstitusi(String endPoint, String token, InstituteHelper callback) {
         Request request = new Request.Builder()
                 .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
                 .addHeader("Authorization", "Bearer " + token)
@@ -604,7 +640,6 @@ public class ApiClient {
                         if (jsonObject.getBoolean("success")) {
                             JSONArray institutes = jsonObject.getJSONArray("institutes");
                             JSONObject institute = institutes.getJSONObject(0);
-                            // Mengambil data dari setiap objek
                             String id = institute.getString("id");
                             String nama = institute.getString("nama");
                             String pimpinan = institute.getString("pimpinan");
@@ -620,7 +655,6 @@ public class ApiClient {
                             String deskripsi = institute.getString("deskripsi");
                             String thnBerdiriString = institute.getString("thn_berdiri");
 
-                            // Simpan setiap data ke element array
                             String dataInstitute[] = new String[14];
                             dataInstitute[0] = id;
                             dataInstitute[1] = nama;
@@ -636,20 +670,20 @@ public class ApiClient {
                             dataInstitute[11] = website;
                             dataInstitute[12] = deskripsi;
                             dataInstitute[13] = thnBerdiriString;
-                            // Kirim data ke views
-                            resInstitute.onSuccess(dataInstitute);
+
+                            callback.onSuccess(dataInstitute);
                         }
                     } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                        callback.onFailed(new IOException("Gagal saat parsing JSON: " + e.getMessage()));
                     }
                 } else {
-                    Log.d("Gagal", "Gagal kirim permintaan");
+                    callback.onFailed(new IOException("Gagal dengan status code: " + response.code()));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                resInstitute.onFailed(e);
+                callback.onFailed(e);
             }
         });
     }
@@ -857,6 +891,7 @@ public class ApiClient {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         String data = response.body().string();
+                        Log.d(TAG, "onResponse: " + data);
                         ArrayList<Requirements> requirements = new ArrayList<>();
                         JSONObject jsonObject = new JSONObject(data);
                         JSONArray arrayRequirements = jsonObject.getJSONArray("requirements");
@@ -877,6 +912,107 @@ public class ApiClient {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 callback.onFailed(new IOException("Gagal mengirim request: " + e.getMessage()));
+            }
+        });
+    }
+
+    /**
+     * Service Metode untuk mengirim permintaan GET data profile ke server
+     *
+     * @param token    token JWT, sertakan dalam header Authorization
+     * @param endPoint endpoint untuk mengambil data profile
+     * @param callback callback untuk menerima hasil dari permintaan
+     * @see ProfileHelper#onSuccess(String, String, String, String, String, String, String)
+     * @see ProfileHelper#onFailed(IOException)
+     */
+    public void FetchProfile(String token, String endPoint, ProfileHelper callback) {
+        Request request = new Request.Builder()
+                .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                callback.onFailed(new IOException("Gagal mengirim request: " + e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String data = response.body().string();
+                    try {
+                        JSONObject JsonData = new JSONObject(data);
+                        if (!JsonData.getBoolean("isEmpty")) {
+                            JSONObject users = JsonData.getJSONObject("users");
+                            String name = users.getString("nama");
+                            String gender = users.getString("jenis_kelamin");
+                            String birth = users.getString("tanggal_lahir");
+                            String phone = users.getString("tlp");
+                            String email = users.getString("email");
+                            String address = users.getString("alamat");
+                            String imageUri = BASE_URL + users.getString("profile_picture");
+                            callback.onSuccess(name, gender, birth, phone, email, address, imageUri);
+                        } else {
+                            callback.onFailed(new IOException(JsonData.getString("message")));
+                        }
+                    } catch (JSONException e) {
+                        callback.onFailed(new IOException("Gagal saat parsing JSON: " + e.getMessage()));
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Service Metode untuk mengirim permintaan update profile ke server
+     *
+     * @param token    token JWT, sertakan dalam header Authorization
+     * @param endPoint endpoint untuk memperbarui data profile
+     * @param data     data yang akan dikirimkan ke server (example. ["nama", "tlp", "alamat"])
+     * @param file     gambar yang akan dikirimkan ke server
+     * @param callback callback untuk menerima hasil dari permintaan
+     * @see updateProfileHelper#onSuccess(String)
+     * @see updateProfileHelper#onFailed(IOException)
+     */
+    public void updateProfile(String token, String endPoint, String data[], File file,
+                              updateProfileHelper callback) {
+
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        builder.addFormDataPart("name", data[0]);
+        builder.addFormDataPart("phone", data[1]);
+        builder.addFormDataPart("address", data[2]);
+        if (file != null) {
+            RequestBody imageBody = RequestBody.create(file, MediaType.parse("image/*"));
+            builder.addFormDataPart("profile_picture", file.getName(), imageBody);
+        }
+
+        RequestBody requestBody = builder.build();
+        Request request = new Request.Builder()
+                .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
+                .addHeader("Authorization", "Bearer " + token)
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                callback.onFailed(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String data = response.body().string();
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject json = new JSONObject(data);
+                        String message = json.getString("message");
+                        callback.onSuccess(message);
+                    } catch (JSONException e) {
+                        callback.onFailed(new IOException("Gagal saat parsing JSON: " + e.getMessage()));
+                    }
+                } else {
+                    callback.onFailed(new IOException("Unexpected response code " + response.code()));
+                }
             }
         });
     }
@@ -947,100 +1083,61 @@ public class ApiClient {
         });
     }
 
-    // PROFILE ADAPTER
-    public interface ProfileHelper {
-        void onSuccess(String name, String jk, String ttl, String tlp, String email, String alamat);
+    public interface DashboardDataHelper {
+        void onSuccess(ArrayList<Dashboard> data);
 
         void onFailed(IOException e);
     }
 
-    // PROFILE
-    public void FetchProfile(int id, String token, String endPoint, ProfileHelper callback) {
-        Log.d(TAG, "EndPoint : " + BASE_URL + BASE_URL_PUBLIC + endPoint);
-        Request request = new Request.Builder()
-                .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
-                .addHeader("Authorization", "Bearer " + token)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.d("Gagal", "onFailure: " + e.getMessage());
-            }
+    public void fetchDashboard(String token, String endPoint, DashboardDataHelper callback) {
+        String url = BASE_URL + BASE_URL_PUBLIC + endPoint;
 
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String data = response.body().string();
-                    try {
-                        JSONObject JsonData = new JSONObject(data);
-                        if (!JsonData.getBoolean("isEmpty")) {
-                            JSONObject users = JsonData.getJSONObject("users");
-                            String name = users.getString("nama");
-                            String gender = users.getString("jenis_kelamin");
-                            String birth = users.getString("tanggal_lahir");
-                            String phone = users.getString("tlp");
-                            String email = users.getString("email");
-                            String address = users.getString("alamat");
-                            callback.onSuccess(name, gender, birth, phone, email, address);
-                        } else {
-                            callback.onFailed(new IOException(JsonData.getString("message")));
-                        }
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        });
-    }
-
-    public interface UserUpdateCallback {
-        void onSuccess(String message);
-
-        void onFailed(IOException e);
-    }
-
-
-    public void updateUserProfile(String userId, String nama, String noTelp, String alamat, UserUpdateCallback callback) {
-        String url = BASE_URL + "user/updateUsers/" + userId;
-
-        // Membuat JSON body untuk permintaan
-        JSONObject json = new JSONObject();
-        try {
-            json.put("name", nama);
-            json.put("phone", noTelp);
-            json.put("address", alamat);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            callback.onFailed(new IOException("Error creating JSON"));
-            return;
-        }
-
-        // Membuat RequestBody dari JSON
-        RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json; charset=utf-8"));
-
-        // Membuat Request dengan URL dan body
         Request request = new Request.Builder()
                 .url(url)
-                .post(body)
+                .addHeader("Authorization", "Bearer " + token)
+                .addHeader("Content-Type", "application/json")
                 .build();
 
-        // Melakukan request asinkron menggunakan enqueue
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                callback.onFailed(e);
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful() && response.body() != null) {
+                    String jsonData = response.body().string();
+                    try {
+                        ArrayList<Dashboard> dashboardList = parseDashboardJson(jsonData);
+                        callback.onSuccess(dashboardList);
+                    } catch (JSONException e) {
+                        callback.onFailed(new IOException("JSON Parsing Error", e));
+                    }
+                } else {
+                    callback.onFailed(new IOException("Response not successful or body is null"));
+                }
             }
 
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String responseData = response.body() != null ? response.body().string() : "";
-                    callback.onSuccess(responseData);
-                } else {
-                    callback.onFailed(new IOException("Unexpected response code " + response.code()));
-                }
+            public void onFailure(Call call, IOException e) {
+                callback.onFailed(e);
             }
         });
+    }
+
+    private ArrayList<Dashboard> parseDashboardJson(String jsonData) throws JSONException {
+        JSONObject jsonObject = new JSONObject(jsonData);
+        if (!jsonObject.getBoolean("success")) {
+            throw new JSONException("Response not successful");
+        }
+
+        JSONArray dataArray = jsonObject.getJSONArray("data");
+        ArrayList<Dashboard> dashboardList = new ArrayList<>();
+
+        for (int i = 0; i < dataArray.length(); i++) {
+            JSONObject dataObject = dataArray.getJSONObject(i);
+            String tableName = dataObject.getString("table_name");
+            int total = dataObject.getInt("total");
+            dashboardList.add(new Dashboard(tableName, total));
+        }
+
+        return dashboardList;
     }
 
 }
