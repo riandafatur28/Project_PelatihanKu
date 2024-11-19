@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragmentdetailprogram"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -63,7 +64,7 @@
                     android:layout_marginTop="18dp"
                     android:fontFamily="@font/inter_medium"
                     android:text="Tentang Program"
-                    android:textSize="16sp" />
+                    android:textSize="20sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -72,14 +73,15 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/imageDetailProgram"
                         android:layout_width="180dp"
                         android:layout_height="180dp"
                         android:layout_marginStart="12dp"
                         android:padding="8dp"
                         android:scaleType="fitXY"
-                        android:src="@drawable/balai_img2" />
+                        android:src="@drawable/balai_img2"
+                        app:shapeAppearanceOverlay="@style/RoundedImageView2" />
 
                     <LinearLayout
                         android:id="@+id/detailProgram"
@@ -103,7 +105,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Program :"
                                 android:textColor="@color/font_black"
-                                android:textSize="12sp"
+                                android:textSize="14sp"
                                 android:layout_marginEnd="5dp"
                                 android:fontFamily="@font/inter_regular" />
 
@@ -115,7 +117,7 @@
                                 android:text=""
                                 android:fontFamily="@font/inter_regular"
                                 android:textColor="@color/font_black"
-                                android:textSize="12sp" />
+                                android:textSize="14sp" />
                         </LinearLayout>
 
 
@@ -132,7 +134,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Kejuruan:"
                                 android:textColor="@color/font_black"
-                                android:textSize="12sp"
+                                android:textSize="14sp"
                                 android:layout_marginEnd="5dp"
                                 android:fontFamily="@font/inter_regular" />
 
@@ -144,7 +146,7 @@
                                 android:text=""
                                 android:fontFamily="@font/inter_regular"
                                 android:textColor="@color/font_black"
-                                android:textSize="12sp" />
+                                android:textSize="14sp" />
                         </LinearLayout>
 
                         <!--Nama Program-->
@@ -160,7 +162,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Standar :"
                                 android:textColor="@color/font_black"
-                                android:textSize="12sp"
+                                android:textSize="14sp"
                                 android:layout_marginEnd="5dp"
                                 android:fontFamily="@font/inter_regular" />
 
@@ -172,7 +174,7 @@
                                 android:text=""
                                 android:fontFamily="@font/inter_regular"
                                 android:textColor="@color/font_black"
-                                android:textSize="12sp" />
+                                android:textSize="14sp" />
                         </LinearLayout>
 
                         <!--peserta-->
@@ -188,7 +190,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Peserta :"
                                 android:textColor="@color/font_black"
-                                android:textSize="12sp"
+                                android:textSize="14sp"
                                 android:layout_marginEnd="5dp"
                                 android:fontFamily="@font/inter_regular" />
 
@@ -200,7 +202,7 @@
                                 android:text=""
                                 android:fontFamily="@font/inter_regular"
                                 android:textColor="@color/font_black"
-                                android:textSize="12sp" />
+                                android:textSize="14sp" />
                         </LinearLayout>
 
                         <!--gedung-->
@@ -216,7 +218,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Gedung :"
                                 android:textColor="@color/font_black"
-                                android:textSize="12sp"
+                                android:textSize="14sp"
                                 android:layout_marginEnd="5dp"
                                 android:fontFamily="@font/inter_regular" />
 
@@ -228,7 +230,7 @@
                                 android:text=""
                                 android:fontFamily="@font/inter_regular"
                                 android:textColor="@color/font_black"
-                                android:textSize="12sp" />
+                                android:textSize="14sp" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -252,10 +254,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:layout_marginTop="32dp"
+                        android:layout_marginTop="8dp"
                         android:fontFamily="@font/inter_medium"
                         android:text="Deskripsi Program"
-                        android:textSize="16sp" />
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/deskripsiProgram"
@@ -267,7 +269,7 @@
                         android:fontFamily="@font/inter_regular"
                         android:justificationMode="inter_word"
                         android:text=""
-                        android:textSize="12sp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <!-- Garis Horizontal -->
@@ -275,7 +277,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginStart="12dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="12dp"
                     android:background="@color/font_tint" />
 
@@ -289,10 +291,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:layout_marginTop="32dp"
+                        android:layout_marginTop="16dp"
                         android:fontFamily="@font/inter_medium"
                         android:text="Instruktur"
-                        android:textSize="16sp" />
+                        android:layout_marginBottom="8dp"
+                        android:textSize="20sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -301,14 +304,15 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/imageInstructor"
-                            android:layout_width="180dp"
-                            android:layout_height="180dp"
+                            android:layout_width="140dp"
+                            android:layout_height="140dp"
                             android:layout_marginStart="12dp"
                             android:padding="8dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/balai_img2" />
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/balai_img2"
+                            app:shapeAppearanceOverlay="@style/CircularImage" />  <!-- Apply circular style -->
 
                         <LinearLayout
                             android:id="@+id/container_linear"
@@ -332,8 +336,9 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="ID Instruktur :"
+                                    android:layout_marginTop="8dp"
                                     android:textColor="@color/font_black"
-                                    android:textSize="12sp"
+                                    android:textSize="14sp"
                                     android:layout_marginEnd="5dp"
                                     android:fontFamily="@font/inter_regular" />
 
@@ -342,10 +347,11 @@
                                     android:id="@+id/idInstructor"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
                                     android:text=""
                                     android:fontFamily="@font/inter_regular"
                                     android:textColor="@color/font_black"
-                                    android:textSize="12sp" />
+                                    android:textSize="14sp" />
                             </LinearLayout>
 
                             <!-- Line 2 of Button Text -->
@@ -360,9 +366,9 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Nama Instruktur :"
+                                    android:text="Nama            :"
                                     android:textColor="@color/font_black"
-                                    android:textSize="12sp"
+                                    android:textSize="14sp"
                                     android:layout_marginEnd="5dp"
                                     android:fontFamily="@font/inter_regular" />
 
@@ -374,7 +380,7 @@
                                     android:text=""
                                     android:fontFamily="@font/inter_regular"
                                     android:textColor="@color/font_black"
-                                    android:textSize="12sp" />
+                                    android:textSize="14sp" />
                             </LinearLayout>
 
                             <!-- Line 3 of Button Text -->
@@ -389,9 +395,9 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Kontak :"
+                                    android:text="Kontak          :"
                                     android:textColor="@color/font_black"
-                                    android:textSize="12sp"
+                                    android:textSize="14sp"
                                     android:layout_marginEnd="5dp"
                                     android:fontFamily="@font/inter_regular" />
 
@@ -403,7 +409,7 @@
                                     android:text=""
                                     android:fontFamily="@font/inter_regular"
                                     android:textColor="@color/font_black"
-                                    android:textSize="12sp" />
+                                    android:textSize="14sp" />
                             </LinearLayout>
 
                             <!-- Line 4 of Button Text -->
@@ -418,9 +424,9 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Alamat :"
+                                    android:text="Alamat          :"
                                     android:textColor="@color/font_black"
-                                    android:textSize="12sp"
+                                    android:textSize="14sp"
                                     android:layout_marginEnd="5dp"
                                     android:fontFamily="@font/inter_regular" />
 
@@ -432,7 +438,7 @@
                                     android:text=""
                                     android:fontFamily="@font/inter_regular"
                                     android:textColor="@color/font_black"
-                                    android:textSize="12sp" />
+                                    android:textSize="14sp" />
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
@@ -465,10 +471,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="1dp"
-                            android:layout_marginTop="24dp"
                             android:fontFamily="@font/inter_medium"
                             android:text="Persyaratan"
-                            android:textSize="16sp" />
+                            android:textSize="20sp" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/recyclerViewRequirements"
@@ -506,7 +511,7 @@
                         android:fontFamily="@font/inter_medium"
                         android:text="Informasi Pendaftaran"
                         android:textColor="@color/font_black"
-                        android:textSize="16sp"
+                        android:textSize="20sp"
                         android:textStyle="" />
 
                     <TextView
@@ -535,7 +540,7 @@
 
                     <Button
                         android:id="@+id/buttonDaftar"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="8dp"
