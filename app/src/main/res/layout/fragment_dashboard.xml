@@ -458,8 +458,8 @@
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/imageContent"
-                        android:layout_width="180dp"
-                        android:layout_height="180dp"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
                         android:layout_marginEnd="12dp"
                         android:scaleType="fitXY"
                         android:src="@drawable/balai_img"
@@ -486,7 +486,7 @@
                             android:fontFamily="@font/inter_bold"
                             android:text="Balai Latihan Kerja"
                             android:textColor="@color/font_black"
-                            android:textSize="15sp"
+                            android:textSize="18sp"
                             app:layout_constraintWidth_percent="0.5" />
 
                         <!-- Line 2 of Button Text -->
@@ -499,21 +499,21 @@
                             android:fontFamily="@font/inter_regular"
                             android:text="Unit pelaksanaan teknis dari pemerintah daerah di indonesia yang bertugas melaksanakan pelatihan kerja."
                             android:textColor="@color/font_black"
-                            android:textSize="12sp"
+                            android:textSize="14sp"
                             app:layout_constraintWidth_percent="0.5" />
 
                         <TextView
                             android:id="@+id/btn_lebihBanyak"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="8dp"
                             android:background="@android:color/transparent"
                             android:clickable="true"
                             android:focusable="true"
                             android:focusableInTouchMode="true"
                             android:text="@string/lebih_banyak"
                             android:textColor="@color/blue"
-                            android:textSize="12sp"
+                            android:textSize="14sp"
                             app:layout_constraintWidth_percent="0.5" />
                     </LinearLayout>
                 </LinearLayout>
@@ -530,7 +530,7 @@
                 android:paddingBottom="16dp"
                 android:text="Temukan Kami di"
                 android:textColor="@color/font_black"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
 
             <!-- Gambar Maps -->
             <androidx.cardview.widget.CardView
