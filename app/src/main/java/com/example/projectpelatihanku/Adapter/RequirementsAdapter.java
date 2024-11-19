@@ -1,15 +1,14 @@
 package com.example.projectpelatihanku.Adapter;
 
 import android.content.Context;
-import android.util.Log;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.LayoutInflater;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.widget.TextView;
 
 import com.example.projectpelatihanku.Models.Requirements;
 import com.example.projectpelatihanku.R;
@@ -29,7 +28,6 @@ public class RequirementsAdapter extends RecyclerView.Adapter<RequirementsAdapte
      *
      * @param requirementsList daftar persyaratan program
      * @param context          konteks aplikasi
-     * @see Requirements
      */
     public RequirementsAdapter(List<Requirements> requirementsList, Context context) {
         this.requirementsList = requirementsList;
@@ -38,11 +36,10 @@ public class RequirementsAdapter extends RecyclerView.Adapter<RequirementsAdapte
 
     /**
      * Membuat ViewHolder untuk setiap item dalam RecyclerView
-     * Layout inflater digunakan untuk membuat view dari layout XML requirement_items
      *
      * @param parent   referensi ke parent tempat item akan ditempatkan (RecyclerView)
-     * @param viewType Tipe view yang akan dibuat.
-     * @return ViewHolder yang telah dibuat.
+     * @param viewType Tipe view yang akan dibuat
+     * @return ViewHolder yang telah dibuat
      */
     @NonNull
     @Override
@@ -60,8 +57,10 @@ public class RequirementsAdapter extends RecyclerView.Adapter<RequirementsAdapte
     @Override
     public void onBindViewHolder(@NonNull RequirementsAdapter.ViewHolder holder, int position) {
         Requirements requirements = requirementsList.get(position);
-        Log.d("Test", "onBindViewHolder: " + requirements.getRequirement());
         holder.txtRequirements.setText(requirements.getRequirement());
+
+        // Atur ukuran teks dinamis (contoh: 16sp)
+        holder.txtRequirements.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
     }
 
     /**
@@ -77,7 +76,7 @@ public class RequirementsAdapter extends RecyclerView.Adapter<RequirementsAdapte
     /**
      * ViewHolder untuk setiap item dalam RecyclerView
      */
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtRequirements;
 
         public ViewHolder(@NonNull View itemView) {
