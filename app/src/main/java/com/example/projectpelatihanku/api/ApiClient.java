@@ -194,59 +194,80 @@ public class ApiClient {
         void onFailed(IOException e);
     }
 
-    // Inisialisasi OkHttpClient
-    private OkHttpClient client = new OkHttpClient();
+    /**
+     * Interface untuk Callback Register
+     */
+    public interface RegisterAccountHelper {
+        /**
+         * Callback untuk menerima hasil dari request.
+         *
+         * @param message pesan response dari server
+         */
+        void onSuccess(String message);
 
-    public interface RegisterHelper {
-        void onSuccess(String response);
-
+        /**
+         * Callback untuk menerima error dari request
+         *
+         * @param e error yang terjadi saat request.
+         *          Gunakan e.message untuk mendapatkan pesan error
+         */
         void onFailed(IOException e);
     }
 
+    // Inisialisasi OkHttpClient
+    private OkHttpClient client = new OkHttpClient();
 
-    public void Register(String endPoint, String nama, String gender, String tanggalLahir, String nomorTelepon, String email, String password, String konfirmasiPassword, byte[] fotoProfil, String alamat, RegisterHelper registerHelper) throws JSONException {
+    /**
+     * Service Metode untuk mengirim permintaan registrasi account ke server
+     *
+     * @param endPoint  URL endpoint untuk registrasi
+     * @param imagePart gambar yang akan dikirimkan
+     * @param data      data yang akan dikirimkan (example. nama, email, dst..)
+     * @param callback  callback untuk hasil request
+     */
+    public void Register(String endPoint, MultipartBody.Part imagePart, String data[],
+                         RegisterAccountHelper callback) {
 
-        OkHttpClient client = new OkHttpClient();
-        MultipartBody.Builder bodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        MultipartBody.Builder builder =
+                new MultipartBody.Builder().setType(MultipartBody.FORM);
+        builder.addFormDataPart("name", data[0]);
+        builder.addFormDataPart("tanggal_lahir", data[1]);
+        builder.addFormDataPart("phone", data[2]);
+        builder.addFormDataPart("alamat", data[3]);
+        builder.addFormDataPart("email", data[4]);
+        builder.addFormDataPart("password", data[5]);
+        builder.addFormDataPart("jenis_kelamin", data[6]);
+        builder.addFormDataPart("role", "pengguna");
+        builder.addPart(imagePart);
 
-        // Menambahkan data form lainnya
-        bodyBuilder.addFormDataPart("nama", nama);
-        bodyBuilder.addFormDataPart("gender", gender);
-        bodyBuilder.addFormDataPart("tanggalLahir", tanggalLahir);
-        bodyBuilder.addFormDataPart("noTelp", nomorTelepon);
-        bodyBuilder.addFormDataPart("email", email);
-        bodyBuilder.addFormDataPart("password", password);
-        bodyBuilder.addFormDataPart("konfirmasiPassword", konfirmasiPassword);
-        bodyBuilder.addFormDataPart("alamat", alamat);
-
-        // Menambahkan gambar sebagai byte array dengan media type yang sesuai
-        if (fotoProfil != null) {
-            bodyBuilder.addFormDataPart("fotoProfil", "profile_picture.jpg",
-                    RequestBody.create(MediaType.parse("image/jpeg"), fotoProfil));
-        }
-
-        RequestBody requestBody = bodyBuilder.build();
+        RequestBody body = builder.build();
         Request request = new Request.Builder()
-                .url(BASE_URL + endPoint) // Ganti dengan endpoint API Anda
-                .post(requestBody)
+                .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
+                .post(body)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                registerHelper.onFailed(e);
+                callback.onFailed(new IOException("Gagal Mengirim request " + e.getMessage()));
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String data = response.body().string();
                 if (response.isSuccessful()) {
-                    registerHelper.onSuccess(response.body().string());
+                    try {
+                        JSONObject json = new JSONObject(data);
+                        String message = json.getString("message");
+                        callback.onSuccess(message);
+                    } catch (JSONException e) {
+                        callback.onFailed(new IOException("Gagal saat parsing JSON" + e.getMessage()));
+                    }
                 } else {
-                    registerHelper.onFailed(new IOException("Failed to register"));
+                    callback.onFailed(new IOException("Gagal dengan code response: " + response.code()));
                 }
             }
         });
-
     }
 
     /**
@@ -260,7 +281,6 @@ public class ApiClient {
      */
     public void oauthLogin(String endPoint, String email, String password, LoginHelper callback) throws JSONException {
 
-        // Buat Object untuk menampung data user
         JSONObject data = new JSONObject();
         data.put("email", email);
         data.put("password", password);
@@ -491,7 +511,7 @@ public class ApiClient {
                         String message = json.getString("message");
                         callback.onSuccess(message);
                     } catch (JSONException e) {
-                        callback.onSuccess("Gagal saat parsing Json: " +e.getMessage());
+                        callback.onSuccess("Gagal saat parsing Json: " + e.getMessage());
                     }
                 } else if (response.code() == 401) {
                     callback.onFailed(new IOException("Token tidak valid atau kadaluarsa"));
