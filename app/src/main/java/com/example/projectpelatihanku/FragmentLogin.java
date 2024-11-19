@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.FragmentHelper;
 import com.example.projectpelatihanku.helper.JwtHelper;
 import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 
@@ -63,6 +64,7 @@ public class FragmentLogin extends Fragment {
 
     /**
      * Handler untuk tombol login.
+     *
      * @param apiClient Service class untuk melakukan request ke API
      */
     private void loginButtonHandler(ApiClient apiClient) {
@@ -77,12 +79,8 @@ public class FragmentLogin extends Fragment {
                             SharedPreferencesHelper.saveToken(getActivity(), token);
                             Name = JwtHelper.getUserData(token, "users", "username");
                             firstName = Name.split(" ")[0];
-                            if (getActivity() instanceof MainActivity) {
-                                ((MainActivity) getActivity()).navigateToDashboard();
-                            } else {
-                                Toast.makeText(getActivity(), "MainActivity not found",
-                                        Toast.LENGTH_SHORT).show();
-                            }
+                            FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity,
+                                    new DashboardFragment(), true, null);
                         });
                     }
 
