@@ -1,14 +1,10 @@
 package com.example.projectpelatihanku;
 
-import static android.app.Activity.RESULT_OK;
-
-import android.app.DatePickerDialog;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +22,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.FragmentHelper;
+import com.example.projectpelatihanku.helper.FunctionHelper;
 
-import org.json.JSONException;
-
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Calendar;
+
+
+import okhttp3.MultipartBody;
 
 public class FragmentRegister extends Fragment {
 
@@ -41,27 +37,29 @@ public class FragmentRegister extends Fragment {
     private Spinner spinner;
     private String selectedGender = null;
     private EditText inputNama, inputEmail, inputPassword, konfirmasiPassword, inputNoTelp, inputAlamat, inputTanggal;
-    private ImageView imageProfil, iconInputPassword, iconConfirmPassword;
-    private static final int PICK_IMAGE = 1;
-    private Uri imageUri;
-    private boolean isImageUploaded = false;
-    private String endPoint = "user/create";
+    private ImageView iconInputPassword, iconConfirmPassword;
+    private static int imageId = 0;
+    private final String endPoint = "/user/registrations";
+    private final String regexNama = "^[a-zA-Z.,' ]+$";
+    private final String regexEmail = "^[a-zA-Z0-9._%+-]+@gmail\\.com$";
+    private final String regexPassword = "^[A-Za-z\\d!@#$%^&*]{1,15}$";
+    private final String regexNoHp = "^08[1-9][0-9]{7,10}$";
+    private final String regexAlamat = "^[A-Za-z0-9\\s.,]{1,100}$";
 
+    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
 
-        // Inisialisasi komponen UI
         buttonRegister = view.findViewById(R.id.buttonregister);
-        textLogin = view.findViewById(R.id.apakahpunyaakun);
+        textLogin = view.findViewById(R.id.txtMasuk);
         inputNama = view.findViewById(R.id.inputNama);
         inputEmail = view.findViewById(R.id.inputEmail);
         inputPassword = view.findViewById(R.id.inputpassword);
         konfirmasiPassword = view.findViewById(R.id.KonfirmasiPassword);
         inputNoTelp = view.findViewById(R.id.inputNoTelp);
         inputAlamat = view.findViewById(R.id.inputAlamat);
-        imageProfil = view.findViewById(R.id.imageProfil);
         iconInputPassword = view.findViewById(R.id.iconInputPassword);
         iconConfirmPassword = view.findViewById(R.id.iconConfirmPassword);
 
@@ -71,65 +69,139 @@ public class FragmentRegister extends Fragment {
         inputTanggal = view.findViewById(R.id.inputTanggal);
         view.findViewById(R.id.iconKalender).setOnClickListener(v -> showDatePicker());
 
-        imageProfil.setOnClickListener(v -> openGallery());
-
-        // Mengatur aksi klik pada ikon visibilitas untuk password
         iconInputPassword.setOnClickListener(v -> togglePasswordVisibility(inputPassword, iconInputPassword));
-
-        // Mengatur aksi klik pada ikon visibilitas untuk konfirmasi password
         iconConfirmPassword.setOnClickListener(v -> togglePasswordVisibility(konfirmasiPassword, iconConfirmPassword));
 
-        // Listener untuk tombol Register
         buttonRegister.setOnClickListener(v -> {
-            String nama = inputNama.getText().toString().trim();
-            String email = inputEmail.getText().toString().trim();
-            String password = inputPassword.getText().toString().trim();
-            String konfirmPass = konfirmasiPassword.getText().toString().trim();
-            String nomorTelepon = inputNoTelp.getText().toString().trim();
-            String alamat = inputAlamat.getText().toString().trim();
-            String tanggalLahir = inputTanggal.getText().toString().trim();
-
-            if (isInputValid(nama, email, password, konfirmPass, nomorTelepon, alamat, tanggalLahir)) {
-                byte[] fotoProfil = null;
-                if (imageUri != null) {
-                    fotoProfil = convertImageUriToByteArray(imageUri);
-                }
-
-                ApiClient apiClient = new ApiClient();
-                try {
-                    apiClient.Register(endPoint, nama, selectedGender, tanggalLahir, nomorTelepon, email, password, konfirmPass, fotoProfil, alamat, new ApiClient.RegisterHelper() {
-                        @Override
-                        public void onSuccess(String response) {
-                            getActivity().runOnUiThread(() -> {
-                                Toast.makeText(getContext(), "Registrasi berhasil", Toast.LENGTH_SHORT).show();
-                                if (getActivity() instanceof MainActivity) {
-                                    ((MainActivity) getActivity()).navigateToLogin();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onFailed(IOException e) {
-                            getActivity().runOnUiThread(() -> {
-                                Toast.makeText(getContext(), "Registrasi gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            });
-                        }
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+            requestRegister(new ApiClient());
         });
 
         textLogin.setOnClickListener(v -> {
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).navigateToLogin();
-            }
+            BackHandler();
         });
 
         return view;
     }
 
+    /**
+     * Mengirim permintaan registrasi ke server.
+     *
+     * @param api Class Service untuk melakukan request ke server.
+     * @see ApiClient#Register(String, MultipartBody.Part, String[], ApiClient.RegisterAccountHelper)
+     * @see FunctionHelper#validateString(Context, String, String, String, int)
+     * @see FunctionHelper#convertImageToMultipart(Context, int)
+     */
+    private void requestRegister(ApiClient api) {
+        String nama = inputNama.getText().toString().trim();
+        String tanggalLahir = inputTanggal.getText().toString().trim();
+        String nomorTelepon = inputNoTelp.getText().toString().trim();
+        String alamat = inputAlamat.getText().toString().trim();
+        String email = inputEmail.getText().toString().trim();
+        String password = inputPassword.getText().toString().trim();
+        String konfirmPass = konfirmasiPassword.getText().toString().trim();
+
+        boolean isValid = true;
+        isValid = FunctionHelper.validateString(getContext(), nama, "Nama", regexNama, 50) && isValid;
+        isValid = FunctionHelper.validateString(getContext(), nomorTelepon, "Nomor Telepon",
+                regexNoHp, 13) && isValid;
+        isValid = FunctionHelper.validateString(getContext(), email, "Email",
+                regexEmail, 70) && isValid;
+        isValid = FunctionHelper.validateString(getContext(), password, "Password",
+                regexPassword, 15) && isValid;
+        isValid = FunctionHelper.validateString(getContext(), alamat, "Alamat",
+                regexAlamat, 100) && isValid;
+        isValid = genderValidate(selectedGender) && isValid;
+        isValid = dateValidate(tanggalLahir) && isValid;
+        isValid = passwordValidate(password, konfirmPass) && isValid;
+
+        if (isValid) {
+
+            String data[] = new String[7];
+            data[0] = nama;
+            data[1] = tanggalLahir;
+            data[2] = nomorTelepon;
+            data[3] = alamat;
+            data[4] = email;
+            data[5] = password;
+
+            if (selectedGender.equalsIgnoreCase("Laki-laki")) {
+                imageId = R.drawable.img_men;
+                data[6] = "Laki-laki";
+            } else if (selectedGender.equalsIgnoreCase("Perempuan")) {
+                imageId = R.drawable.img_women;
+                data[6] = "Perempuan";
+            }
+
+            MultipartBody.Part imagePart = FunctionHelper.convertImageToMultipart(getContext(),
+                    imageId);
+            api.Register(endPoint, imagePart, data, new ApiClient.RegisterAccountHelper() {
+                @Override
+                public void onSuccess(String message) {
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+                        FragmentLogin login = new FragmentLogin();
+                        FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, login,
+                                true, null);
+                    });
+                }
+
+                @Override
+                public void onFailed(IOException e) {
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    });
+                }
+            });
+        }
+    }
+
+    /**
+     * Memvalidasi password dan konfirmasi password.
+     *
+     * @param password        password.
+     * @param confirmPassword konfirmasi password.
+     */
+    private boolean passwordValidate(String password, String confirmPassword) {
+        if (!password.equalsIgnoreCase(confirmPassword)) {
+            Toast.makeText(getContext(), "Password harus bernilai sama", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Memvalidasi input jenis kelamin.
+     *
+     * @param value jenis kelamin.
+     * @return true jika tidak kosong dan false jika kosong.
+     */
+    private boolean genderValidate(String value) {
+        if (value == null || value.isEmpty() || value.trim().equalsIgnoreCase("Jenis Kelamin")) {
+            Toast.makeText(getContext(), "Pilih Opsi Jenis Kelamin yang tersedia!",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Memvalidasi input tanggal lahir.
+     *
+     * @param value tanggal lahir.
+     * @return true jika tidak kosong dan false jika kosong.
+     */
+    private boolean dateValidate(String value) {
+        if (value == null || value.isEmpty() || value.trim().equalsIgnoreCase("Tanggal Lahir")) {
+            Toast.makeText(getContext(), "Tanggal Lahir wajib diisi",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Mengatur spinner untuk memilih jenis kelamin.
+     */
     private void setupGenderSpinner() {
         if (spinner != null) {
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
@@ -146,60 +218,26 @@ public class FragmentRegister extends Fragment {
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> parent) {}
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
             });
         }
     }
 
-    private void openGallery() {
-        startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), PICK_IMAGE);
-    }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
-            imageUri = data.getData();
-            imageProfil.setImageURI(imageUri);
-            isImageUploaded = true;
-        }
-    }
-
-    private byte[] convertImageUriToByteArray(Uri uri) {
-        try {
-            Bitmap bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(uri));
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-            return byteArrayOutputStream.toByteArray();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private boolean isInputValid(String nama, String email, String password, String konfirmasi, String nomorTelepon, String alamat, String tanggalLahir) {
-        if (nama.isEmpty()) {
-            Toast.makeText(getContext(), "Nama harus diisi", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(getContext(), "Email tidak valid", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        if (password.isEmpty() || !password.equals(konfirmasi)) {
-            Toast.makeText(getContext(), "Password dan konfirmasi tidak cocok", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        return true;
-    }
-
+    /**
+     * Menampilkan dialog DatePicker untuk memilih tanggal lahir.
+     */
     private void showDatePicker() {
-        Calendar calendar = Calendar.getInstance();
-        new DatePickerDialog(requireContext(), (view, year, month, day) -> {
-            inputTanggal.setText(day + "/" + (month + 1) + "/" + year);
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+        FunctionHelper.datePickerHelper(getContext(), inputTanggal);
     }
 
+    /**
+     * Mengatur visibilitas password ketika icon visibilitas ditekan.
+     *
+     * @param passwordField text input password yang akan diubah visibilitasnya.
+     * @param toggleIcon    ikon visibilitas, (icon_eye_open atau icon_eye_close).
+     */
     private void togglePasswordVisibility(EditText passwordField, ImageView toggleIcon) {
         if (passwordField.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
             passwordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
@@ -209,5 +247,13 @@ public class FragmentRegister extends Fragment {
             toggleIcon.setImageResource(R.drawable.vector_eye_open);
         }
         passwordField.setSelection(passwordField.getText().length());
+    }
+
+    /**
+     * Metode untuk handle aksi tombol kembali.
+     */
+    private void BackHandler() {
+        FragmentLogin login = new FragmentLogin();
+        FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, login, true, null);
     }
 }
