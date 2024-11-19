@@ -120,7 +120,6 @@
                                 android:textSize="14sp" />
                         </LinearLayout>
 
-
                         <!--Nama Kejuruan-->
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -309,10 +308,10 @@
                             android:layout_width="140dp"
                             android:layout_height="140dp"
                             android:layout_marginStart="12dp"
-                            android:padding="8dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/balai_img2"
-                            app:shapeAppearanceOverlay="@style/CircularImage" />  <!-- Apply circular style -->
+                            android:clipToOutline="true"
+                            app:shapeAppearanceOverlay="@style/CircularImage" />
 
                         <LinearLayout
                             android:id="@+id/container_linear"
