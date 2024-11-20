@@ -60,7 +60,6 @@ public class RequirementsAdapter extends RecyclerView.Adapter<RequirementsAdapte
     @Override
     public void onBindViewHolder(@NonNull RequirementsAdapter.ViewHolder holder, int position) {
         Requirements requirements = requirementsList.get(position);
-        Log.d("Test", "onBindViewHolder: " + requirements.getRequirement());
         holder.txtRequirements.setText(requirements.getRequirement());
     }
 
