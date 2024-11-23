@@ -1,5 +1,8 @@
 package com.example.projectpelatihanku;
 
+import static com.example.projectpelatihanku.MainActivity.hideBottomNavigationView;
+import static com.example.projectpelatihanku.MainActivity.showBottomNavigationView;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -75,25 +78,20 @@ public class FragmentProgram extends Fragment {
 
         backButton = view.findViewById(R.id.imageArrow2);
 
-        navigateToDepartment();
         fetchData(new ApiClient());
-
+        hideBottomNavigationView();
+        navigateToDepartment();
         return view;
     }
 
     /**
      * Navigasi ke FragmentDepartment
+     *
      * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button)
      */
     private void navigateToDepartment() {
-        FragmentActivity activity = getActivity();
-        if (activity != null) {
-            BottomNavigationView bottomNavigationView = activity.findViewById(R.id.bottomview);
-            if (bottomNavigationView != null) {
-                bottomNavigationView.setVisibility(View.VISIBLE);
-            }
-            FragmentHelper.backNavigation(activity, backButton, null);
-        }
+        showBottomNavigationView();
+        FragmentHelper.backNavigation(getActivity(), backButton, null);
     }
 
     /**

@@ -1,18 +1,14 @@
 package com.example.projectpelatihanku;
 
-import static com.example.projectpelatihanku.DashboardFragment.PREFS_NAME;
+import static com.example.projectpelatihanku.MainActivity.hideBottomNavigationView;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +18,9 @@ import androidx.fragment.app.Fragment;
 
 import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.FragmentHelper;
+import com.example.projectpelatihanku.helper.GlideHelper;
+import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -35,15 +34,15 @@ public class FragmentProfil extends Fragment {
     private TextView namaUser, namaProfil, jkProfil, ttlProfil, emailProfil, noTelpProfil, alamatProfil;
     private ImageView imageProfil;
     private final String endPoint = "/users/";
-    private int userId;
+    public static int userId;
     public static String username;
     public static String gender;
     public static String birth;
     public static String phone;
     public static String userEmail;
     public static String address;
+    public static String imagePath;
     private String token;
-    private SharedPreferences sharedPreferences;
 
     /**
      * @see #backButtonHandler(View)
@@ -64,7 +63,6 @@ public class FragmentProfil extends Fragment {
         alamatProfil = view.findViewById(R.id.alamatProfil);
         imageProfil = view.findViewById(R.id.imageProfil);
 
-        // Panggil Metode untuk Handler Button dan load data profile
         loadUserData(new ApiClient());
         backButtonHandler(view);
         updateButtonHandler(view);
@@ -73,22 +71,22 @@ public class FragmentProfil extends Fragment {
 
     /**
      * Ambil data profile user
-     * @param api ApiClient untuk mengambil data dari server
+     * @param api Class Service untuk mengirim permintaan ke server
+     * @see ApiClient#FetchProfile(String, String, ApiClient.ProfileHelper)
+     * @see SharedPreferencesHelper#getToken(Context)
+     * @see GlideHelper#loadImage(Context, ImageView, String)
      */
     private void loadUserData(ApiClient api) {
-        sharedPreferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
-        token = sharedPreferences.getString("token", "Token Tidak ditemukan");
+        token = SharedPreferencesHelper.getToken(getContext());
         JWT jwt = new JWT(token);
         Double userIdDouble = (Double) jwt.getClaim("users").asObject(Map.class).get("id");
         userId = userIdDouble.intValue();
 
-        api.FetchProfile(userId, token, endPoint + userId, new ApiClient.ProfileHelper() {
+        api.FetchProfile(token, endPoint + userId, new ApiClient.ProfileHelper() {
             @Override
-            public void onSuccess(String name, String jk, String ttl, String tlp, String email, String alamat) {
+            public void onSuccess(String name, String jk, String ttl, String tlp, String email, String alamat, String imageUri) {
                 getActivity().runOnUiThread(() -> {
                     String tanggalLahir = formatDate(ttl);
-
-                    // Menampilkan data ke UI
                     namaUser.setText(name);
                     namaProfil.setText(name);
                     jkProfil.setText(jk);
@@ -97,66 +95,25 @@ public class FragmentProfil extends Fragment {
                     emailProfil.setText(email);
                     alamatProfil.setText(alamat);
 
-                    // Menyimpan value ke variable Statis
                     username = name;
                     phone = tlp;
                     gender = jk;
                     birth = ttl;
                     userEmail = email;
                     address = alamat;
+                    imagePath = imageUri;
+                    GlideHelper.loadImage(getContext(), imageProfil, imageUri);
 
-                    // Menyimpan gender ke SharedPreferences
-                    sharedPreferences = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("gender", jk);
-                    editor.apply();
-
-                    // Log to confirm the data is saved
-                    Log.d("DashboardFragment", "Gender saved: " + jk);
-
-                    // Memuat gambar profil
-                    loadProfileImage(jk);
                 });
             }
 
             @Override
             public void onFailed(IOException e) {
-
+                getActivity().runOnUiThread(()->{
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
             }
         });
-    }
-
-    /**
-     * @param gender
-     */
-    private void loadProfileImage(String gender) {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
-        String imageUriString = sharedPreferences.getString("image_uri", null);
-
-        if (imageUriString != null) {
-            try {
-                imageProfil.setImageURI(Uri.parse(imageUriString));
-            } catch (Exception e) {
-                imageProfil.setImageResource(R.drawable.gambar_user);
-            }
-        } else {
-            setProfileByGender(gender);
-        }
-    }
-
-    /**
-     * Mengatur gambar profil berdasarkan gender.
-     *
-     * @param gender Genger users untuk set foto profile jika foto profile berlum diperbarui
-     */
-    private void setProfileByGender(String gender) {
-        if ("Laki-laki".equalsIgnoreCase(gender)) {
-            imageProfil.setImageResource(R.drawable.img_men);
-        } else if ("Perempuan".equalsIgnoreCase(gender)) {
-            imageProfil.setImageResource(R.drawable.img_women);
-        } else {
-            imageProfil.setImageResource(R.drawable.gambar_user);
-        }
     }
 
     /**
@@ -185,11 +142,11 @@ public class FragmentProfil extends Fragment {
      * @param view profile
      */
     private void backButtonHandler(View view){
-        LinearLayout txtKembali = view.findViewById(R.id.txtKembali);
+        Button txtKembali = view.findViewById(R.id.btnBack);
         txtKembali.setOnClickListener(v -> {
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).navigateToLogin();
-            }
+            FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity,
+                    new FragmentLogin(), true, null);
+            hideBottomNavigationView();
         });
     }
 
@@ -200,9 +157,9 @@ public class FragmentProfil extends Fragment {
     private void updateButtonHandler(View view){
         Button buttonPerbaruiProfil = view.findViewById(R.id.buttonPerbaruiProfil);
         buttonPerbaruiProfil.setOnClickListener(v -> {
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).navigateToEditProfil();
-            }
+            FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity,
+                    new FragmentEditProfil(), true, null);
+            hideBottomNavigationView();
         });
     }
 }

@@ -1,5 +1,7 @@
 package com.example.projectpelatihanku;
 
+import static com.example.projectpelatihanku.MainActivity.hideBottomNavigationView;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,12 +69,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
     private void navigateToProgram(String departmentId, String departmentName) {
 
         FragmentActivity activity = (FragmentActivity) context;
-        BottomNavigationView bottomNavigationView = activity.findViewById(R.id.bottomview);
-
-        if (bottomNavigationView != null) {
-            bottomNavigationView.setVisibility(View.GONE);
-        }
-
+        hideBottomNavigationView();
         FragmentProgram fragmentProgram = new FragmentProgram(departmentId, departmentName);
         FragmentHelper.navigateToFragment(activity, R.id.layoutDepartment, fragmentProgram, true,
                 null);

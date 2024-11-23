@@ -1,5 +1,7 @@
 package com.example.projectpelatihanku;
 
+import static com.example.projectpelatihanku.MainActivity.hideBottomNavigationView;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
@@ -32,17 +34,20 @@ import java.util.List;
 
 /**
  * Fragment untuk menampilkan detail program berdasarkan programId.
- * Noted : Persyaratan program dan foto instructor belum
+ *
  */
 public class FragmentDetailProgram extends Fragment {
     private TextView namaProgram, deskripsiProgram, namaKejuruan, standar, peserta, namaGedung,
             idInstructor, namaInstructor, kontakInstructor, alamatInstructor, status, tglPendaftaran;
     private String programId;
+    private String programName;
+    private String departmentName;
     private String token;
     private ImageView programImage, instructorImage;
     private RecyclerView recyclerView;
     private RequirementsAdapter adapter;
     private List<Requirements> requirementsList = new ArrayList<>();
+    private Button btnDaftar;
 
     /**
      * Default constructor
@@ -83,6 +88,7 @@ public class FragmentDetailProgram extends Fragment {
         tglPendaftaran = view.findViewById(R.id.tanggalPendaftaran);
         programImage = view.findViewById(R.id.imageDetailProgram);
         instructorImage = view.findViewById(R.id.imageInstructor);
+        btnDaftar = view.findViewById(R.id.buttonDaftar);
 
         recyclerView = view.findViewById(R.id.recyclerViewRequirements);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -92,6 +98,8 @@ public class FragmentDetailProgram extends Fragment {
         fetchDetailProgram(new ApiClient());
         fetchRequirements(new ApiClient());
         backButtonHandler(view);
+        hideBottomNavigationView();
+        btnDaftar.setOnClickListener(v -> navigateToProgramRegister());
 
         return view;
     }
@@ -124,6 +132,9 @@ public class FragmentDetailProgram extends Fragment {
                                     status.setText("Status : " + detailProgram.getStatusPendaftaran());
                                     tglPendaftaran.setText(detailProgram.getTanggalMulai() + " - " + detailProgram.getTanggalAkhir());
 
+                                    programName = detailProgram.getNama();
+                                    departmentName = detailProgram.getDepartmentName();
+
                                     // Detail Instructor
                                     idInstructor.setText(detailProgram.getInstructorId());
                                     namaInstructor.setText(detailProgram.getInstructorName());
@@ -135,6 +146,11 @@ public class FragmentDetailProgram extends Fragment {
                                             detailProgram.getProgramImageUri());
                                     GlideHelper.loadImage(getContext(), instructorImage,
                                             detailProgram.getInstructorImageUri());
+
+                                    if (detailProgram.getStatusPendaftaran().equalsIgnoreCase(
+                                            "Ditutup")) {
+                                        btnDaftar.setEnabled(false);
+                                    }
                                 }
                             });
                         }
@@ -188,7 +204,12 @@ public class FragmentDetailProgram extends Fragment {
      * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button)
      */
     private void backButtonHandler(View view) {
-        ImageView backButton = view.findViewById(R.id.imageArrow3);
+        ImageView backButton = view.findViewById(R.id.backButton);
         FragmentHelper.backNavigation(getActivity(), backButton, null);
+    }
+
+    private void navigateToProgramRegister() {
+        FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity,
+                new FragmentProgramRegister(programId, programName, departmentName), true, null);
     }
 }

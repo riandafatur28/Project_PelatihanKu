@@ -1,5 +1,7 @@
 package com.example.projectpelatihanku;
 
+import static com.example.projectpelatihanku.MainActivity.showBottomNavigationView;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -43,6 +45,7 @@ public class FragmentDepartment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         fetchData(new ApiClient());
+        showBottomNavigationView();
         return view;
     }
 
