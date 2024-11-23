@@ -29,6 +29,10 @@ public class MyNotification {
         return checked;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public void setChecked(boolean checked) {
         this.checked = checked;
     }
