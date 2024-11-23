@@ -14,13 +14,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.Models.Dashboard;
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.GlideHelper;
+import com.example.projectpelatihanku.helper.JwtHelper;
+import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -31,6 +36,7 @@ import com.google.android.material.imageview.ShapeableImageView;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class DashboardFragment extends Fragment implements OnMapReadyCallback {
 
@@ -48,6 +54,7 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     private Handler handler;
     private final int CAROUSEL_DELAY = 5000;
     private OnDashboardVisibleListener listener;
+    private String token;
 
     public DashboardFragment() {}
 
@@ -66,9 +73,11 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         initializeUI(view);
-        loadUserData();
         initializeMap();
         startAutoSlide();
+
+        salamText.setText("Halo, " + FragmentLogin.firstName);
+        getAvatarImage(new ApiClient());
 
         view.findViewById(R.id.btn_lebihBanyak).setOnClickListener(v -> {
             if (getActivity() instanceof MainActivity) {
@@ -82,11 +91,8 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void fetchData() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString("token", null);
-
+        token = SharedPreferencesHelper.getToken(getContext());
         if (token == null || token.equals("Token Tidak ditemukan")) {
-            Log.e("DashboardFragment", "Token tidak ditemukan di SharedPreferences");
             showErrorUI();
             return;
         }
@@ -101,8 +107,29 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onFailed(IOException e) {
-                Log.e("DashboardFragment", "Gagal mengambil data: " + e.getMessage());
                 requireActivity().runOnUiThread(() -> showErrorUI());
+            }
+        });
+    }
+
+    private void getAvatarImage(ApiClient api){
+        token = SharedPreferencesHelper.getToken(getContext());
+        JWT jwt = new JWT(token);
+        Double userIdDouble = (Double) jwt.getClaim("users").asObject(Map.class).get("id");
+        int userId = userIdDouble.intValue();
+        api.fetchImageProfile(token, "/users/image/" +userId, new ApiClient.imageProfile() {
+            @Override
+            public void onSuccess(String uri) {
+                requireActivity().runOnUiThread(()-> {
+                    GlideHelper.loadImage(getContext(), imageUser, uri);
+                });
+            }
+
+            @Override
+            public void onFailed(IOException e) {
+                requireActivity().runOnUiThread(()->{
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }
@@ -150,29 +177,6 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         totalBuildings = view.findViewById(R.id.totalBuilding);
         totalInstructors = view.findViewById(R.id.totalInstructor);
         totalTools = view.findViewById(R.id.totalTools);
-    }
-
-    private void loadUserData() {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-
-        salamText.setText("Halo, " + FragmentLogin.firstName);
-        String imageUriString = sharedPreferences.getString("image_uri", null);
-        if (imageUriString != null) {
-            try {
-                imageUser.setImageURI(Uri.parse(imageUriString));
-            } catch (Exception e) {
-                imageUser.setImageResource(R.drawable.gambar_user);
-                Log.e("DashboardFragment", "Gagal memuat gambar pengguna", e);
-            }
-        } else {
-            String gender = sharedPreferences.getString("gender", "Tidak diketahui");
-
-            if ("Laki-laki".equalsIgnoreCase(gender)) {
-                imageUser.setImageResource(R.drawable.img_men);
-            } else if ("Perempuan".equalsIgnoreCase(gender)) {
-                imageUser.setImageResource(R.drawable.img_women);
-            }
-        }
     }
 
     private void initializeMap() {
