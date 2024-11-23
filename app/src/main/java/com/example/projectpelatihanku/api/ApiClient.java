@@ -3,6 +3,8 @@ package com.example.projectpelatihanku.api;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -13,6 +15,7 @@ import com.example.projectpelatihanku.Models.DetailProgram;
 import com.example.projectpelatihanku.Models.Requirements;
 import com.example.projectpelatihanku.MyNotification;
 import com.example.projectpelatihanku.Models.Program;
+import com.example.projectpelatihanku.helper.FunctionHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +24,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -30,9 +34,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 
 public class ApiClient {
-    public static final String BASE_URL = "https://alive-fluent-sponge.ngrok-free.app/";
+    public static final String BASE_URL = "http://192.168.100.4:8080/";
     public static final String BASE_URL_PUBLIC = "api/v1/public";
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
@@ -300,8 +306,67 @@ public class ApiClient {
         void onFailed(IOException e);
     }
 
+    /**
+     * Callback untuk menerima respons dari server
+     */
+    public interface RegistrationsProgramsHelper {
+        /**
+         * Callback untuk menerima data dari hasil request
+         *
+         * @param message            response pesan dari server
+         * @param registrationNumber nomor pendaftaran yang diterima dari server
+         */
+        void onSuccess(String message, String registrationNumber);
+
+        /**
+         * Callback untuk menerima error
+         *
+         * @param e error yang terjadi saat request
+         */
+        void onFailed(IOException e);
+    }
+
+    /**
+     * Callback untuk menerima respons dari server
+     */
+    public interface WebSocketCallback {
+        /**
+         * callback untuk menerima data notifikasi hasil dari request websocket
+         *
+         * @param data daftar notifikasi yang diterima dari server
+         */
+        void onMessageReceived(List<MyNotification> data);
+
+        /**
+         * callback untuk menerima error request websocket
+         *
+         * @param e error yang terjadi saat request websocket
+         */
+        void onFailure(IOException e);
+    }
+
+    /**
+     * Callback untuk menerima respons dari server
+     */
+    public interface imageProfile {
+        /**
+         * Callback untuk menerima hasil dari request ke server
+         *
+         * @param uri Uri gambar yang berhasil didapatkan
+         */
+        void onSuccess(String uri);
+
+        /**
+         * Callback untuk menerima error dari request ke server
+         *
+         * @param e Exception yang terjadi saat request ke server
+         */
+        void onFailed(IOException e);
+    }
+
     // Inisialisasi OkHttpClient
     private OkHttpClient client = new OkHttpClient();
+    private WebSocket webSocket;
 
     /**
      * Service Metode untuk mengirim permintaan registrasi account ke server
@@ -895,9 +960,11 @@ public class ApiClient {
                         ArrayList<Requirements> requirements = new ArrayList<>();
                         JSONObject jsonObject = new JSONObject(data);
                         JSONArray arrayRequirements = jsonObject.getJSONArray("requirements");
-                        JSONObject ObjectRequirements = arrayRequirements.getJSONObject(0);
-                        String requirement = ObjectRequirements.getString("requirement");
-                        requirements.add(new Requirements(requirement));
+                        for (int i = 0; i < arrayRequirements.length(); i++) {
+                            JSONObject objectRequirement = arrayRequirements.getJSONObject(i);
+                            String requirement = objectRequirement.getString("requirement");
+                            requirements.add(new Requirements(requirement));
+                        }
 
                         callback.onSuccess(requirements);
 
@@ -1017,70 +1084,212 @@ public class ApiClient {
         });
     }
 
+    /**
+     * Mengirim permintaan untuk pendaftaran program ke server
+     *
+     * @param token     token JWT untuk otorisasi
+     * @param endPoint  endpoint untuk pendaftaran program
+     * @param nama      nama pengguna
+     * @param programId kejuruan pengguna
+     * @param program   program yang dipilih
+     * @param uriKtp    Uri file KTP
+     * @param uriKk     Uri file KK
+     * @param uriIjazah Uri file Ijazah
+     * @param callback  callback untuk menangani respons server
+     */
+    public void registerProgram(Context context, String token, String endPoint,
+                                int userId, String nama,
+                                String programId, String program, Uri uriKtp, Uri uriKk,
+                                Uri uriIjazah,
+                                RegistrationsProgramsHelper callback) {
 
-    // Notifikasi adapter
-    public interface NotifikasiHelper {
-        void onSuccess(ArrayList<MyNotification> data);
+        File fileKtp = FunctionHelper.getFileFromUri(context, uriKtp);
+        File fileKk = FunctionHelper.getFileFromUri(context, uriKk);
+        File fileIjazah = FunctionHelper.getFileFromUri(context, uriIjazah);
 
-        void onFailed(IOException e);
-    }
+        if (fileKtp == null || fileKk == null || fileIjazah == null) {
+            callback.onFailed(new IOException("Gagal membaca file. Pastikan file valid."));
+            return;
+        }
 
-    // Notifikasi
-    public void fetchNotifikasi(String token, String endPoint, NotifikasiHelper callback) {
-        Log.d(TAG, "EndPoint : " + BASE_URL + BASE_URL_PUBLIC + endPoint);
+        MultipartBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("id_pengguna", String.valueOf(userId))
+                .addFormDataPart("nama", nama)
+                .addFormDataPart("id_program", programId)
+                .addFormDataPart("nama_program", program)
+                .addFormDataPart("ktp_pdf", fileKtp.getName(), RequestBody.create(MediaType.parse("application/pdf"), fileKtp))
+                .addFormDataPart("kk_pdf", fileKk.getName(), RequestBody.create(MediaType.parse("application/pdf"), fileKk))
+                .addFormDataPart("ijazah_pdf", fileIjazah.getName(), RequestBody.create(MediaType.parse("application/pdf"), fileIjazah))
+                .build();
+
         Request request = new Request.Builder()
                 .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
                 .addHeader("Authorization", "Bearer " + token)
+                .post(requestBody)
                 .build();
 
-        // Melakukan request secara asynchronous
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("Network Error", "Request failed: " + e.getMessage());
+                callback.onFailed(e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    // Ambil response JSON dari server dalam bentuk String
-                    // ex : {'success': true, 'data': [{id:1, 'message': 'oke'}, {id:1, 'message': 'oke'}]} type: String
-                    final String responseData = response.body().string();
-                    Log.d(TAG, "onResponse: " + responseData);
-
-                    // Inisialisasi ArrayList untuk menyimpan notifikasi
-                    ArrayList<MyNotification> notifications = new ArrayList<>();
-                    try {
-                        // Ubah responseData(String) menjadi JSONObject
-                        // ex : {'success': true, 'notifications': [{id:1, 'message': 'oke'}, {id:1, 'message': 'oke'}]} type: JSON Object
-                        JSONObject jsonObject = new JSONObject(responseData);
-                        // Cek value property success dari Response JSON
-                        if (jsonObject.getBoolean("success")) {
-
-                            // Dapatkan array `notifications`
-                            JSONArray notificationsArray = jsonObject.getJSONArray("notifications");
-                            // Iterasi melalui setiap objek dalam array `notifications`
-                            for (int i = 0; i < notificationsArray.length(); i++) {
-                                JSONObject notificationObject = notificationsArray.getJSONObject(i); // {id:1, 'message': 'oke'}
-                                // Ambil data dari setiap objek
-                                String id = notificationObject.getString("id");
-                                String pesan = notificationObject.getString("pesan");
-                                String tipe = notificationObject.getString("tipe");
-                                notifications.add(new MyNotification(id, pesan, false));
-                            }
-                            callback.onSuccess(notifications);
-                        } else {
-                            Log.e("Response Error", "Request was not successful.");
+                String data = response.body().string();
+                try {
+                    JSONObject json = new JSONObject(data);
+                    if (response.isSuccessful()) {
+                        try {
+                            callback.onSuccess(json.getString("message"), json.getString("no_register"));
+                        } catch (JSONException e) {
+                            callback.onFailed(new IOException("Gagal parsing JSON: " + e.getMessage()));
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        callback.onFailed(new IOException("JSON parsing error"));
-                    }// Menginformasikan keberhasilan
-                } else {
-                    Log.e("Request failed", "Code: " + response.code());
+                    } else if (response.code() == 400) {
+                        callback.onFailed(new IOException(json.getString("message")));
+                    } else {
+                        callback.onFailed(new IOException("Response gagal: " + response.code()));
+                    }
+                } catch (JSONException e) {
+                    callback.onFailed(new IOException("Gagal saat parsing json :" + e.getMessage()));
                 }
             }
         });
+    }
+
+    /**
+     * Mengirim permintaan untuk mengambil data notifikasi dari server menggunakan websocket.
+     * kirim payload dalam bentuk JSON dengan format berikut:
+     * {
+     * "action": "fetch",
+     * "userId": userId,
+     * "token": token
+     * }
+     *
+     * @param token    JWT untuk authentication, sertakan dalam request.
+     * @param userId   ID pengguna yang akan menerima notifikasi
+     * @param endPoint endpoint websocket
+     * @param callback callback untuk menerima respons dari server
+     */
+    public void fetchNotification(String token, int userId, String endPoint,
+                                  WebSocketCallback callback) {
+        Request request = new Request.Builder()
+                .url(endPoint)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+
+        webSocket = client.newWebSocket(request, new WebSocketListener() {
+            @Override
+            public void onOpen(WebSocket webSocket, Response response) {
+                try {
+                    JSONObject fetchRequest = new JSONObject();
+                    fetchRequest.put("action", "fetch");
+                    fetchRequest.put("userId", userId);
+                    fetchRequest.put("token", token);
+                    webSocket.send(fetchRequest.toString());
+                } catch (Exception e) {
+                    callback.onFailure(new IOException(e.getMessage()));
+                }
+            }
+
+            @Override
+            public void onMessage(WebSocket webSocket, String text) {
+                String data = text;
+                try {
+                    JSONObject json = new JSONObject(data);
+                    List<MyNotification> notifications = new ArrayList<>();
+                    if (json.getBoolean("success")) {
+                        JSONArray notificationsArray = json.getJSONArray("notifications");
+                        for (int i = 0; i < notificationsArray.length(); i++) {
+                            JSONObject notificationObject = notificationsArray.getJSONObject(i);
+                            String id = notificationObject.getString("id");
+                            String pesan = notificationObject.getString("pesan");
+                            boolean isDuplicate = false;
+                            for (MyNotification notification : notifications) {
+                                if (notification.getId().equals(id)) {
+                                    isDuplicate = true;
+                                    break;
+                                }
+                            }
+
+                            if (!isDuplicate) {
+                                notifications.add(new MyNotification(id, pesan, false));
+                            }
+                        }
+                        callback.onMessageReceived(notifications);
+                    }
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+
+            @Override
+            public void onClosing(WebSocket webSocket, int code, String reason) {
+                webSocket.close(1000, null);
+            }
+
+            @Override
+            public void onClosed(WebSocket webSocket, int code, String reason) {
+                Log.d("WebSocket", "Closed: " + reason);
+            }
+
+            @Override
+            public void onFailure(WebSocket webSocket, Throwable t, Response response) {
+                callback.onFailure(new IOException("Gagal mengirim request websocket: " + t.getMessage()));
+            }
+        });
+    }
+
+    /**
+     * Mengirim permintaan untuk menutup koneksi websocket
+     */
+    public void disconnectWebSocket() {
+        if (webSocket != null) {
+            webSocket.close(1000, "User disconnected");
+        }
+    }
+
+    /**
+     * Mengirim permintaan untuk mengambil gambar profil dari server
+     *
+     * @param token    token JWT untuk otorisasi, sertakan dalam header Authorization
+     * @param endPoint endpoint untuk mengambil gambar profil
+     * @param callback callback untuk menerima respons dari server
+     */
+    public void fetchImageProfile(String token, String endPoint, imageProfile callback) {
+        String url = BASE_URL + BASE_URL_PUBLIC + endPoint;
+
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer " + token)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String jsonData = response.body().string();
+                    try {
+                        JSONObject jsonObject = new JSONObject(jsonData);
+                        String pathUri = BASE_URL + jsonObject.getString("path");
+                        callback.onSuccess(pathUri);
+                    } catch (JSONException e) {
+                        callback.onFailed(new IOException("Gagal saat parsing json" + e.getMessage()));
+                    }
+                } else {
+                    callback.onFailed(new IOException("Gagal dengan status code: " + response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                callback.onFailed(new IOException("Gagal mengirim request: " + e.getMessage()));
+            }
+        });
+
     }
 
     public interface DashboardDataHelper {
@@ -1139,5 +1348,7 @@ public class ApiClient {
 
         return dashboardList;
     }
+
+
 
 }
