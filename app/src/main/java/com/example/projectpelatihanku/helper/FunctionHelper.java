@@ -2,14 +2,18 @@ package com.example.projectpelatihanku.helper;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 
 import okhttp3.MediaType;
@@ -91,6 +95,22 @@ public class FunctionHelper {
     }
 
     /**
+     * Metode Helper untuk validasi Uri.
+     *
+     * @param context  Context aplikasi
+     * @param value    Uri yang akan divalidasi
+     * @param feedback String feedback yang akan ditampilkan jika validasi gagal
+     * @return `true` jika uri tidak kosong/null dan `false` jika sebaliknya.
+     */
+    public static boolean validateUri(Context context, Uri value, String feedback) {
+        if (value == null) {
+            Toast.makeText(context, feedback + " Wajib diupload", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Metode helper untuk mengonversi gambar dari drawable menjadi file dan mengirimkannya sebagai
      * Multipart
      *
@@ -112,5 +132,60 @@ public class FunctionHelper {
         RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpeg"), tempFile);
         return MultipartBody.Part.createFormData("pas_foto", tempFile.getName(), requestBody);
     }
+
+    /**
+     * Mengembalikan file dari URI yang dikirim.
+     *
+     * @param uri     URI yang akan dikonversi.
+     * @param context Context aplikasi.
+     * @return File yang dihasilkan dari URI.
+     */
+    public static File getFileFromUriImage(Uri uri, Context context) {
+        File file = null;
+        if (uri != null) {
+
+            String[] projection = {MediaStore.Images.Media.DATA};
+            Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                String filePath = cursor.getString(columnIndex);
+                file = new File(filePath);
+                cursor.close();
+            }
+        }
+        return file;
+    }
+
+    /**
+     * Mengembalikan path dari URI sebagai file sementara di cache aplikasi
+     *
+     * @param context Context aplikasi
+     * @param uri     URI file yang dipilih
+     * @return Path file sementara, null jika gagal
+     */
+    public static File getFileFromUri(Context context, Uri uri) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            if (inputStream == null) {
+                return null;
+            }
+
+            File tempFile = new File(context.getCacheDir(), "temp_" + System.currentTimeMillis() + ".pdf");
+            FileOutputStream outputStream = new FileOutputStream(tempFile);
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            outputStream.close();
+            inputStream.close();
+            return tempFile;
+        } catch (Exception e) {
+            Toast.makeText(context, "Gagal mengambil file dari URI", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+    }
+
 
 }
