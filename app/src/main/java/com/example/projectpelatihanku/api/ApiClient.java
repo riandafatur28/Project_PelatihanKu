@@ -13,7 +13,7 @@ import com.example.projectpelatihanku.Models.Dashboard;
 import com.example.projectpelatihanku.Models.Department;
 import com.example.projectpelatihanku.Models.DetailProgram;
 import com.example.projectpelatihanku.Models.Requirements;
-import com.example.projectpelatihanku.MyNotification;
+import com.example.projectpelatihanku.Models.Notification;
 import com.example.projectpelatihanku.Models.Program;
 import com.example.projectpelatihanku.helper.FunctionHelper;
 
@@ -37,10 +37,14 @@ import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
+/**
+ * Service class untuk melakukan request ke server
+ */
 public class ApiClient {
+    private OkHttpClient client = new OkHttpClient();
+    private WebSocket webSocket;
     public static final String BASE_URL = "http://192.168.100.4:8080/";
     public static final String BASE_URL_PUBLIC = "api/v1/public";
-    private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     /**
      * Callback Class
@@ -335,7 +339,7 @@ public class ApiClient {
          *
          * @param data daftar notifikasi yang diterima dari server
          */
-        void onMessageReceived(List<MyNotification> data);
+        void onMessageReceived(List<Notification> data);
 
         /**
          * callback untuk menerima error request websocket
@@ -364,9 +368,44 @@ public class ApiClient {
         void onFailed(IOException e);
     }
 
-    // Inisialisasi OkHttpClient
-    private OkHttpClient client = new OkHttpClient();
-    private WebSocket webSocket;
+    /**
+     * Callback untuk menerima respons dari server
+     */
+    public interface notificationUpdateHelper {
+        /**
+         * Callback untuk menerima respons hasil dari request update value is_read atau
+         * is_deleted ke server
+         *
+         * @param message pesan dari server
+         */
+        void onSuccess(String message);
+
+        /**
+         * Callback untuk menerima error dari request server
+         *
+         * @param e error dari request server
+         */
+        void onFailed(IOException e);
+    }
+
+    /**
+     * Callback untuk menerima respons dari server
+     */
+    public interface DashboardDataHelper {
+        /**
+         * Callback untuk menerima hasil dari request ke server
+         *
+         * @param data data summary dashboard yang diterima dari server
+         */
+        void onSuccess(ArrayList<Dashboard> data);
+
+        /**
+         * Callback untuk menerima error dari request server
+         *
+         * @param e error dari request server
+         */
+        void onFailed(IOException e);
+    }
 
     /**
      * Service Metode untuk mengirim permintaan registrasi account ke server
@@ -1172,8 +1211,7 @@ public class ApiClient {
      * @param endPoint endpoint websocket
      * @param callback callback untuk menerima respons dari server
      */
-    public void fetchNotification(String token, int userId, String endPoint,
-                                  WebSocketCallback callback) {
+    public void fetchNotification(String token, int userId, String endPoint, WebSocketCallback callback) {
         Request request = new Request.Builder()
                 .url(endPoint)
                 .addHeader("Authorization", "Bearer " + token)
@@ -1187,7 +1225,7 @@ public class ApiClient {
                     fetchRequest.put("action", "fetch");
                     fetchRequest.put("userId", userId);
                     fetchRequest.put("token", token);
-                    webSocket.send(fetchRequest.toString());
+                    webSocket.send(fetchRequest.toString()); // Send request to server to fetch notifications
                 } catch (Exception e) {
                     callback.onFailure(new IOException(e.getMessage()));
                 }
@@ -1195,34 +1233,24 @@ public class ApiClient {
 
             @Override
             public void onMessage(WebSocket webSocket, String text) {
-                String data = text;
                 try {
-                    JSONObject json = new JSONObject(data);
-                    List<MyNotification> notifications = new ArrayList<>();
+                    JSONObject json = new JSONObject(text);
+                    List<Notification> notifications = new ArrayList<>();
                     if (json.getBoolean("success")) {
                         JSONArray notificationsArray = json.getJSONArray("notifications");
                         for (int i = 0; i < notificationsArray.length(); i++) {
                             JSONObject notificationObject = notificationsArray.getJSONObject(i);
                             String id = notificationObject.getString("id");
                             String pesan = notificationObject.getString("pesan");
-                            boolean isDuplicate = false;
-                            for (MyNotification notification : notifications) {
-                                if (notification.getId().equals(id)) {
-                                    isDuplicate = true;
-                                    break;
-                                }
-                            }
+                            int isRead = notificationObject.getInt("is_read");
 
-                            if (!isDuplicate) {
-                                notifications.add(new MyNotification(id, pesan, false));
-                            }
+                            notifications.add(new Notification(id, pesan, isRead));
                         }
                         callback.onMessageReceived(notifications);
                     }
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-
             }
 
             @Override
@@ -1237,10 +1265,11 @@ public class ApiClient {
 
             @Override
             public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-                callback.onFailure(new IOException("Gagal mengirim request websocket: " + t.getMessage()));
+                callback.onFailure(new IOException("Failed to send WebSocket request: " + t.getMessage()));
             }
         });
     }
+
 
     /**
      * Mengirim permintaan untuk menutup koneksi websocket
@@ -1292,12 +1321,97 @@ public class ApiClient {
 
     }
 
-    public interface DashboardDataHelper {
-        void onSuccess(ArrayList<Dashboard> data);
+    /**
+     * Mengirim permintaan untuk mengubah status notifikasi ke sudah dibaca(is_read = 1)
+     *
+     * @param token    token JWT untuk otorisasi, sertakan dalam header Authorization
+     * @param endPoint endpoint untuk mengubah status notifikasi
+     * @param callback callback untuk menerima respons dari server
+     */
+    public void isReadNotification(String token, String endPoint,
+                                   notificationUpdateHelper callback) {
 
-        void onFailed(IOException e);
+        RequestBody body = RequestBody.create("", null);
+
+        Request request = new Request.Builder()
+                .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
+                .addHeader("Authorization", "Bearer " + token)
+                .put(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                callback.onFailed(new IOException("Gagal mengirim request: " + e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String data = response.body().string();
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject json = new JSONObject(data);
+                        String message = json.getString("message");
+                        callback.onSuccess(message);
+                    } catch (JSONException e) {
+                        callback.onFailed(new IOException("Gagal saat parsing JSON: " + e.getMessage()));
+                    }
+                } else {
+                    callback.onFailed(new IOException("Gagal dengan status code: " + response.code()));
+                }
+            }
+        });
     }
 
+    /**
+     * Mengirim permintaan untuk mengubah status notifikasi ke sudah dihapus(is_deleted = 1)
+     *
+     * @param token    token JWT untuk otorisasi, sertakan dalam header Authorization
+     * @param endPoint endpoint untuk mengubah status notifikasi
+     * @param callback callback untuk menerima respons dari server
+     */
+    public void isDeletedNotification(String token, String endPoint,
+                                      notificationUpdateHelper callback) {
+
+        RequestBody body = RequestBody.create("", null);
+
+        Request request = new Request.Builder()
+                .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
+                .addHeader("Authorization", "Bearer " + token)
+                .delete(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                callback.onFailed(new IOException("Gagal mengirim request: " + e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String data = response.body().string();
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject json = new JSONObject(data);
+                        String message = json.getString("message");
+                        callback.onSuccess(message);
+                    } catch (JSONException e) {
+                        callback.onFailed(new IOException("Gagal saat parsing JSON: " + e.getMessage()));
+                    }
+                } else {
+                    callback.onFailed(new IOException("Gagal dengan status code: " + response.code()));
+                }
+            }
+        });
+    }
+
+    /**
+     * Mengirim permintaan untuk mengambil data summary dashboard dari server
+     *
+     * @param token    token JWT untuk otorisasi, sertakan dalam header Authorization
+     * @param endPoint endpoint untuk mengambil data summary dashboard
+     * @param callback callback untuk menerima respons dari server
+     */
     public void fetchDashboard(String token, String endPoint, DashboardDataHelper callback) {
         String url = BASE_URL + BASE_URL_PUBLIC + endPoint;
 
@@ -1310,16 +1424,24 @@ public class ApiClient {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful() && response.body() != null) {
-                    String jsonData = response.body().string();
+                if (response.isSuccessful()) {
+                    String data = response.body().string();
                     try {
-                        ArrayList<Dashboard> dashboardList = parseDashboardJson(jsonData);
+                        JSONObject jsonData = new JSONObject(data);
+                        JSONArray dataArray = jsonData.getJSONArray("data");
+                        ArrayList<Dashboard> dashboardList = new ArrayList<>();
+                        for (int i = 0; i < dataArray.length(); i++) {
+                            JSONObject dataObject = dataArray.getJSONObject(i);
+                            String tableName = dataObject.getString("table_name");
+                            int total = dataObject.getInt("total");
+                            dashboardList.add(new Dashboard(tableName, total));
+                        }
                         callback.onSuccess(dashboardList);
                     } catch (JSONException e) {
-                        callback.onFailed(new IOException("JSON Parsing Error", e));
+                        callback.onFailed(new IOException("Gagal saat parsing JSON: " + e.getMessage()));
                     }
                 } else {
-                    callback.onFailed(new IOException("Response not successful or body is null"));
+                    callback.onFailed(new IOException("Gagal dengan status code: " + response.code()));
                 }
             }
 
@@ -1329,26 +1451,4 @@ public class ApiClient {
             }
         });
     }
-
-    private ArrayList<Dashboard> parseDashboardJson(String jsonData) throws JSONException {
-        JSONObject jsonObject = new JSONObject(jsonData);
-        if (!jsonObject.getBoolean("success")) {
-            throw new JSONException("Response not successful");
-        }
-
-        JSONArray dataArray = jsonObject.getJSONArray("data");
-        ArrayList<Dashboard> dashboardList = new ArrayList<>();
-
-        for (int i = 0; i < dataArray.length(); i++) {
-            JSONObject dataObject = dataArray.getJSONObject(i);
-            String tableName = dataObject.getString("table_name");
-            int total = dataObject.getInt("total");
-            dashboardList.add(new Dashboard(tableName, total));
-        }
-
-        return dashboardList;
-    }
-
-
-
 }
