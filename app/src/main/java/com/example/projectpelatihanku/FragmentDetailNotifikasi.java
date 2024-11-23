@@ -1,62 +1,76 @@
 package com.example.projectpelatihanku;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class FragmentDetailNotifikasi extends Fragment {
-    private static final String ARG_TITLE = "title";
-    private static final String ARG_DETAIL = "detail";
+import com.example.projectpelatihanku.helper.FragmentHelper;
 
-    public static FragmentDetailNotifikasi newInstance(String title, String detail) {
-        FragmentDetailNotifikasi fragment = new FragmentDetailNotifikasi();
-        Bundle args = new Bundle();
-        args.putString(ARG_TITLE, title);
-        args.putString(ARG_DETAIL, detail);
-        fragment.setArguments(args);
-        return fragment;
+public class FragmentDetailNotifikasi extends Fragment {
+    private String message;
+
+    /**
+     * Construktor default, digunakan jika tidak ada parameter yang diberikan
+     */
+    public FragmentDetailNotifikasi() {
+
     }
 
+    /**
+     * Construktor untuk menerima parameter message
+     *
+     * @param message Pesan yang akan ditampilkan di fragment
+     */
+    public FragmentDetailNotifikasi(String message) {
+        this.message = message;
+        MainActivity.hideBottomNavigationView();
+    }
+
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail_notifikasi, container, false);
 
-        ImageView imageArrow = view.findViewById(R.id.imageArrow);
-        TextView textTitle = view.findViewById(R.id.textTitle);
-        TextView textContent = view.findViewById(R.id.textContent);
+        TextView txtMessage = view.findViewById(R.id.txtMessage);
+        txtMessage.setText(message);
 
-        if (getArguments() != null) {
-            String title = getArguments().getString(ARG_TITLE);
-            String detail = getArguments().getString(ARG_DETAIL);
-            textTitle.setText(title);
-            textContent.setText(detail);
-        }
-
-        // Menyembunyikan Bottom Navigation View saat fragment ini ditampilkan
-        ((MainActivity) requireActivity()).hideBottomNavigationView();
-
-        // Menambahkan OnClickListener untuk ImageView
-        imageArrow.setOnClickListener(v -> {
-            // Kembali ke fragment sebelumnya
-            requireActivity().getSupportFragmentManager().popBackStack();
-            // Menampilkan kembali Bottom Navigation View
-            ((MainActivity) requireActivity()).showBottomNavigationView();
-        });
+        backHandler(view);
 
         return view;
+    }
+
+    /**
+     * Motode handler untuk melakukan navigasi kembali
+     *
+     * @param view View yang berisi layout fragment
+     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button)
+     */
+    private void backHandler(View view) {
+        ImageView btnBack = view.findViewById(R.id.btnBack);
+        FragmentHelper.backNavigation(getActivity(), btnBack, null);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Menampilkan kembali Bottom Navigation View saat fragment ini dihancurkan
-        ((MainActivity) requireActivity()).showBottomNavigationView();
+
+        if (getActivity() != null) {
+            View recyclerView = getActivity().findViewById(R.id.recyclerViewNotifikasi);
+            if (recyclerView != null) {
+                recyclerView.setVisibility(View.VISIBLE);
+            }
+        }
+
+        MainActivity.showBottomNavigationView();
     }
 }
