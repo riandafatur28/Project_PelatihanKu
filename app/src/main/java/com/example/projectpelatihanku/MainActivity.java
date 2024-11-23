@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     }
 
     public void showBottomNavigation() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomview); // Sesuaikan ID BottomNavigationView
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomview);
         bottomNavigationView.setVisibility(View.VISIBLE);
     }
 
