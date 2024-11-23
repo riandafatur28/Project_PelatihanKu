@@ -342,13 +342,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginStart="270dp"
+                    android:layout_marginStart="27dp"
                     android:layout_marginTop="8dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:text="@string/unduh_bukti"
                     android:textColor="@color/orange"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
             </LinearLayout>
         </LinearLayout>
