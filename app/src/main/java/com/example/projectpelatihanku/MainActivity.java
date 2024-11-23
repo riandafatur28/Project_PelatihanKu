@@ -15,7 +15,7 @@ import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener, DashboardFragment.OnDashboardVisibleListener {
 
-    BottomNavigationView bottomNavigationView;
+    public static BottomNavigationView bottomNavigationView;
     private DashboardFragment dashboardFragment = new DashboardFragment();
     private FragmentDepartment fragmentDepartment = new FragmentDepartment();
     private FragmentNotifikasi fragmentNotifikasi = new FragmentNotifikasi();
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
                 fragment instanceof FragmentProfil;
     }
 
-    public void hideBottomNavigation() {
+    public static void hideBottomNavigation() {
         bottomNavigationView.setVisibility(View.GONE);
     }
 
@@ -206,11 +206,11 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         bottomNavigationView.setVisibility(View.VISIBLE);
     }
 
-    public void hideBottomNavigationView() {
+    public static void hideBottomNavigationView() {
         bottomNavigationView.setVisibility(View.GONE);
     }
 
-    public void showBottomNavigationView() {
+    public static void showBottomNavigationView() {
         bottomNavigationView.setVisibility(View.VISIBLE);
     }
 }
