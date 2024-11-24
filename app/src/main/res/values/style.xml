@@ -22,4 +22,14 @@
         <item name="cornerSize">100%</item>
     </style>
 
+    <style name="RoundedImageView2">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item> <!-- Tentukan corner radius sesuai kebutuhan -->
+    </style>
+
+    <style name="CircularImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>
