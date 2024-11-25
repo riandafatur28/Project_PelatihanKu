@@ -11,8 +11,9 @@ public class SharedPreferencesHelper {
 
     /**
      * Menyimpan token JWT ke shared preferences
+     *
      * @param context konteks aplikasi
-     * @param token token JWT
+     * @param token   token JWT
      */
     public static void saveToken(Context context, String token) {
         SharedPreferences preferences = context.getSharedPreferences(PREF_NAME,
@@ -24,13 +25,26 @@ public class SharedPreferencesHelper {
 
     /**
      * Mengambil token JWT dari shared preferences
+     *
      * @param context konteks aplikasi
      * @return token JWT
      */
-    public static String getToken(Context context){
+    public static String getToken(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREF_NAME,
                 Context.MODE_PRIVATE);
         return preferences.getString("token", "Token Tidak ditemukan");
+    }
+
+    /**
+     * Menghapus token JWT dari shared preferences
+     *
+     * @param context konteks aplikasi
+     */
+    public static void clearToken(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("token");
+        editor.apply();
     }
 
 }
