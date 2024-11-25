@@ -1,6 +1,9 @@
 
 package com.example.projectpelatihanku;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,10 +12,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
+import com.auth0.android.jwt.JWT;
+import com.example.projectpelatihanku.api.WebSocketService;
 import com.example.projectpelatihanku.helper.FragmentHelper;
+import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener, DashboardFragment.OnDashboardVisibleListener {
 
@@ -49,6 +58,39 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         }
     }
 
+    /**
+     * Memulai layanan WebSocketService untuk menjalankan koneksi WebSocket dengan server.
+     * Layanan ini digunakan untuk menerima notifikasi real-time dari server.
+     * <p>
+     * Metode ini menyiapkan intent untuk memulai WebSocketService dan mengirimkan token autentikasi
+     * serta ID pengguna yang diperlukan untuk membuka koneksi WebSocket.
+     * <p>
+     * Jika perangkat menjalankan versi Android 8.0 (API level 26) atau lebih tinggi, layanan akan dijalankan
+     * sebagai layanan foreground menggunakan `startForegroundService()`. Untuk versi Android yang lebih rendah,
+     * digunakan `startService()` untuk memulai layanan.
+     *
+     * @see WebSocketService
+     * @see SharedPreferencesHelper#getToken(Context)
+     */
+    protected void startWebSocketService() {
+        Intent serviceIntent = new Intent(this, WebSocketService.class);
+        serviceIntent.putExtra("token", SharedPreferencesHelper.getToken(this));
+        JWT jwt = new JWT(SharedPreferencesHelper.getToken(this));
+        Double userIdDouble = (Double) jwt.getClaim("users").asObject(Map.class).get("id");
+        serviceIntent.putExtra("userId", userIdDouble.intValue());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+        } else {
+            startService(serviceIntent);
+        }
+    }
+
+    /**
+     * Memperbarui items bottom navigation berdasarkan fragement yang dibuka saat ini.
+     *
+     * @param currentFragment fragment yang dibuka saat ini
+     */
     private void updateBottomNavigationSelection(Fragment currentFragment) {
         int selectedItemId = -1;
 
@@ -67,6 +109,14 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         }
     }
 
+    /**
+     * Handler untuk item bottom navigation.
+     * Digunakan untuk melakukan navigasi ke fragment yang sesuai saat item bottom navigation diklik.
+     *
+     * @param item item yang diklik
+     * @return true jika item diklik berhasil
+     * @see FragmentHelper#navigateToFragment(FragmentActivity, int, Fragment, boolean, String)
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment selectedFragment = null;
@@ -106,6 +156,12 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         super.onBackPressed();
     }
 
+    /**
+     * Mengecek apakah fragment adalah fragment utama (Dashboard, Department, Notifikasi, atau Profil).
+     *
+     * @param fragment fragment yang akan diperiksa
+     * @return true jika fragment adalah fragment utama, false jika tidak
+     */
     public boolean isMainFragment(Fragment fragment) {
         return fragment instanceof DashboardFragment ||
                 fragment instanceof FragmentDepartment ||
@@ -113,16 +169,21 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
                 fragment instanceof FragmentProfil;
     }
 
-
     @Override
     public void onDashboardVisible() {
         bottomNavigationView.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Menyembunyikan bottom navigation.
+     */
     public static void hideBottomNavigationView() {
         bottomNavigationView.setVisibility(View.GONE);
     }
 
+    /**
+     * Menampilkan bottom navigation.
+     */
     public static void showBottomNavigationView() {
         bottomNavigationView.setVisibility(View.VISIBLE);
     }

@@ -1220,7 +1220,7 @@ public class ApiClient {
                     fetchRequest.put("action", "fetch");
                     fetchRequest.put("userId", userId);
                     fetchRequest.put("token", token);
-                    webSocket.send(fetchRequest.toString()); // Send request to server to fetch notifications
+                    webSocket.send(fetchRequest.toString());
                 } catch (Exception e) {
                     callback.onFailure(new IOException(e.getMessage()));
                 }

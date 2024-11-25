@@ -153,8 +153,5 @@ public class FragmentNotifikasi extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (apiClient != null) {
-            apiClient.disconnectWebSocket();
-        }
     }
 }

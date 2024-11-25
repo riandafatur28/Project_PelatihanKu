@@ -3,7 +3,9 @@ package com.example.projectpelatihanku;
 import static com.example.projectpelatihanku.MainActivity.hideBottomNavigationView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +17,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.api.WebSocketService;
 import com.example.projectpelatihanku.helper.FragmentHelper;
 import com.example.projectpelatihanku.helper.GlideHelper;
 import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
@@ -30,7 +34,6 @@ import java.util.Map;
 
 public class FragmentProfil extends Fragment {
 
-    // Deklarasi Variabel
     private TextView namaUser, namaProfil, jkProfil, ttlProfil, emailProfil, noTelpProfil, alamatProfil;
     private ImageView imageProfil;
     private final String endPoint = "/users/";
@@ -47,7 +50,6 @@ public class FragmentProfil extends Fragment {
     /**
      * @see #backButtonHandler(View)
      * @see #updateButtonHandler(View)
-     *
      */
     @Nullable
     @Override
@@ -71,6 +73,7 @@ public class FragmentProfil extends Fragment {
 
     /**
      * Ambil data profile user
+     *
      * @param api Class Service untuk mengirim permintaan ke server
      * @see ApiClient#FetchProfile(String, String, ApiClient.ProfileHelper)
      * @see SharedPreferencesHelper#getToken(Context)
@@ -109,7 +112,7 @@ public class FragmentProfil extends Fragment {
 
             @Override
             public void onFailed(IOException e) {
-                getActivity().runOnUiThread(()->{
+                getActivity().runOnUiThread(() -> {
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
             }
@@ -138,12 +141,20 @@ public class FragmentProfil extends Fragment {
     }
 
     /**
-     * Handler untuk tombol kembali.
+     * Handler untuk tombol logout dan navigasi ke fragment login.
+     *
      * @param view profile
+     * @see WebSocketService
+     * @see SharedPreferencesHelper#clearToken(Context)
+     * @see FragmentHelper#navigateToFragment(FragmentActivity, int, Fragment, boolean, String)
+     * @see MainActivity#hideBottomNavigationView()
      */
-    private void backButtonHandler(View view){
+    private void backButtonHandler(View view) {
         Button txtKembali = view.findViewById(R.id.btnBack);
         txtKembali.setOnClickListener(v -> {
+            Intent serviceIntent = new Intent(requireContext(), WebSocketService.class);
+            requireContext().stopService(serviceIntent);
+            SharedPreferencesHelper.clearToken(requireContext());
             FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity,
                     new FragmentLogin(), true, null);
             hideBottomNavigationView();
@@ -152,9 +163,11 @@ public class FragmentProfil extends Fragment {
 
     /**
      * Handler untuk tombol perbarui profil.
+     *
      * @param view profile
+     * @see FragmentHelper#navigateToFragment(FragmentActivity, int, Fragment, boolean, String)
      */
-    private void updateButtonHandler(View view){
+    private void updateButtonHandler(View view) {
         Button buttonPerbaruiProfil = view.findViewById(R.id.buttonPerbaruiProfil);
         buttonPerbaruiProfil.setOnClickListener(v -> {
             FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity,

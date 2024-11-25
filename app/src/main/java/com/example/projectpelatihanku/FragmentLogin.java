@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.example.projectpelatihanku.api.ApiClient;
 import com.example.projectpelatihanku.helper.FragmentHelper;
@@ -60,6 +61,10 @@ public class FragmentLogin extends Fragment {
      * Handler untuk tombol login.
      *
      * @param apiClient Service class untuk melakukan request ke API
+     * @see ApiClient#oauthLogin(String, String, String, ApiClient.LoginHelper)
+     * @see SharedPreferencesHelper#saveToken(android.content.Context, String)
+     * @see JwtHelper#getUserData(String, String, String)
+     * @see FragmentHelper#navigateToFragment(FragmentActivity, int, Fragment, boolean, String)
      */
     private void loginButtonHandler(ApiClient apiClient) {
         buttonLogin.setOnClickListener(v -> {
@@ -73,6 +78,9 @@ public class FragmentLogin extends Fragment {
                             SharedPreferencesHelper.saveToken(getActivity(), token);
                             Name = JwtHelper.getUserData(token, "users", "username");
                             firstName = Name.split(" ")[0];
+                            if (getActivity() instanceof MainActivity) {
+                                ((MainActivity) getActivity()).startWebSocketService();
+                            }
                             FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, new DashboardFragment(), true, "dashboard");
                         });
                     }
@@ -93,6 +101,8 @@ public class FragmentLogin extends Fragment {
 
     /**
      * Handler untuk tombol register.
+     *
+     * @see FragmentHelper#navigateToFragment(FragmentActivity, int, Fragment, boolean, String)
      */
     private void registerButtonHandler() {
         textRegister.setOnClickListener(v -> {
@@ -112,6 +122,8 @@ public class FragmentLogin extends Fragment {
 
     /**
      * Handler untuk tombol lupa password.
+     *
+     * @see FragmentHelper#navigateToFragment(FragmentActivity, int, Fragment, boolean, String)
      */
     private void forgotPasswordHandler() {
         textForgotPassword.setOnClickListener(v -> {
