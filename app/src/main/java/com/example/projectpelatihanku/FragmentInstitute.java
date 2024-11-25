@@ -3,16 +3,17 @@ package com.example.projectpelatihanku;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.FragmentHelper;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -30,9 +31,10 @@ public class FragmentInstitute extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_institute, container, false);
 
+        MainActivity.hideBottomNavigationView();
         ImageView backArrow = view.findViewById(R.id.imageArrow);
         backArrow.setOnClickListener(v -> {
-            ((MainActivity) requireActivity()).navigateToDashboard();
+            FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, new DashboardFragment(), true, "dashboard");
         });
 
         namaInstitusi = view.findViewById(R.id.nama_institusi);
@@ -49,61 +51,66 @@ public class FragmentInstitute extends Fragment {
         kepemilikan = view.findViewById(R.id.kepemilikan);
         noSotk = view.findViewById(R.id.no_sotk);
 
-        fetchData();
+        fetchData(new ApiClient());
 
         return view;
     }
 
-    public void fetchData() {
-        // Get token dari shared preference
+    /**
+     * Mengambil data institusi dari API
+     *
+     * @see ApiClient#fetchInstitusi(String, String, ApiClient.InstituteHelper)
+     */
+    public void fetchData(ApiClient apiClient) {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("accountToken", Context.MODE_PRIVATE);
         String token = sharedPreferences.getString("token", "Token Tidak ditemukan");
-        ApiClient apiClient = new ApiClient();
 
-        // get data
         apiClient.fetchInstitusi(endPoint, token, new ApiClient.InstituteHelper() {
             @Override
             public void onSuccess(String[] data) {
                 requireActivity().runOnUiThread(() -> {
-                    // Set teks dari data JSON
-                    namaInstitusi.setText(data[1]);
+                    namaInstitusi.setText(": " + data[1]);
                     deskripsiInstitusi.setText(data[12]);
                     notelpLembaga.setText(data[6]);
                     emailLembaga.setText(data[5]);
                     nomorFax.setText(data[10]);
                     websiteLembaga.setText(data[11]);
-                    jenisLembaga.setText(data[9]);
-                    NoVin.setText(data[7]);
+                    jenisLembaga.setText(": " + data[9]);
+                    NoVin.setText(": " + data[7]);
 
-                    // Format dan set tanggal berdiri
-                    String thnBerdiriDate = data[13];  // Misalnya tanggal yang diterima dari API
+                    String thnBerdiriDate = data[13];
                     String formattedDate = formatDate(thnBerdiriDate);
-                    thnBerdiri.setText(formattedDate);
+                    thnBerdiri.setText(": " + formattedDate);
 
-                    namaPimpinan.setText(data[2]);
-                    kepemilikan.setText(data[3]);
-                    noSotk.setText(data[8]);
-                    status.setText(data[4]);
+                    namaPimpinan.setText(": " + data[2]);
+                    kepemilikan.setText(": " + data[3]);
+                    noSotk.setText(": " + data[8]);
+                    status.setText(": " + data[4]);
                 });
             }
 
             @Override
             public void onFailed(IOException e) {
-                Log.d("Failed", "onFailed: " + e.getMessage());
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }
 
-    // Fungsi untuk mengubah format tanggal
+    /**
+     * Mengubah format tanggal dari API ke format yang lebih mudah dibaca ("yyyy-MM-dd")
+     *
+     * @param dateString Tanggal yang akan diubah formatnya
+     * @return Tanggal yang sudah diubah formatnya
+     */
     private String formatDate(String dateString) {
         try {
-            // Parse tanggal dari format API (yyyy-MM-dd)
             Date date = apiDateFormat.parse(dateString);
-            // Format ke dd-MM-yyyy
             return dateFormat.format(date);
         } catch (ParseException e) {
             e.printStackTrace();
-            return "Tanggal tidak valid";  // Return fallback jika terjadi error
+            return "Tanggal tidak valid";
         }
     }
 }

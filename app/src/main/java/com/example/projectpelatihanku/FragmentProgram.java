@@ -1,8 +1,6 @@
 package com.example.projectpelatihanku;
 
-import static com.example.projectpelatihanku.MainActivity.hideBottomNavigationView;
-import static com.example.projectpelatihanku.MainActivity.showBottomNavigationView;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,15 +14,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectpelatihanku.Adapter.ProgramAdapter;
 import com.example.projectpelatihanku.Models.Program;
 import com.example.projectpelatihanku.api.ApiClient;
 import com.example.projectpelatihanku.helper.FragmentHelper;
 import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,6 +56,7 @@ public class FragmentProgram extends Fragment {
         this.departmentName = departmentName;
     }
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_program, container, false);
@@ -66,20 +64,12 @@ public class FragmentProgram extends Fragment {
         TextView textNamaInstitusi = view.findViewById(R.id.texttentang);
         textNamaInstitusi.setText("Program di Kejuruan " + departmentName);
 
-        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottomview);
-        if (bottomNavigationView != null) {
-            bottomNavigationView.setVisibility(View.GONE);
-        }
-
         recyclerView = view.findViewById(R.id.recyclerViewProgramInstitusi);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new ProgramAdapter(programList, getContext());
         recyclerView.setAdapter(adapter);
-
-        backButton = view.findViewById(R.id.imageArrow2);
-
+        backButton = view.findViewById(R.id.btnBack);
         fetchData(new ApiClient());
-        hideBottomNavigationView();
         navigateToDepartment();
         return view;
     }
@@ -87,11 +77,12 @@ public class FragmentProgram extends Fragment {
     /**
      * Navigasi ke FragmentDepartment
      *
-     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button)
+     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button, String, int, boolean) 
+     * @see MainActivity#showBottomNavigationView()
      */
     private void navigateToDepartment() {
-        showBottomNavigationView();
-        FragmentHelper.backNavigation(getActivity(), backButton, null);
+        FragmentHelper.backNavigation(getActivity(), backButton, null, "department", 0, true);
+        MainActivity.showBottomNavigationView();
     }
 
     /**
@@ -124,5 +115,11 @@ public class FragmentProgram extends Fragment {
                 });
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity.hideBottomNavigationView();
     }
 }

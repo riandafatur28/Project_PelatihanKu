@@ -1,8 +1,6 @@
 
 package com.example.projectpelatihanku.api;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -480,7 +478,7 @@ public class ApiClient {
                 MediaType.parse("application/json; charset=utf-8")
         );
 
-        Request request = new Request.Builder().url(BASE_URL + endPoint).post(body).build();
+        Request request = new Request.Builder().url(BASE_URL + BASE_URL_PUBLIC + endPoint).post(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -491,22 +489,21 @@ public class ApiClient {
             public void onResponse(@NonNull Call call, @NonNull Response response) {
                 try {
                     String data = response.body().string();
+                    JSONObject JsonData = new JSONObject(data);
                     if (response.isSuccessful()) {
-                        try {
-                            JSONObject JsonData = new JSONObject(data);
-                            if (JsonData.getString("status").equalsIgnoreCase("success")) {
-                                String token = JsonData.getString("token");
-                                callback.onSuccess(token);
-                            }
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
+                        if (JsonData.getString("status").equalsIgnoreCase("success")) {
+                            String token = JsonData.getString("token");
+                            callback.onSuccess(token);
                         }
+                    } else {
+                        callback.onFailed(new IOException(JsonData.getString("message")));
                     }
+                } catch (JSONException e) {
+                    callback.onFailed(new IOException("Gagal saat parsing json: " + e.getMessage()));
                 } catch (IOException e) {
-                    callback.onFailed(new IOException(response.message()));
+                    callback.onFailed(new IOException(e.getMessage()));
                 }
             }
-
         });
     }
 
@@ -875,7 +872,6 @@ public class ApiClient {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String data = response.body().string();
-                    Log.d(TAG, "onResponse: " + data);
                     try {
                         ArrayList<Program> dataPrograms = new ArrayList<>();
                         JSONObject jsonObject = new JSONObject(data);
@@ -995,7 +991,6 @@ public class ApiClient {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         String data = response.body().string();
-                        Log.d(TAG, "onResponse: " + data);
                         ArrayList<Requirements> requirements = new ArrayList<>();
                         JSONObject jsonObject = new JSONObject(data);
                         JSONArray arrayRequirements = jsonObject.getJSONArray("requirements");
@@ -1240,7 +1235,7 @@ public class ApiClient {
                         JSONArray notificationsArray = json.getJSONArray("notifications");
                         for (int i = 0; i < notificationsArray.length(); i++) {
                             JSONObject notificationObject = notificationsArray.getJSONObject(i);
-                            String id = notificationObject.getString("id");
+                            String id = notificationObject.getString("notification_id");
                             String pesan = notificationObject.getString("pesan");
                             int isRead = notificationObject.getInt("is_read");
 
@@ -1324,14 +1319,26 @@ public class ApiClient {
     /**
      * Mengirim permintaan untuk mengubah status notifikasi ke sudah dibaca(is_read = 1)
      *
-     * @param token    token JWT untuk otorisasi, sertakan dalam header Authorization
-     * @param endPoint endpoint untuk mengubah status notifikasi
-     * @param callback callback untuk menerima respons dari server
+     * @param callback       callback untuk menerima respons dari server
+     * @param token          token JWT untuk otorisasi, sertakan dalam header Authorization
+     * @param endPoint       endpoint untuk mengubah status notifikasi
+     * @param userId         id pengguna yang akan menerima notifikasi
+     * @param notificationId id notifikasi yang akan diubah status is_read = 1
      */
-    public void isReadNotification(String token, String endPoint,
+    public void isReadNotification(String token, String endPoint, int userId, String notificationId,
                                    notificationUpdateHelper callback) {
 
-        RequestBody body = RequestBody.create("", null);
+        JSONObject json;
+        try {
+            json = new JSONObject();
+            json.put("userId", userId);
+            json.put("notificationId", notificationId);
+        } catch (JSONException e) {
+            Log.d("Gagal", "Gagal saat membuat body json: " + e.getMessage());
+            return;
+        }
+
+        RequestBody body = RequestBody.create(json.toString(), MediaType.parse("application/json"));
 
         Request request = new Request.Builder()
                 .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
@@ -1366,19 +1373,32 @@ public class ApiClient {
     /**
      * Mengirim permintaan untuk mengubah status notifikasi ke sudah dihapus(is_deleted = 1)
      *
-     * @param token    token JWT untuk otorisasi, sertakan dalam header Authorization
-     * @param endPoint endpoint untuk mengubah status notifikasi
-     * @param callback callback untuk menerima respons dari server
+     * @param token          token JWT untuk otorisasi, sertakan dalam header Authorization
+     * @param endPoint       endpoint untuk mengubah status notifikasi
+     * @param userId         id pengguna yang akan menerima notifikasi
+     * @param notificationId id notifikasi yang akan diubah status is_deleted = 1
+     * @param callback       callback untuk menerima respons dari server
      */
-    public void isDeletedNotification(String token, String endPoint,
+    public void isDeletedNotification(String token, String endPoint, int userId, String notificationId,
                                       notificationUpdateHelper callback) {
+        JSONObject json;
+        try {
+            json = new JSONObject();
+            json.put("userId", userId);
+            json.put("notificationId", notificationId);
+            Log.d("test", "isDeletedNotification: notf id" + notificationId);
+            Log.d("test", "isDeletedNotification: user id" + userId);
+        } catch (JSONException e) {
+            Log.d("Gagal", "Gagal saat membuat body json: " + e.getMessage());
+            return;
+        }
 
-        RequestBody body = RequestBody.create("", null);
+        RequestBody body = RequestBody.create(json.toString(), MediaType.parse("application/json"));
 
         Request request = new Request.Builder()
                 .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
                 .addHeader("Authorization", "Bearer " + token)
-                .delete(body)
+                .put(body)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {

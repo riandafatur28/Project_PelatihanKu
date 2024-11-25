@@ -32,6 +32,5 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         LatLng targetLocation = new LatLng(-7.605396, 111.568613);
         mMap.addMarker(new MarkerOptions().position(targetLocation).title("Gedung Balai Latihan Kerja Nganjuk"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(targetLocation, 7));
-        System.out.println("Camera moved to target location.");
     }
 }

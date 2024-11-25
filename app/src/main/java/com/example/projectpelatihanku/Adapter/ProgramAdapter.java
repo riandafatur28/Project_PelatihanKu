@@ -1,4 +1,4 @@
-package com.example.projectpelatihanku;
+package com.example.projectpelatihanku.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,7 +12,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectpelatihanku.FragmentDetailProgram;
 import com.example.projectpelatihanku.Models.Program;
+import com.example.projectpelatihanku.R;
 import com.example.projectpelatihanku.helper.FragmentHelper;
 import com.example.projectpelatihanku.helper.FunctionHelper;
 import com.example.projectpelatihanku.helper.GlideHelper;
@@ -100,8 +102,8 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
     private void navigateToDetailProgram(ProgramViewHolder holder, String programsId) {
         FragmentDetailProgram fragmentDetailProgram = new FragmentDetailProgram(programsId);
         FragmentActivity activity = (FragmentActivity) holder.itemView.getContext();
-        FragmentHelper.navigateToFragment(activity, R.id.layoutprogram, fragmentDetailProgram,
-                true, null);
+        FragmentHelper.navigateToFragment(activity, R.id.navActivity, fragmentDetailProgram,
+                true, "programDetail");
     }
 
     /**
@@ -118,7 +120,7 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
             textNamaProgram = itemView.findViewById(R.id.text_nama_program);
             textDeskripsi = itemView.findViewById(R.id.text_deskripsi_program);
             btnDetail = itemView.findViewById(R.id.btn_detail);
-            imageArrow2 = itemView.findViewById(R.id.imageArrow2);
+            imageArrow2 = itemView.findViewById(R.id.btnBack);
         }
     }
 }

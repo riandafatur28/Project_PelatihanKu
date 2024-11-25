@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.projectpelatihanku.helper.FragmentHelper;
+
 public class FragmentSplash extends Fragment {
 
     private SharedPreferences sharedPreferences;
@@ -27,9 +29,9 @@ public class FragmentSplash extends Fragment {
             if (getActivity() instanceof MainActivity) {
                 String userName = sharedPreferences.getString(KEY_USER_NAME, null);
                 if (userName != null) {
-                    ((MainActivity) getActivity()).navigateToDashboard();
+                    FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, new DashboardFragment(), true, "dashboard");
                 } else {
-                    ((MainActivity) getActivity()).navigateToLogin();
+                    FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, new FragmentLogin(), true, "login");
                 }
             }
         }, 3000);

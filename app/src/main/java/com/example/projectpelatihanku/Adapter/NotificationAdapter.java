@@ -1,4 +1,4 @@
-package com.example.projectpelatihanku;
+package com.example.projectpelatihanku.Adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,7 +12,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectpelatihanku.FragmentDetailNotifikasi;
+import com.example.projectpelatihanku.FragmentNotifikasi;
 import com.example.projectpelatihanku.Models.Notification;
+import com.example.projectpelatihanku.R;
 import com.example.projectpelatihanku.api.ApiClient;
 import com.example.projectpelatihanku.helper.FragmentHelper;
 

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.auth0.android.jwt.JWT;
+import com.example.projectpelatihanku.Adapter.NotificationAdapter;
 import com.example.projectpelatihanku.Models.Notification;
 import com.example.projectpelatihanku.api.ApiClient;
 import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
@@ -31,6 +32,7 @@ public class FragmentNotifikasi extends Fragment {
     private List<Notification> notifications = new ArrayList<>();
     private ApiClient apiClient;
     private static String token;
+    private static int userId;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -44,6 +46,9 @@ public class FragmentNotifikasi extends Fragment {
         adapter = new NotificationAdapter(getContext(), notifications);
         recyclerView.setAdapter(adapter);
         token = SharedPreferencesHelper.getToken(getContext());
+        JWT jwt = new JWT(token);
+        Double userIdDouble = (Double) jwt.getClaim("users").asObject(Map.class).get("id");
+        userId = userIdDouble.intValue();
         connectWebSocket();
 
         return view;
@@ -55,9 +60,6 @@ public class FragmentNotifikasi extends Fragment {
      * @see ApiClient#fetchNotification(String, int, String, ApiClient.WebSocketCallback)
      */
     private void connectWebSocket() {
-        JWT jwt = new JWT(token);
-        Double userIdDouble = (Double) jwt.getClaim("users").asObject(Map.class).get("id");
-        int userId = userIdDouble.intValue();
         apiClient = new ApiClient();
         apiClient.fetchNotification(token, userId, "ws://192.168.100.4:8000/notifications",
                 new ApiClient.WebSocketCallback() {
@@ -95,12 +97,13 @@ public class FragmentNotifikasi extends Fragment {
      * @param notification Notifikasi yang akan diupdate
      * @param apiClient    Service class untuk melakukan request ke server
      * @param context      Context dari fragment yang memanggil method
-     * @see ApiClient#isReadNotification(String, String, ApiClient.notificationUpdateHelper)
+     * @see ApiClient#isReadNotification(String, String, int, String, ApiClient.notificationUpdateHelper) 
      */
     public static void updateIsRead(Notification notification, ApiClient apiClient, Context context) {
         String nofiticationId = notification.getId();
-        String endPoint = "/notifications/is-read/" + nofiticationId;
-        apiClient.isReadNotification(token, endPoint, new ApiClient.notificationUpdateHelper() {
+        String endPoint = "/notification/is-read";
+        apiClient.isReadNotification(token, endPoint, userId, nofiticationId,
+                new ApiClient.notificationUpdateHelper() {
             @Override
             public void onSuccess(String message) {
                 ((FragmentActivity) context).runOnUiThread(() -> {
@@ -123,13 +126,14 @@ public class FragmentNotifikasi extends Fragment {
      * @param notification Notifikasi yang akan diupdate
      * @param apiClient    Service class untuk melakukan request ke server
      * @param context      Context dari fragment yang memanggil method
-     * @see ApiClient#isDeletedNotification(String, String, ApiClient.notificationUpdateHelper)
+     * @see ApiClient#isDeletedNotification(String, String, int, String, ApiClient.notificationUpdateHelper) 
      */
     public static void updateIsDeleted(Notification notification, ApiClient apiClient,
                                        Context context) {
         String nofiticationId = notification.getId();
-        String endPoint = "/notifications/is-deleted/" + nofiticationId;
-        apiClient.isDeletedNotification(token, endPoint, new ApiClient.notificationUpdateHelper() {
+        String endPoint = "/notification/is-deleted";
+        apiClient.isDeletedNotification(token, endPoint, userId, nofiticationId,
+                new ApiClient.notificationUpdateHelper() {
             @Override
             public void onSuccess(String message) {
                 ((FragmentActivity) context).runOnUiThread(() -> {

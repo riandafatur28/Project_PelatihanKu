@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,6 +28,7 @@ public class FragmentDetailNotifikasi extends Fragment {
      * Construktor untuk menerima parameter message
      *
      * @param message Pesan yang akan ditampilkan di fragment
+     * @see MainActivity#hideBottomNavigationView()
      */
     public FragmentDetailNotifikasi(String message) {
         this.message = message;
@@ -53,11 +53,11 @@ public class FragmentDetailNotifikasi extends Fragment {
      * Motode handler untuk melakukan navigasi kembali
      *
      * @param view View yang berisi layout fragment
-     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button)
+     * @see FragmentHelper#navigateToFragment(FragmentActivity, int, Fragment, boolean, String)
      */
     private void backHandler(View view) {
         ImageView btnBack = view.findViewById(R.id.btnBack);
-        FragmentHelper.backNavigation(getActivity(), btnBack, null);
+        FragmentHelper.backNavigation(getActivity(), btnBack, null, null, 0, false);
     }
 
     @Override

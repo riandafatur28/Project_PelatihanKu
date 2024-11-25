@@ -34,7 +34,6 @@ import java.util.List;
 
 /**
  * Fragment untuk menampilkan detail program berdasarkan programId.
- *
  */
 public class FragmentDetailProgram extends Fragment {
     private TextView namaProgram, deskripsiProgram, namaKejuruan, standar, peserta, namaGedung,
@@ -88,7 +87,7 @@ public class FragmentDetailProgram extends Fragment {
         tglPendaftaran = view.findViewById(R.id.tanggalPendaftaran);
         programImage = view.findViewById(R.id.imageDetailProgram);
         instructorImage = view.findViewById(R.id.imageInstructor);
-        btnDaftar = view.findViewById(R.id.buttonDaftar);
+        btnDaftar = view.findViewById(R.id.buttonDaftarProgram);
 
         recyclerView = view.findViewById(R.id.recyclerViewRequirements);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -97,10 +96,10 @@ public class FragmentDetailProgram extends Fragment {
 
         fetchDetailProgram(new ApiClient());
         fetchRequirements(new ApiClient());
-        backButtonHandler(view);
-        hideBottomNavigationView();
         btnDaftar.setOnClickListener(v -> navigateToProgramRegister());
-
+        backButtonHandler(view);
+        MainActivity.hideBottomNavigationView();
+        FragmentHelper.backHandlerDefault(this, true);
         return view;
     }
 
@@ -110,6 +109,7 @@ public class FragmentDetailProgram extends Fragment {
      * @param apiClient Service Class untuk mengambil data dari API
      * @see ApiClient#fetchDetailProgram(String, String, ApiClient.DetailProgramHelper)
      * @see GlideHelper#loadImage(Context, ImageView, String)
+     * @see SharedPreferencesHelper#getToken(Context)
      */
     private void fetchDetailProgram(ApiClient apiClient) {
         token = SharedPreferencesHelper.getToken(getContext());
@@ -123,11 +123,11 @@ public class FragmentDetailProgram extends Fragment {
                                     DetailProgram detailProgram = data.get(0);
 
                                     // Detail Program
-                                    namaProgram.setText(detailProgram.getNama());
-                                    namaKejuruan.setText(detailProgram.getDepartmentName());
-                                    standar.setText(detailProgram.getStandar());
-                                    peserta.setText(detailProgram.getPeserta());
-                                    namaGedung.setText(detailProgram.getBuildingName());
+                                    namaProgram.setText(": " + detailProgram.getNama());
+                                    namaKejuruan.setText(": " +detailProgram.getDepartmentName());
+                                    standar.setText(": " +detailProgram.getStandar());
+                                    peserta.setText(": " +detailProgram.getPeserta());
+                                    namaGedung.setText(": " +detailProgram.getBuildingName());
                                     deskripsiProgram.setText(detailProgram.getDeskripsi());
                                     status.setText("Status : " + detailProgram.getStatusPendaftaran());
                                     tglPendaftaran.setText(detailProgram.getTanggalMulai() + " - " + detailProgram.getTanggalAkhir());
@@ -201,15 +201,24 @@ public class FragmentDetailProgram extends Fragment {
     /**
      * Handler Metode untuk button kembali
      *
-     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button)
+     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button, String, int, boolean)
+     * @see MainActivity#hideBottomNavigationView()
      */
     private void backButtonHandler(View view) {
         ImageView backButton = view.findViewById(R.id.backButton);
-        FragmentHelper.backNavigation(getActivity(), backButton, null);
+        FragmentHelper.backNavigation(getActivity(), backButton, null, null, 0, false);
+        MainActivity.hideBottomNavigationView();
     }
 
+    /**
+     * Navigasi ke FragmentProgramRegister
+     *
+     * @see FragmentProgramRegister
+     * @see FragmentHelper#navigateToFragment(FragmentActivity, int, Fragment, boolean, String)
+     */
     private void navigateToProgramRegister() {
         FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity,
-                new FragmentProgramRegister(programId, programName, departmentName), true, null);
+                new FragmentProgramRegister(programId, programName, departmentName), true,
+                "daftarProgram");
     }
 }

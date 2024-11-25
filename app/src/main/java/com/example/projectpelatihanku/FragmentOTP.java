@@ -195,10 +195,16 @@ public class FragmentOTP extends Fragment {
      * Handler untuk tombol kembali
      *
      * @param view View tempat tombol kembali berada
-     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button) 
+     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button, String, int, boolean)
      */
     private void backHandler(View view) {
         btnBack = view.findViewById(R.id.btnBack);
-        FragmentHelper.backNavigation(getActivity(), null, btnBack);
+        FragmentHelper.backNavigation(getActivity(), null, btnBack, null, 0, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity.hideBottomNavigationView();
     }
 }

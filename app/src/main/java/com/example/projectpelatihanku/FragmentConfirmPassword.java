@@ -37,4 +37,10 @@ public class FragmentConfirmPassword extends Fragment {
     private void backHandler(){
         FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, new FragmentLogin(), true, null);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity.hideBottomNavigationView();
+    }
 }

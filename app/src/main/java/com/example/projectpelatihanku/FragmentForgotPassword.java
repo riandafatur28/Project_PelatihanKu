@@ -80,11 +80,11 @@ public class FragmentForgotPassword extends Fragment {
      * Handler untuk tombol kembali
      *
      * @param view View tempat tombol kembali berada
-     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button)
+     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button, String, int, boolean)
      */
     private void backButtonHandler(View view) {
         btnBack = view.findViewById(R.id.btnBack);
-        FragmentHelper.backNavigation(getActivity(), null, btnBack);
+        FragmentHelper.backNavigation(getActivity(), null, btnBack, null, 0, false);
     }
 
     /**
@@ -102,5 +102,11 @@ public class FragmentForgotPassword extends Fragment {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity.hideBottomNavigationView();
     }
 }

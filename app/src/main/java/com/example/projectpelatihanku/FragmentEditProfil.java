@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,6 +70,7 @@ public class FragmentEditProfil extends Fragment {
         initializeUIComponents(view);
         setProfileData();
         setButtonListeners();
+        FragmentHelper.backHandlerDefault(this, false);
         return view;
     }
 
@@ -124,9 +127,9 @@ public class FragmentEditProfil extends Fragment {
      */
     private void setButtonListeners() {
         buttonUbah.setOnClickListener(v -> simpanPerubahan(new ApiClient()));
-        btnBack.setOnClickListener(v -> navigateBackToProfile());
         imageProfile.setOnClickListener(v -> checkPermissionsAndLoadImage());
         iconCamera.setOnClickListener(v -> checkPermissionsAndLoadImage());
+        navigateBackToProfile();
     }
 
     /**
@@ -197,6 +200,7 @@ public class FragmentEditProfil extends Fragment {
                     showToast(message, 3000);
                     FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity,
                             new FragmentProfil(), true, null);
+                    MainActivity.showBottomNavigationView();
                 });
             }
 
@@ -211,9 +215,10 @@ public class FragmentEditProfil extends Fragment {
 
     /**
      * Handler untuk tombol kembali
+     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button, String, int, boolean)
      */
     private void navigateBackToProfile() {
-        FragmentHelper.backNavigation(getActivity(), null, btnBack);
+        FragmentHelper.backNavigation(getActivity(), null, btnBack, null, 0, true);
     }
 
     /**
@@ -254,6 +259,4 @@ public class FragmentEditProfil extends Fragment {
             }
         }
     }
-
-
 }

@@ -1,6 +1,4 @@
-package com.example.projectpelatihanku;
-
-import static com.example.projectpelatihanku.MainActivity.hideBottomNavigationView;
+package com.example.projectpelatihanku.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,11 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectpelatihanku.FragmentProgram;
+import com.example.projectpelatihanku.MainActivity;
 import com.example.projectpelatihanku.Models.Department;
+import com.example.projectpelatihanku.R;
 import com.example.projectpelatihanku.helper.FragmentHelper;
 import com.example.projectpelatihanku.helper.GlideHelper;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 
@@ -67,12 +67,9 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
      * @see FragmentHelper#navigateToFragment
      */
     private void navigateToProgram(String departmentId, String departmentName) {
-
         FragmentActivity activity = (FragmentActivity) context;
-        hideBottomNavigationView();
-        FragmentProgram fragmentProgram = new FragmentProgram(departmentId, departmentName);
-        FragmentHelper.navigateToFragment(activity, R.id.layoutDepartment, fragmentProgram, true,
-                null);
+        FragmentHelper.navigateToFragment(activity, R.id.navActivity, new FragmentProgram(departmentId, departmentName), true,
+                "programs");
     }
 
 
@@ -97,7 +94,6 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
         holder.btnLihatProgram.setOnClickListener(v -> {
             String departmentId = department.getId();
             String departmentName = department.getNama();
-
             navigateToProgram(departmentId, departmentName);
         });
     }

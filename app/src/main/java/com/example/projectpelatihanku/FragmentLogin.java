@@ -1,10 +1,7 @@
 package com.example.projectpelatihanku;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.FragmentHelper;
 import com.example.projectpelatihanku.helper.JwtHelper;
 import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 
@@ -27,11 +24,9 @@ import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.util.Map;
 
 public class FragmentLogin extends Fragment {
 
-    // Deklarasi Variable
     private Button buttonLogin;
     private TextView textRegister, textForgotPassword;
     private boolean isPasswordVisible = false;
@@ -39,7 +34,7 @@ public class FragmentLogin extends Fragment {
     private ImageView iconPassword;
     static String Name;
     static String firstName;
-    private final String endPoint = "login";
+    private final String endPoint = "/auth/login";
 
     @Nullable
     @Override
@@ -63,6 +58,7 @@ public class FragmentLogin extends Fragment {
 
     /**
      * Handler untuk tombol login.
+     *
      * @param apiClient Service class untuk melakukan request ke API
      */
     private void loginButtonHandler(ApiClient apiClient) {
@@ -77,18 +73,16 @@ public class FragmentLogin extends Fragment {
                             SharedPreferencesHelper.saveToken(getActivity(), token);
                             Name = JwtHelper.getUserData(token, "users", "username");
                             firstName = Name.split(" ")[0];
-                            if (getActivity() instanceof MainActivity) {
-                                ((MainActivity) getActivity()).navigateToDashboard();
-                            } else {
-                                Toast.makeText(getActivity(), "MainActivity not found",
-                                        Toast.LENGTH_SHORT).show();
-                            }
+                            FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, new DashboardFragment(), true, "dashboard");
                         });
                     }
 
                     @Override
                     public void onFailed(IOException e) {
-                        Toast.makeText(getActivity(), "Login Gagal", Toast.LENGTH_SHORT).show();
+                        requireActivity().runOnUiThread(() -> {
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        });
+
                     }
                 });
             } catch (JSONException e) {
@@ -102,10 +96,7 @@ public class FragmentLogin extends Fragment {
      */
     private void registerButtonHandler() {
         textRegister.setOnClickListener(v -> {
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).navigateToRegister();
-            } else {
-            }
+            FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, new FragmentRegister(), true, "register");
         });
     }
 
@@ -124,10 +115,7 @@ public class FragmentLogin extends Fragment {
      */
     private void forgotPasswordHandler() {
         textForgotPassword.setOnClickListener(v -> {
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).navigateToForgotPassword();
-            } else {
-            }
+            FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, new FragmentForgotPassword(), true, "forgotPassword");
         });
     }
 

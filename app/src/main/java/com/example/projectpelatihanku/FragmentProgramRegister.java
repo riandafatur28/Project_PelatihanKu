@@ -1,10 +1,9 @@
 package com.example.projectpelatihanku;
 
-import static com.example.projectpelatihanku.MainActivity.hideBottomNavigationView;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -25,6 +24,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentActivity;
 
 import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.api.ApiClient;
@@ -100,8 +100,7 @@ public class FragmentProgramRegister extends Fragment {
         cardViewUploadKTP = view.findViewById(R.id.cardViewUploadKTP);
         cardViewUploadKK = view.findViewById(R.id.cardViewUploadKK);
         cardViewUploadIjazah = view.findViewById(R.id.cardViewUploadIjazah);
-        backBtn = view.findViewById(R.id.imageArrow);
-
+        backHandler(view);
         token = SharedPreferencesHelper.getToken(getContext());
         JWT jwt = new JWT(token);
         Double userIdDouble = (Double) jwt.getClaim("users").asObject(Map.class).get("id");
@@ -114,13 +113,23 @@ public class FragmentProgramRegister extends Fragment {
         buttonDaftar.setOnClickListener(v -> {
             registerProgram(new ApiClient());
         });
-        FragmentHelper.backNavigation(getActivity(), backBtn, null);
 
         cardViewUploadKTP.setOnClickListener(v -> requestStoragePermission("KTP"));
         cardViewUploadKK.setOnClickListener(v -> requestStoragePermission("KK"));
         cardViewUploadIjazah.setOnClickListener(v -> requestStoragePermission("Ijazah"));
-        hideBottomNavigationView();
+
+        FragmentHelper.backHandlerDefault(this, true);
         return view;
+    }
+
+    /**
+     * Handler metode untuk button kembali
+     *
+     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button, String, int, boolean)
+     */
+    private void backHandler(View view) {
+        ImageView backButton = view.findViewById(R.id.imageArrow);
+        FragmentHelper.backNavigation(getActivity(), backButton, null, "programDetail", 0, false);
     }
 
     /**
@@ -211,6 +220,7 @@ public class FragmentProgramRegister extends Fragment {
      * Mengirim request registrasi program ke server.
      *
      * @param api Service Class untuk melakukan request ke server.
+     * @see ApiClient#registerProgram(Context, String, String, int, String, String, String, Uri, Uri, Uri, ApiClient.RegistrationsProgramsHelper)
      */
     private void registerProgram(ApiClient api) {
         if (!isValidData()) {

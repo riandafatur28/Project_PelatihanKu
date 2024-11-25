@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.Models.Dashboard;
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.FragmentHelper;
 import com.example.projectpelatihanku.helper.GlideHelper;
 import com.example.projectpelatihanku.helper.JwtHelper;
 import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
@@ -32,6 +33,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.io.IOException;
@@ -40,7 +42,6 @@ import java.util.Map;
 
 public class DashboardFragment extends Fragment implements OnMapReadyCallback {
 
-    static final String PREFS_NAME = "UserPrefs";
     public static final String KEY_USER_NAME = "user_name";
     private static final String endPoint = "/dashboard/summary";
 
@@ -56,7 +57,8 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     private OnDashboardVisibleListener listener;
     private String token;
 
-    public DashboardFragment() {}
+    public DashboardFragment() {
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -80,24 +82,27 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         getAvatarImage(new ApiClient());
 
         view.findViewById(R.id.btn_lebihBanyak).setOnClickListener(v -> {
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).navigateToInstitute();
-            }
+            FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, new FragmentInstitute(), true, "institute");
         });
 
-        fetchData();
-
+        fetchData(new ApiClient());
+        MainActivity.showBottomNavigationView();
         return view;
     }
 
-    private void fetchData() {
+    /**
+     * Mengambil data dashboard summary dari server
+     *
+     * @param apiClient Service Class untuk melakukan request ke server
+     * @see SharedPreferencesHelper#getToken(Context)
+     * @see ApiClient#fetchDashboard(String, String, ApiClient.DashboardDataHelper)
+     */
+    private void fetchData(ApiClient apiClient) {
         token = SharedPreferencesHelper.getToken(getContext());
         if (token == null || token.equals("Token Tidak ditemukan")) {
             showErrorUI();
             return;
         }
-
-        ApiClient apiClient = new ApiClient();
 
         apiClient.fetchDashboard(token, endPoint, new ApiClient.DashboardDataHelper() {
             @Override
@@ -112,22 +117,29 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    private void getAvatarImage(ApiClient api){
+    /**
+     * Mengambil gambar profil dari server
+     *
+     * @param api Service Class untuk melakukan request ke server
+     * @see SharedPreferencesHelper#getToken(Context)
+     * @see ApiClient#fetchImageProfile(String, String, ApiClient.imageProfile)
+     */
+    private void getAvatarImage(ApiClient api) {
         token = SharedPreferencesHelper.getToken(getContext());
         JWT jwt = new JWT(token);
         Double userIdDouble = (Double) jwt.getClaim("users").asObject(Map.class).get("id");
         int userId = userIdDouble.intValue();
-        api.fetchImageProfile(token, "/users/image/" +userId, new ApiClient.imageProfile() {
+        api.fetchImageProfile(token, "/users/image/" + userId, new ApiClient.imageProfile() {
             @Override
             public void onSuccess(String uri) {
-                requireActivity().runOnUiThread(()-> {
+                requireActivity().runOnUiThread(() -> {
                     GlideHelper.loadImage(getContext(), imageUser, uri);
                 });
             }
 
             @Override
             public void onFailed(IOException e) {
-                requireActivity().runOnUiThread(()->{
+                requireActivity().runOnUiThread(() -> {
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
             }

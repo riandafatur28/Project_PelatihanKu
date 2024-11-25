@@ -151,10 +151,16 @@ public class FragmentResetPassword extends Fragment {
      * Handler untuk tombol kembali.
      *
      * @param view View tempat tombol kembali berada.
-     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button)
+     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button, String, int, boolean)
      */
     private void backButtonHandler(View view) {
         backButton = view.findViewById(R.id.btnBack);
-        FragmentHelper.backNavigation(getActivity(), null, backButton);
+        FragmentHelper.backNavigation(getActivity(), null, backButton, null, 0, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity.hideBottomNavigationView();
     }
 }
