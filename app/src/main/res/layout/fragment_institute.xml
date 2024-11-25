@@ -13,8 +13,9 @@
         android:id="@+id/layertentang"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="24dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -56,7 +57,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="12dp"
                     android:layout_marginTop="18dp"
                     android:fontFamily="@font/inter_medium"
                     android:text="Info Lembaga"
@@ -65,162 +66,154 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
+                    <!-- Gambar di tengah -->
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/imageTentang"
-                        android:layout_width="180dp"
-                        android:layout_height="180dp"
-                        android:layout_marginStart="12dp"
-                        android:padding="8dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/balai_img2"
+                        android:layout_width="match_parent"
+                        android:layout_height="175dp"
+                        android:layout_gravity="center"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/image_lembaga"
                         app:shapeAppearanceOverlay="@style/RoundedImageView2" />
 
+                    <!-- Container Info Lembaga -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/container_info_lembaga"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp">
 
-                    <LinearLayout
-                        android:id="@+id/container_linear"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:paddingStart="6dp">
+                        <!-- Label Nama Institusi -->
+                        <TextView
+                            android:id="@+id/label_nama_institusi"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Nama Institusi"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/nama_institusi"/>
 
-
-                        <!-- Line 1 Nama Institusi -->
+                        <!-- Nama Institusi -->
                         <TextView
                             android:id="@+id/nama_institusi"
-                            android:layout_width="196dp"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:layout_marginEnd="5dp"
-                            android:fontFamily="@font/inter_medium"
+                            android:fontFamily="@font/inter_regular"
                             android:textColor="@color/font_black"
-                            android:textSize="16sp" />
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="@id/label_nama_institusi"
+                            app:layout_constraintStart_toEndOf="@id/label_nama_institusi"
+                            app:layout_constraintEnd_toEndOf="parent"/>
 
-                        <!-- Line 2 Nama Pimpinan -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <!-- Label Nama Pimpinan -->
+                        <TextView
+                            android:id="@+id/label_nama_pimpinan"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginEnd="5dp"
-                            android:orientation="horizontal">
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Nama Pimpinan"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/label_nama_institusi"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/nama_pimpinan"/>
 
-                            <!-- Label di sebelah kiri -->
-                            <TextView
-                                android:id="@+id/label_nama_pimpinan"
-                                android:layout_width="20dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:fontFamily="@font/inter_regular"
-                                android:text="Nama Pimpinan :"
-                                android:textColor="@color/font_black"
-                                android:textSize="14sp" />
-
-                            <!-- Nama di sebelah kanan -->
-                            <TextView
-                                android:id="@+id/nama_pimpinan"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:fontFamily="@font/inter_regular"
-                                android:textColor="@color/font_black"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-
-                        <!-- Line 3 No VIN -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <!-- Nama Pimpinan -->
+                        <TextView
+                            android:id="@+id/nama_pimpinan"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginEnd="5dp"
-                            android:orientation="horizontal">
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/nama_institusi"
+                            app:layout_constraintStart_toEndOf="@id/label_nama_pimpinan"
+                            app:layout_constraintEnd_toEndOf="parent"/>
 
-                            <!-- Label di sebelah kiri -->
-                            <TextView
-                                android:id="@+id/label_no_vin"
-                                android:layout_width="20dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:fontFamily="@font/inter_regular"
-                                android:text="Nomor VIN         :"
-                                android:textColor="@color/font_black"
-                                android:textSize="14sp" />
-
-                            <!-- Nama di sebelah kanan -->
-                            <TextView
-                                android:id="@+id/no_vin"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:fontFamily="@font/inter_regular"
-                                android:textColor="@color/font_black"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-
-                        <!-- Line 4 No Tahun Berdiri -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <!-- Label No VIN -->
+                        <TextView
+                            android:id="@+id/label_no_vin"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginEnd="5dp"
-                            android:orientation="horizontal">
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Nomor VIN"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/label_nama_pimpinan"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/no_vin"/>
 
-                            <!-- Label di sebelah kiri -->
-                            <TextView
-                                android:id="@+id/label_tahun_berdiri"
-                                android:layout_width="20dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:fontFamily="@font/inter_regular"
-                                android:text="Tahun Berdiri     :"
-                                android:textColor="@color/font_black"
-                                android:textSize="14sp" />
-
-                            <!-- Nama di sebelah kanan -->
-                            <TextView
-                                android:id="@+id/tahun_berdiri"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:fontFamily="@font/inter_regular"
-                                android:textColor="@color/font_black"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-
-                        <!-- Line 5 Status Beroperasi -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <!-- No VIN -->
+                        <TextView
+                            android:id="@+id/no_vin"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginEnd="5dp"
-                            android:orientation="horizontal">
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/nama_pimpinan"
+                            app:layout_constraintStart_toEndOf="@id/label_no_vin"
+                            app:layout_constraintEnd_toEndOf="parent"/>
 
-                            <!-- Label di sebelah kiri -->
-                            <TextView
-                                android:id="@+id/label_status_beroperasi"
-                                android:layout_width="20dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:fontFamily="@font/inter_regular"
-                                android:text="Status                :"
-                                android:textColor="@color/font_black"
-                                android:textSize="14sp" />
+                        <!-- Label Tahun Berdiri -->
+                        <TextView
+                            android:id="@+id/label_tahun_berdiri"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Tahun Berdiri"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/label_no_vin"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/tahun_berdiri"/>
 
-                            <!-- Nama di sebelah kanan -->
-                            <TextView
-                                android:id="@+id/status_beroperasi"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:fontFamily="@font/inter_regular"
-                                android:textColor="@color/font_black"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-                    </LinearLayout>
+                        <!-- Tahun Berdiri -->
+                        <TextView
+                            android:id="@+id/tahun_berdiri"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/no_vin"
+                            app:layout_constraintStart_toEndOf="@id/label_tahun_berdiri"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                        <!-- Label Status -->
+                        <TextView
+                            android:id="@+id/label_status_beroperasi"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Status"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/label_tahun_berdiri"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/status_beroperasi"/>
+
+                        <!-- Status -->
+                        <TextView
+                            android:id="@+id/status_beroperasi"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/tahun_berdiri"
+                            app:layout_constraintStart_toEndOf="@id/label_status_beroperasi"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
+
 
                 <!-- Garis Horizontal -->
                 <TextView
@@ -298,7 +291,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/inter_regular"
-                            android:text="Kepemilikan         :"
+                            android:text="Kepemilikan"
                             android:textColor="@color/font_black"
                             android:textSize="14sp" />
 
@@ -330,7 +323,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/inter_regular"
-                            android:text="Nomor SOTK       :"
+                            android:text="Nomor SOTK"
                             android:textColor="@color/font_black"
                             android:textSize="14sp" />
 
@@ -356,17 +349,18 @@
                         android:orientation="horizontal">
 
                         <!-- Label di sebelah kiri -->
+
+                        <!-- Nama di sebelah kanan -->
                         <TextView
                             android:id="@+id/label_tipe"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/inter_regular"
-                            android:text="Tipe                      :"
+                            android:text="Tipe"
                             android:textColor="@color/font_black"
                             android:textSize="14sp" />
 
-                        <!-- Nama di sebelah kanan -->
                         <TextView
                             android:id="@+id/tipe"
                             android:layout_width="0dp"
