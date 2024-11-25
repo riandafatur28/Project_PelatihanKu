@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">pelatihanKu</string>
+    <string name="app_name">PelatihanKu</string>
     <string name="signin_text">
         Sudah punya akun?  <font color="#FF9228"><b>MASUK</b></font>
     </string>
