@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentdetailprogram"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_bg"
+    android:padding="8dp"
+    tools:context=".FragmentDetailProgram">
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/layerdetailProgram"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="24dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/backButton"
+                android:layout_width="36dp"
+                android:layout_height="64dp"
+                android:clickable="true"
+                android:contentDescription="@string/description_arrow"
+                android:focusable="true"
+                android:padding="8dp"
+                android:src="@drawable/vector_back" />
+
+            <TextView
+                android:id="@+id/texttentang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:fontFamily="@font/inter_medium"
+                android:text="Detail Program"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="18dp"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Tentang Program"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imageDetailProgram"
+                        android:layout_width="match_parent"
+                        android:layout_height="175dp"
+                        android:layout_gravity="center"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/balai_img2"
+                        app:shapeAppearanceOverlay="@style/RoundedImageView2" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/contrainerDetailProgram"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp">
+
+                        <TextView
+                            android:id="@+id/labelNamaProgram"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Program"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/namaProgram"/>
+
+                        <TextView
+                            android:id="@+id/namaProgram"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="@id/labelNamaProgram"
+                            app:layout_constraintStart_toEndOf="@id/labelNamaProgram"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                        <TextView
+                            android:id="@+id/labelNamaKejuruan"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Kejuruan"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/labelNamaProgram"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/namaKejuruan"/>
+
+                        <TextView
+                            android:id="@+id/namaKejuruan"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="@id/labelNamaKejuruan"
+                            app:layout_constraintStart_toEndOf="@id/labelNamaKejuruan"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                        <TextView
+                            android:id="@+id/labelStandar"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Standar"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/labelNamaKejuruan"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/standar"/>
+
+                        <TextView
+                            android:id="@+id/standar"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="@id/labelStandar"
+                            app:layout_constraintStart_toEndOf="@id/labelStandar"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                        <TextView
+                            android:id="@+id/labelPeserta"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Peserta"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/labelStandar"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/peserta"/>
+
+                        <TextView
+                            android:id="@+id/peserta"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="@id/labelPeserta"
+                            app:layout_constraintStart_toEndOf="@id/labelPeserta"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                        <TextView
+                            android:id="@+id/labelGedung"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Gedung"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@+id/labelPeserta"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/gedung"/>
+
+                        <TextView
+                            android:id="@+id/gedung"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="@id/labelGedung"
+                            app:layout_constraintStart_toEndOf="@id/labelGedung"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+
+                <!-- Garis Horizontal -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@color/font_tint" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/LabeldeskripsiProgram"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Deskripsi Program"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/deskripsiProgram"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="18dp"
+                        android:layout_marginEnd="12dp"
+                        android:fontFamily="@font/inter_regular"
+                        android:justificationMode="inter_word"
+                        android:text=""
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <!-- Garis Horizontal -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@color/font_tint" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/Instruktur"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Instruktur"
+                        android:textSize="20sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/imageInstructor"
+                            android:layout_width="130dp"
+                            android:layout_height="130dp"
+                            android:layout_marginStart="12dp"
+                            android:clipToOutline="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/balai_img2"
+                            app:shapeAppearanceOverlay="@style/CircularImage" />
+
+                        <LinearLayout
+                            android:id="@+id/container_linear"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="12dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:paddingStart="6dp">
+
+                            <!-- Line 1 of Button Text -->
+                            <!--peserta-->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:orientation="horizontal">
+
+                                <!-- Label di sisi kiri -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:text="ID Instruktur :"
+                                    android:textColor="@color/font_black"
+                                    android:textSize="14sp" />
+
+                                <!-- TextView utama -->
+                                <TextView
+                                    android:id="@+id/idInstructor"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:text=""
+                                    android:textColor="@color/font_black"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+
+                            <!-- Line 2 of Button Text -->
+                            <!--peserta-->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:orientation="horizontal">
+
+                                <!-- Label di sisi kiri -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:text="Nama            :"
+                                    android:textColor="@color/font_black"
+                                    android:textSize="14sp" />
+
+                                <!-- TextView utama -->
+                                <TextView
+                                    android:id="@+id/namaInstructor"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:text=""
+                                    android:textColor="@color/font_black"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+
+                            <!-- Line 3 of Button Text -->
+                            <!--peserta-->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:orientation="horizontal">
+
+                                <!-- Label di sisi kiri -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:text="Kontak          :"
+                                    android:textColor="@color/font_black"
+                                    android:textSize="14sp" />
+
+                                <!-- TextView utama -->
+                                <TextView
+                                    android:id="@+id/kontakInstructor"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:text=""
+                                    android:textColor="@color/font_black"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+
+                            <!-- Line 4 of Button Text -->
+                            <!--peserta-->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:orientation="horizontal">
+
+                                <!-- Label di sisi kiri -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:text="Alamat          :"
+                                    android:textColor="@color/font_black"
+                                    android:textSize="14sp" />
+
+                                <!-- TextView utama -->
+                                <TextView
+                                    android:id="@+id/alamatInstructor"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/inter_regular"
+                                    android:text=""
+                                    android:textColor="@color/font_black"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Garis Horizontal -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@color/font_tint" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/Persyaratan"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/inter_medium"
+                            android:text="Persyaratan"
+                            android:textSize="20sp" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewRequirements"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="8dp" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Garis Horizontal -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@color/font_tint" />
+
+                <LinearLayout
+                    android:id="@+id/informasiPendaftarn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/infoPendaftaran"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="5dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Informasi Pendaftaran"
+                        android:textColor="@color/font_black"
+                        android:textSize="20sp"
+                        android:textStyle="" />
+
+                    <TextView
+                        android:id="@+id/statusPendaftaran"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="5dp"
+                        android:fontFamily="@font/inter_regular"
+                        android:text=""
+                        android:textColor="@color/font_black"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tanggalPendaftaran"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginEnd="5dp"
+                        android:fontFamily="@font/inter_regular"
+                        android:text=""
+                        android:textColor="@color/font_black"
+                        android:textSize="14sp" />
+
+                    <Button
+                        android:id="@+id/buttonDaftarProgram"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="24dp"
+                        android:layout_marginEnd="12dp"
+                        android:backgroundTint="@color/orange"
+                        android:text="Daftar" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

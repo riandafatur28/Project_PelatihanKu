@@ -3,4 +3,9 @@
     <item name="text_register" type="id" />
     <item name="text_belum_punya_akun" type="id" />
     <item name="google_icon" type="id" />
+    <item name="apakahpunyaakun" type="id" />
+    <item name="logindengangoogle" type="id" />
+    <item name="iconkonfirmpassword" type="id" />
+    <item name="bottomView" type="id" />
+    <item name="container" type="id" />
 </resources>

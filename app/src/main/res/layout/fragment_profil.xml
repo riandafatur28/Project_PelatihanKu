@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerProfil"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:layout_marginTop="8dp"
+    android:orientation="vertical"
+    tools:context=".FragmentProfil">
+
+    <!-- Header Profil -->
+    <TextView
+        android:id="@+id/textProfil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/inter_medium"
+        android:text="Profil"
+        android:textSize="24sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="12dp"
+        android:background="@color/font_tint" />
+
+    <!-- ScrollView untuk Konten Profil -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageProfil"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:contentDescription="Profile Image"
+                android:scaleType="centerCrop"
+                android:src="@drawable/gambar_user"
+                app:shapeAppearanceOverlay="@style/CircleImage" />
+
+            <TextView
+                android:id="@+id/namaUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/inter_regular"
+                android:gravity="center"
+                android:text="Nama User"
+                android:textColor="@color/font_black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <!-- Detail Profil -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="24dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical">
+
+                    <!-- Sub LinearLayout untuk Teks -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <!-- Label -->
+                        <TextView
+                            android:id="@+id/LabelnamaProfil"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Nama Panjang  :"
+                            android:textColor="@color/font_tint"
+                            android:textSize="16sp" />
+
+                        <!-- Nama -->
+                        <TextView
+                            android:id="@+id/namaProfil"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Nama Panjang"
+                            android:textColor="@color/font_black"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Garis Bawah -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="4dp"
+                        android:background="#EEF2F6" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:orientation="vertical">
+
+                    <!-- Teks Label dan Isi -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <!-- Label -->
+                        <TextView
+                            android:id="@+id/LabelJK"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Jenis Kelamin    :"
+                            android:textColor="@color/font_tint"
+                            android:textSize="16sp" />
+
+                        <!-- Isi -->
+                        <TextView
+                            android:id="@+id/JKProfil"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Jenis Kelamin"
+                            android:textColor="@color/font_black"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Garis Bawah -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="4dp"
+                        android:background="#EEF2F6" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:orientation="vertical">
+
+                    <!-- Sub LinearLayout untuk Teks -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <!-- Label -->
+                        <TextView
+                            android:id="@+id/LabelTlp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Nomor Telepon :"
+                            android:textColor="@color/font_tint"
+                            android:textSize="16sp" />
+
+                        <!-- Nomor Telepon -->
+                        <TextView
+                            android:id="@+id/noTelpProfil"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="No.Telp"
+                            android:textColor="@color/font_black"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Garis Bawah -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="4dp"
+                        android:background="#EEF2F6" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:orientation="vertical">
+
+                    <!-- Sub LinearLayout untuk Teks -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <!-- Label -->
+                        <TextView
+                            android:id="@+id/Labelttl"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Tanggal Lahir    :"
+                            android:textColor="@color/font_tint"
+                            android:textSize="16sp" />
+
+                        <!-- Tanggal Lahir -->
+                        <TextView
+                            android:id="@+id/TTLProfil"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Tanggal Lahir"
+                            android:textColor="@color/font_black"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Garis Bawah -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="4dp"
+                        android:background="#EEF2F6" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:orientation="vertical">
+
+                    <!-- Sub LinearLayout untuk Teks -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <!-- Label Email -->
+                        <TextView
+                            android:id="@+id/Labelemail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Email                  :"
+                            android:textColor="@color/font_tint"
+                            android:textSize="16sp" />
+
+                        <!-- Isi Email -->
+                        <TextView
+                            android:id="@+id/emailProfil"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Email"
+                            android:textColor="@color/font_black"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Garis Bawah -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="4dp"
+                        android:background="#EEF2F6" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:orientation="vertical">
+
+                    <!-- Sub LinearLayout untuk Teks -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <!-- Label Alamat -->
+                        <TextView
+                            android:id="@+id/Labelalamat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Alamat               :"
+                            android:textColor="@color/font_tint"
+                            android:textSize="16sp" />
+
+                        <!-- Isi Alamat -->
+                        <TextView
+                            android:id="@+id/alamatProfil"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Alamat"
+                            android:textColor="@color/font_black"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Garis Bawah -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="4dp"
+                        android:background="#EEF2F6" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Button Perbarui Profil -->
+            <Button
+                android:id="@+id/buttonPerbaruiProfil"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="36dp"
+                android:backgroundTint="@color/orange"
+                android:fontFamily="@font/inter_bold"
+                android:gravity="center"
+                android:text="Perbarui Profil"
+                android:textAllCaps="false"
+                android:textColor="@color/white_bg"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/inter_semibold"
+                android:text="Keluar"
+                android:textAlignment="center"
+                android:textColor="#FE9128"
+                android:textSize="16sp"
+                app:backgroundTint="@color/common_google_signin_btn_tint"
+                app:cornerRadius="50dp"
+                app:rippleColor="#E1E1E1"
+                app:strokeColor="#FFA726"
+                app:strokeWidth="1.2dp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,11 +1,18 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#FFFFFF"/>
+    <!-- Warna latar belakang -->
+    <solid android:color="#FFFFFF" />
+
+    <!-- Radius sudut -->
     <corners
-        android:topLeftRadius="25dp"
-        android:topRightRadius="25dp"
         android:bottomLeftRadius="0dp"
-        android:bottomRightRadius="0dp"/>
+        android:bottomRightRadius="0dp"
+        android:topLeftRadius="24dp"
+        android:topRightRadius="24dp" />
+
+    <!-- Padding di sisi kiri dan kanan -->
     <padding
         android:left="16dp"
-        android:right="16dp"/>
+        android:right="16dp" />
+
+    <!-- Border (garis tepi) -->
 </shape>

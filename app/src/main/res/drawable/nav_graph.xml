@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/fragmentOTP">
+
+    <fragment
+        android:id="@+id/fragmentOTP"
+        android:name="com.example.projectpelatihanku.FragmentOTP"
+        tools:layout="@layout/fragment_otp" />
+
+    <fragment
+        android:id="@+id/fragmentChangePassword"
+        android:name="com.example.projectpelatihanku.FragmentChangePassword"
+        tools:layout="@layout/fragment_change_password" />
+
+
+
+</navigation>

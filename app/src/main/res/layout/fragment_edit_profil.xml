@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerProfil"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_marginTop="8dp"
+    tools:context=".FragmentProfil">
+
+    <!-- Header Profil -->
+    <LinearLayout
+        android:id="@+id/layerprofil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textProfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/inter_medium"
+            android:text="Ubah Profil"
+            android:textSize="24sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:background="@color/font_tint" />
+    </LinearLayout>
+
+    <!-- ScrollView untuk konten profil -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:orientation="vertical">
+
+            <!-- Gambar Profil dengan Ikon Kamera -->
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <!-- Gambar Profil -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageProfil"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Profile Image"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/gambar_user"
+                    app:shapeAppearanceOverlay="@style/CircleImage" /><!-- Gambar default untuk profil -->
+
+                <!-- Ikon Kamera di Atas Gambar Profil -->
+                <ImageView
+                    android:id="@+id/iconCamera"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="4dp"
+                    android:src="@drawable/vector_camera" /> <!-- Ikon kamera di pojok bawah kanan -->
+            </FrameLayout>
+
+            <!-- Nama Pengguna -->
+            <TextView
+                android:id="@+id/namaUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/inter_regular"
+                android:gravity="center"
+                android:text="Nama User"
+                android:textColor="@color/font_black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <!-- Form Edit Profil -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <!-- Label Nama -->
+                    <TextView
+                        android:id="@+id/Labeleditnama"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/inter_regular"
+                        android:text="Nama                  :"
+                        android:textColor="@color/font_tint"
+                        android:textSize="16sp" />
+
+                    <!-- Input EditText -->
+                    <EditText
+                        android:id="@+id/editnamaProfil"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/inter_regular"
+                        android:hint="Nama Panjang"
+                        android:backgroundTint="#EEF2F6"
+                        android:textColor="@color/font_black"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <!-- Label Jenis Kelamin -->
+                    <TextView
+                        android:id="@+id/Labeleditjs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/inter_regular"
+                        android:text="Jenis Kelamin    :"
+                        android:textColor="@color/font_tint"
+                        android:textSize="16sp" />
+
+                    <!-- Input Jenis Kelamin -->
+                    <EditText
+                        android:id="@+id/editJKProfil"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/inter_regular"
+                        android:hint="Jenis Kelamin"
+                        android:backgroundTint="#EEF2F6"
+                        android:textColor="@color/font_black"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <!-- Label Jenis Kelamin -->
+                    <TextView
+                        android:id="@+id/Labeleditemail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/inter_regular"
+                        android:text="Email                  :"
+                        android:textColor="@color/font_tint"
+                        android:textSize="16sp" />
+
+                    <!-- Input Jenis Kelamin -->
+                    <EditText
+                        android:id="@+id/editemailProfil"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/inter_regular"
+                        android:hint="Email"
+                        android:backgroundTint="#EEF2F6"
+                        android:textColor="@color/font_black"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <!-- Label Jenis Kelamin -->
+                    <TextView
+                        android:id="@+id/LabeleditnoTelp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/inter_regular"
+                        android:text="Nomor Telepon :"
+                        android:textColor="@color/font_tint"
+                        android:textSize="16sp" />
+
+                    <!-- Input Jenis Kelamin -->
+                    <EditText
+                        android:id="@+id/editNoTelpProfil"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/inter_regular"
+                        android:hint="Nomor Telepon"
+                        android:backgroundTint="#EEF2F6"
+                        android:textColor="@color/font_black"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <!-- Label Jenis Kelamin -->
+                    <TextView
+                        android:id="@+id/Labeleditttl"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/inter_regular"
+                        android:text="Tanggal Lahir    :"
+                        android:textColor="@color/font_tint"
+                        android:textSize="16sp" />
+
+                    <!-- Input Jenis Kelamin -->
+                    <EditText
+                        android:id="@+id/editTTLProfil"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/inter_regular"
+                        android:hint="Tanggal Lahir"
+                        android:backgroundTint="#EEF2F6"
+                        android:textColor="@color/font_black"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <!-- Label Jenis Kelamin -->
+                    <TextView
+                        android:id="@+id/Labeledit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/inter_regular"
+                        android:text="Alamat               :"
+                        android:textColor="@color/font_tint"
+                        android:textSize="16sp" />
+
+                    <!-- Input Jenis Kelamin -->
+                    <EditText
+                        android:id="@+id/editalamatProfil"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/inter_regular"
+                        android:hint="Alamat"
+                        android:backgroundTint="#EEF2F6"
+                        android:textColor="@color/font_black"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Tombol Ubah Profil -->
+            <Button
+                android:id="@+id/buttonubahProfil"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="36dp"
+                android:backgroundTint="@color/orange"
+                android:drawablePadding="8dp"
+                android:fontFamily="@font/inter_bold"
+                android:gravity="center"
+                android:text="Ubah"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="270dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/inter_semibold"
+                android:text="Kembali Ke menu Profile"
+                android:textAlignment="center"
+                android:textColor="#FE9128"
+                android:textSize="16sp"
+                app:backgroundTint="@color/common_google_signin_btn_tint"
+                app:cornerRadius="50dp"
+                app:rippleColor="#E1E1E1"
+                app:strokeColor="#FFA726"
+                app:strokeWidth="1.2dp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

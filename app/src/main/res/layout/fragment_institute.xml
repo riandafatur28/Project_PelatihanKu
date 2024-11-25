@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragmenttentang"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_bg"
+    android:padding="8dp"
+    tools:context=".FragmentInstitute">
+
+    <LinearLayout
+        android:id="@+id/layertentang"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageArrow"
+                android:layout_width="36dp"
+                android:layout_height="64dp"
+                android:clickable="true"
+                android:contentDescription="@string/description_arrow"
+                android:focusable="true"
+                android:padding="8dp"
+                android:src="@drawable/vector_back" />
+
+
+            <TextView
+                android:id="@+id/texttentang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:fontFamily="@font/inter_medium"
+                android:text="Tentang"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="18dp"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Info Lembaga"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Gambar di tengah -->
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imageTentang"
+                        android:layout_width="match_parent"
+                        android:layout_height="175dp"
+                        android:layout_gravity="center"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/image_lembaga"
+                        app:shapeAppearanceOverlay="@style/RoundedImageView2" />
+
+                    <!-- Container Info Lembaga -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/container_info_lembaga"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp">
+
+                        <!-- Label Nama Institusi -->
+                        <TextView
+                            android:id="@+id/label_nama_institusi"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Nama Institusi"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/nama_institusi"/>
+
+                        <!-- Nama Institusi -->
+                        <TextView
+                            android:id="@+id/nama_institusi"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="@id/label_nama_institusi"
+                            app:layout_constraintStart_toEndOf="@id/label_nama_institusi"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                        <!-- Label Nama Pimpinan -->
+                        <TextView
+                            android:id="@+id/label_nama_pimpinan"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Nama Pimpinan"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/label_nama_institusi"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/nama_pimpinan"/>
+
+                        <!-- Nama Pimpinan -->
+                        <TextView
+                            android:id="@+id/nama_pimpinan"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/nama_institusi"
+                            app:layout_constraintStart_toEndOf="@id/label_nama_pimpinan"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                        <!-- Label No VIN -->
+                        <TextView
+                            android:id="@+id/label_no_vin"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Nomor VIN"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/label_nama_pimpinan"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/no_vin"/>
+
+                        <!-- No VIN -->
+                        <TextView
+                            android:id="@+id/no_vin"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/nama_pimpinan"
+                            app:layout_constraintStart_toEndOf="@id/label_no_vin"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                        <!-- Label Tahun Berdiri -->
+                        <TextView
+                            android:id="@+id/label_tahun_berdiri"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Tahun Berdiri"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/label_no_vin"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/tahun_berdiri"/>
+
+                        <!-- Tahun Berdiri -->
+                        <TextView
+                            android:id="@+id/tahun_berdiri"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/no_vin"
+                            app:layout_constraintStart_toEndOf="@id/label_tahun_berdiri"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                        <!-- Label Status -->
+                        <TextView
+                            android:id="@+id/label_status_beroperasi"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Status"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/label_tahun_berdiri"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/status_beroperasi"/>
+
+                        <!-- Status -->
+                        <TextView
+                            android:id="@+id/status_beroperasi"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/tahun_berdiri"
+                            app:layout_constraintStart_toEndOf="@id/label_status_beroperasi"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+
+
+                <!-- Garis Horizontal -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@color/font_tint" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tentangLembaga"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Tentang Lembaga"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/deskripsiInstitusi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="18dp"
+                        android:layout_marginEnd="12dp"
+                        android:fontFamily="@font/inter_regular"
+                        android:justificationMode="inter_word"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <!-- Garis Horizontal -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@color/font_tint" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/jenisLembaga"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Jenis Lembaga"
+                        android:textSize="18sp" />
+
+                    <!-- Line 1 kepemilikan-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="18dp"
+                        android:layout_marginEnd="5dp"
+                        android:orientation="horizontal">
+
+                        <!-- Label di sebelah kiri -->
+                        <TextView
+                            android:id="@+id/label_kepemilikan"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Kepemilikan"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp" />
+
+                        <!-- Nama di sebelah kanan -->
+                        <TextView
+                            android:id="@+id/kepemilikan"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="-145dp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <!-- Line 2 No SOTK -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:orientation="horizontal">
+
+                        <!-- Label di sebelah kiri -->
+                        <TextView
+                            android:id="@+id/label_no_sotk"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Nomor SOTK"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp" />
+
+                        <!-- Nama di sebelah kanan -->
+                        <TextView
+                            android:id="@+id/no_sotk"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="-145dp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <!-- Line 3 Tipe Lembaga -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:orientation="horizontal">
+
+                        <!-- Label di sebelah kiri -->
+
+                        <!-- Nama di sebelah kanan -->
+                        <TextView
+                            android:id="@+id/label_tipe"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Tipe"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tipe"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="-145dp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Garis Horizontal -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@color/font_tint" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+
+                    <!-- Kolom Kiri -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="-1dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/kontakLembaga"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="1dp"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/inter_medium"
+                            android:text="Kontak Lembaga"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/textNoTelpLembaga"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="1dp"
+                            android:layout_marginTop="18dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Nomor Telepon"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/notelpLembaga"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="1dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/textEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="1dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Email"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/emailLembaga"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="1dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginBottom="24dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <!-- Kolom Kanan -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textNomorFax"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="44dp"
+                            android:layout_marginTop="56dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Nomor Fax"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/nomorFax"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="44dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/textWebsite"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="44dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="Website"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/website"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="44dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginBottom="24dp"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/font_black"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
