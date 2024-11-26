@@ -127,7 +127,13 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     private void getAvatarImage(ApiClient api) {
         token = SharedPreferencesHelper.getToken(getContext());
         JWT jwt = new JWT(token);
-        Double userIdDouble = (Double) jwt.getClaim("users").asObject(Map.class).get("id");
+        Double userIdDouble = 0.0;
+        try {
+            userIdDouble = Double.parseDouble((String) jwt.getClaim("users").asObject(Map.class).get("id"));
+        } catch (Exception e) {
+            String id = JwtHelper.getUserData(SharedPreferencesHelper.getToken(getContext()), "users", "id");
+            userIdDouble = Double.parseDouble(id);
+        }
         int userId = userIdDouble.intValue();
         api.fetchImageProfile(token, "/users/image/" + userId, new ApiClient.imageProfile() {
             @Override
