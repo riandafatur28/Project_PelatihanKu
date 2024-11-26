@@ -41,7 +41,7 @@ import okhttp3.WebSocketListener;
 public class ApiClient {
     private OkHttpClient client = new OkHttpClient();
     private WebSocket webSocket;
-    public static final String BASE_URL = "http://192.168.100.4:8080/";
+    public static final String BASE_URL = "http://172.16.110.26:8000/";
     public static final String BASE_URL_PUBLIC = "api/v1/public";
 
     /**
@@ -489,6 +489,7 @@ public class ApiClient {
             public void onResponse(@NonNull Call call, @NonNull Response response) {
                 try {
                     String data = response.body().string();
+
                     JSONObject JsonData = new JSONObject(data);
                     if (response.isSuccessful()) {
                         if (JsonData.getString("status").equalsIgnoreCase("success")) {
