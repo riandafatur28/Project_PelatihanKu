@@ -126,10 +126,10 @@ public class FragmentRegister extends Fragment {
             data[5] = password;
 
             if (selectedGender.equalsIgnoreCase("Laki-laki")) {
-                imageId = R.drawable.vector_men;
+                imageId = R.drawable.img_men;
                 data[6] = "Laki-laki";
             } else if (selectedGender.equalsIgnoreCase("Perempuan")) {
-                imageId = R.drawable.vector_women;
+                imageId = R.drawable.img_women;
                 data[6] = "Perempuan";
             }
 
