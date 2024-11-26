@@ -3,6 +3,7 @@ package com.example.projectpelatihanku.api;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -41,7 +42,7 @@ import okhttp3.WebSocketListener;
 public class ApiClient {
     private OkHttpClient client = new OkHttpClient();
     private WebSocket webSocket;
-    public static final String BASE_URL = "http://172.16.110.26:8000/";
+    public static final String BASE_URL = "http://192.168.1.6:8000/";
     public static final String BASE_URL_PUBLIC = "api/v1/public";
 
     /**
@@ -1118,7 +1119,6 @@ public class ApiClient {
             }
         });
     }
-
     /**
      * Mengirim permintaan untuk pendaftaran program ke server
      *
