@@ -56,11 +56,24 @@ public class WebSocketService extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent == null) {
+            // Log atau tangani kasus jika intent null
+            Log.e("WebSocketService", "Intent is null, cannot proceed");
+            return START_NOT_STICKY; // Agar service tidak diteruskan jika intent null
+        }
+
         token = intent.getStringExtra("token");
         userId = intent.getIntExtra("userId", -1);
 
+        if (token == null || userId == -1) {
+            // Tangani jika token atau userId tidak ada
+            Log.e("WebSocketService", "Missing token or userId");
+            return START_NOT_STICKY;
+        }
+
         connectWebSocket();
 
+        // Lanjutkan dengan pengaturan notifikasi
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
         NotificationCompat.Builder notification = new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -71,9 +84,11 @@ public class WebSocketService extends Service {
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setContentIntent(pendingIntent);
 
-        startForeground(1, notification.build());
-        return START_STICKY;
+        startForeground(1, notification.build()); // Start service in the foreground
+
+        return START_STICKY; // Service tetap berjalan meskipun aplikasi ditutup
     }
+
 
     /**
      * Menyambungkan ke server WebSocket untuk menerima notifikasi real-time.
@@ -82,7 +97,7 @@ public class WebSocketService extends Service {
      * @see ApiClient#fetchNotification(String, int, String, ApiClient.WebSocketCallback)
      */
     private void connectWebSocket() {
-        apiClient.fetchNotification(token, userId, "ws://192.168.100.4:8000/notifications",
+        apiClient.fetchNotification(token, userId, "ws://192.168.1.6:8000/notifications",
                 new ApiClient.WebSocketCallback() {
                     /**
                      * Dipanggil ketika ada pesan baru yang diterima melalui WebSocket.
