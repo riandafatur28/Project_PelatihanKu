@@ -54,7 +54,6 @@ public class FragmentEditProfil extends Fragment {
     private static final int REQUEST_STORAGE_PERMISSION = 100;
     private static final int PICK_IMAGE_REQUEST = 101;
 
-
     private EditText editNama, editEmail, editTTL, editNoTelp, editAlamat, editGender;
     private TextView namaUser;
     private Button btnBack, buttonUbah;
@@ -74,11 +73,6 @@ public class FragmentEditProfil extends Fragment {
         return view;
     }
 
-    /**
-     * Inisialisasi komponen UI dari layout
-     *
-     * @param view root view dari layout tempat komponen UI berada
-     */
     private void initializeUIComponents(View view) {
         namaUser = view.findViewById(R.id.namaUser);
         editNama = view.findViewById(R.id.editnamaProfil);
@@ -96,11 +90,6 @@ public class FragmentEditProfil extends Fragment {
         editEmail.setEnabled(false);
     }
 
-    /**
-     * Mengatur data profil dari static variable class {@link FragmentProfil}
-     *
-     * @see GlideHelper#loadImage(Context, ImageView, String)
-     */
     private void setProfileData() {
         namaUser.setText(username);
         editNama.setText(username);
@@ -122,9 +111,6 @@ public class FragmentEditProfil extends Fragment {
         }
     }
 
-    /**
-     * Mengatur listener untuk tombol-tombol
-     */
     private void setButtonListeners() {
         buttonUbah.setOnClickListener(v -> simpanPerubahan(new ApiClient()));
         imageProfile.setOnClickListener(v -> checkPermissionsAndLoadImage());
@@ -132,9 +118,6 @@ public class FragmentEditProfil extends Fragment {
         navigateBackToProfile();
     }
 
-    /**
-     * Membuka dialog untuk memilih gambar dari galeri
-     */
     private void pilihGambar() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
@@ -142,7 +125,6 @@ public class FragmentEditProfil extends Fragment {
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -153,9 +135,6 @@ public class FragmentEditProfil extends Fragment {
         }
     }
 
-    /**
-     * Memeriksa ukuran gambar yang dipilih dan menampilkan gambar jika valid
-     */
     private void handleImageSelection() {
         try {
             Cursor cursor = getActivity().getContentResolver().query(imageUri, null, null, null, null);
@@ -176,18 +155,16 @@ public class FragmentEditProfil extends Fragment {
         }
     }
 
-    /**
-     * Mengirim permintaan update profil ke server
-     *
-     * @param api Class Service untuk mengirim permintaan ke server
-     * @see ApiClient#updateProfile(String, String, String[], File, ApiClient.updateProfileHelper)
-     */
     private void simpanPerubahan(ApiClient api) {
         String token = SharedPreferencesHelper.getToken(getContext());
         String data[] = new String[3];
         data[0] = editNama.getText().toString().trim();
         data[1] = editNoTelp.getText().toString().trim();
         data[2] = editAlamat.getText().toString().trim();
+
+        // Log untuk memastikan data yang dikirim
+        Log.d("Profile Update", "Nama: " + data[0] + ", Telepon: " + data[1] + ", Alamat: " + data[2]);
+
         File file = null;
         if (imageUri != null) {
             file = FunctionHelper.getFileFromUriImage(imageUri, getContext());
@@ -207,36 +184,23 @@ public class FragmentEditProfil extends Fragment {
             @Override
             public void onFailed(IOException e) {
                 requireActivity().runOnUiThread(() -> {
+                    Log.e("Profile Update Error", "Error: " + e.getMessage());
                     showToast(e.getMessage(), 3000);
                 });
             }
         });
     }
 
-    /**
-     * Handler untuk tombol kembali
-     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button, String, int, boolean)
-     */
     private void navigateBackToProfile() {
         FragmentHelper.backNavigation(getActivity(), null, btnBack, null, 0, true);
     }
 
-    /**
-     * Menampilkan pesan dengan durasi kustom
-     *
-     * @param message  pesan yang akan ditampilkan
-     * @param duration durasi pesan dalam milidetik
-     */
     private void showToast(String message, int duration) {
         Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
         toast.show();
         new Handler().postDelayed(toast::cancel, duration);
     }
 
-    /**
-     * Memeriksa izin akses penyimpanan dan meminta izin akses penyimpanan jika belum diberikan.
-     * Jika izin diberikan, membuka dialog untuk memilih gambar.
-     */
     private void checkPermissionsAndLoadImage() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -246,7 +210,6 @@ public class FragmentEditProfil extends Fragment {
             pilihGambar();
         }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
