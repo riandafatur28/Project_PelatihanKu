@@ -34,6 +34,7 @@
                 android:contentDescription="@string/description_arrow"
                 android:focusable="true"
                 android:padding="8dp"
+                android:tint="@android:color/black"
                 android:src="@drawable/vector_back" />
 
             <TextView
