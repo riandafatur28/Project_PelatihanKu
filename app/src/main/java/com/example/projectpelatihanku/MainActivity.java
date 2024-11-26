@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.api.WebSocketService;
 import com.example.projectpelatihanku.helper.FragmentHelper;
+import com.example.projectpelatihanku.helper.JwtHelper;
 import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -76,7 +77,13 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         Intent serviceIntent = new Intent(this, WebSocketService.class);
         serviceIntent.putExtra("token", SharedPreferencesHelper.getToken(this));
         JWT jwt = new JWT(SharedPreferencesHelper.getToken(this));
-        Double userIdDouble = (Double) jwt.getClaim("users").asObject(Map.class).get("id");
+        Double userIdDouble = 0.0;
+            try {
+                userIdDouble = Double.parseDouble((String) jwt.getClaim("users").asObject(Map.class).get("id"));
+            } catch (Exception e) {
+                String id = JwtHelper.getUserData(SharedPreferencesHelper.getToken(this), "users", "id");
+                userIdDouble = Double.parseDouble(id);
+            }
         serviceIntent.putExtra("userId", userIdDouble.intValue());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
