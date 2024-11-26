@@ -1084,9 +1084,12 @@ public class ApiClient {
         builder.addFormDataPart("name", data[0]);
         builder.addFormDataPart("phone", data[1]);
         builder.addFormDataPart("address", data[2]);
+
         if (file != null) {
             RequestBody imageBody = RequestBody.create(file, MediaType.parse("image/*"));
             builder.addFormDataPart("profile_picture", file.getName(), imageBody);
+        } else {
+            Log.d("ApiClient", "Tidak ada file gambar yang ditambahkan.");
         }
 
         RequestBody requestBody = builder.build();
@@ -1096,29 +1099,40 @@ public class ApiClient {
                 .post(requestBody)
                 .build();
 
+        Log.d("ApiClient", "Request dikirim ke URL: " + BASE_URL + BASE_URL_PUBLIC + endPoint);
+
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e("ApiClient", "Permintaan gagal: " + e.getMessage());
                 callback.onFailed(e);
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 String data = response.body().string();
+                Log.d("ApiClient", "Respons diterima. Kode respons: " + response.code() + ", Data: " + data);
+
                 if (response.isSuccessful()) {
                     try {
                         JSONObject json = new JSONObject(data);
                         String message = json.getString("message");
+                        Log.d("ApiClient", "Update berhasil: " + message);
                         callback.onSuccess(message);
                     } catch (JSONException e) {
+                        Log.e("ApiClient", "Gagal memparsing JSON: " + e.getMessage());
                         callback.onFailed(new IOException("Gagal saat parsing JSON: " + e.getMessage()));
                     }
                 } else {
+                    Log.e("ApiClient", "Respons tidak sukses. Kode respons: " + response.code());
                     callback.onFailed(new IOException("Unexpected response code " + response.code()));
                 }
             }
         });
+
+        Log.d("ApiClient", "Permintaan dikirim.");
     }
+
     /**
      * Mengirim permintaan untuk pendaftaran program ke server
      *
