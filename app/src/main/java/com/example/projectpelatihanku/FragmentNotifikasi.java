@@ -68,7 +68,7 @@ public class FragmentNotifikasi extends Fragment {
      */
     private void connectWebSocket() {
         apiClient = new ApiClient();
-        apiClient.fetchNotification(token, userId, "ws://192.168.100.4:8000/notifications",
+        apiClient.fetchNotification(token, userId, "ws://192.168.1.6:8080/notifications",
                 new ApiClient.WebSocketCallback() {
                     @Override
                     public void onMessageReceived(List<Notification> data) {
