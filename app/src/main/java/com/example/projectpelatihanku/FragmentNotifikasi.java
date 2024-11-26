@@ -19,6 +19,7 @@ import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.Adapter.NotificationAdapter;
 import com.example.projectpelatihanku.Models.Notification;
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.JwtHelper;
 import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 
 import java.io.IOException;
@@ -47,7 +48,13 @@ public class FragmentNotifikasi extends Fragment {
         recyclerView.setAdapter(adapter);
         token = SharedPreferencesHelper.getToken(getContext());
         JWT jwt = new JWT(token);
-        Double userIdDouble = (Double) jwt.getClaim("users").asObject(Map.class).get("id");
+        Double userIdDouble = 0.0;
+        try {
+            userIdDouble = Double.parseDouble((String) jwt.getClaim("users").asObject(Map.class).get("id"));
+        } catch (Exception e) {
+            String id = JwtHelper.getUserData(SharedPreferencesHelper.getToken(getContext()), "users", "id");
+            userIdDouble = Double.parseDouble(id);
+        }
         userId = userIdDouble.intValue();
         connectWebSocket();
 
@@ -97,7 +104,7 @@ public class FragmentNotifikasi extends Fragment {
      * @param notification Notifikasi yang akan diupdate
      * @param apiClient    Service class untuk melakukan request ke server
      * @param context      Context dari fragment yang memanggil method
-     * @see ApiClient#isReadNotification(String, String, int, String, ApiClient.notificationUpdateHelper) 
+     * @see ApiClient#isReadNotification(String, String, int, String, ApiClient.notificationUpdateHelper)
      */
     public static void updateIsRead(Notification notification, ApiClient apiClient, Context context) {
         String nofiticationId = notification.getId();
@@ -126,7 +133,7 @@ public class FragmentNotifikasi extends Fragment {
      * @param notification Notifikasi yang akan diupdate
      * @param apiClient    Service class untuk melakukan request ke server
      * @param context      Context dari fragment yang memanggil method
-     * @see ApiClient#isDeletedNotification(String, String, int, String, ApiClient.notificationUpdateHelper) 
+     * @see ApiClient#isDeletedNotification(String, String, int, String, ApiClient.notificationUpdateHelper)
      */
     public static void updateIsDeleted(Notification notification, ApiClient apiClient,
                                        Context context) {
