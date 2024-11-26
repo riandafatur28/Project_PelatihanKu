@@ -74,7 +74,7 @@
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/imageTentang"
                         android:layout_width="match_parent"
-                        android:layout_height="175dp"
+                        android:layout_height="200dp"
                         android:layout_gravity="center"
                         android:scaleType="centerCrop"
                         android:src="@drawable/image_lembaga"
