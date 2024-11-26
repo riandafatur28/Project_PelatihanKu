@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.projectpelatihanku.FragmentProfil.address;
@@ -43,10 +44,12 @@ import static com.example.projectpelatihanku.FragmentProfil.userEmail;
 import static com.example.projectpelatihanku.FragmentProfil.userId;
 import static com.example.projectpelatihanku.FragmentProfil.username;
 
+import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.helper.FragmentHelper;
 import com.example.projectpelatihanku.helper.FunctionHelper;
 import com.example.projectpelatihanku.helper.GlideHelper;
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.JwtHelper;
 import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 
 public class FragmentEditProfil extends Fragment {
@@ -162,19 +165,31 @@ public class FragmentEditProfil extends Fragment {
         data[1] = editNoTelp.getText().toString().trim();
         data[2] = editAlamat.getText().toString().trim();
 
-        // Log untuk memastikan data yang dikirim
-        Log.d("Profile Update", "Nama: " + data[0] + ", Telepon: " + data[1] + ", Alamat: " + data[2]);
+        token = SharedPreferencesHelper.getToken(getContext());
+        JWT jwt = new JWT(token);
+        Double userIdDouble = 0.0;
+        try {
+            userIdDouble = Double.parseDouble((String) jwt.getClaim("users").asObject(Map.class).get("id"));
+        } catch (Exception e) {
+            String id = JwtHelper.getUserData(SharedPreferencesHelper.getToken(getContext()), "users", "id");
+            userIdDouble = Double.parseDouble(id);
+        }
+        int userId = userIdDouble.intValue();
 
+        // Siapkan file jika ada gambar yang dipilih
         File file = null;
         if (imageUri != null) {
             file = FunctionHelper.getFileFromUriImage(imageUri, getContext());
         }
 
+        // Kirim request ke API dengan userId yang valid
         api.updateProfile(token, "/users/auth/" + userId, data, file, new ApiClient.updateProfileHelper() {
             @Override
             public void onSuccess(String message) {
+                // Menangani respons sukses
                 requireActivity().runOnUiThread(() -> {
                     showToast(message, 3000);
+                    // Arahkan ke fragment profil setelah berhasil memperbarui profil
                     FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity,
                             new FragmentProfil(), true, null);
                     MainActivity.showBottomNavigationView();
@@ -183,8 +198,8 @@ public class FragmentEditProfil extends Fragment {
 
             @Override
             public void onFailed(IOException e) {
+                // Menangani kegagalan request
                 requireActivity().runOnUiThread(() -> {
-                    Log.e("Profile Update Error", "Error: " + e.getMessage());
                     showToast(e.getMessage(), 3000);
                 });
             }
