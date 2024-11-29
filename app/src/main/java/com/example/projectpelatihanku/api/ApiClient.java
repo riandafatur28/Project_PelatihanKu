@@ -3,7 +3,6 @@ package com.example.projectpelatihanku.api;
 
 import android.content.Context;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -11,9 +10,9 @@ import androidx.annotation.NonNull;
 import com.example.projectpelatihanku.Models.Dashboard;
 import com.example.projectpelatihanku.Models.Department;
 import com.example.projectpelatihanku.Models.DetailProgram;
-import com.example.projectpelatihanku.Models.Requirements;
 import com.example.projectpelatihanku.Models.Notification;
 import com.example.projectpelatihanku.Models.Program;
+import com.example.projectpelatihanku.Models.Requirements;
 import com.example.projectpelatihanku.helper.FunctionHelper;
 
 import org.json.JSONArray;
@@ -33,16 +32,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
 
 /**
  * Service class untuk melakukan request ke server
  */
 public class ApiClient {
     private OkHttpClient client = new OkHttpClient();
-    private WebSocket webSocket;
-    public static final String BASE_URL = "http://192.168.1.6:8000/";
+    public static final String BASE_URL = "http://192.168.100.4:8080/";
     public static final String BASE_URL_PUBLIC = "api/v1/public";
 
     /**
@@ -332,18 +328,18 @@ public class ApiClient {
     /**
      * Callback untuk menerima respons dari server
      */
-    public interface WebSocketCallback {
+    public interface NotificationsHelper {
         /**
-         * callback untuk menerima data notifikasi hasil dari request websocket
+         * callback untuk menerima data notifikasi hasil dari request
          *
          * @param data daftar notifikasi yang diterima dari server
          */
         void onMessageReceived(List<Notification> data);
 
         /**
-         * callback untuk menerima error request websocket
+         * callback untuk menerima error dari request
          *
-         * @param e error yang terjadi saat request websocket
+         * @param e error yang terjadi saat request
          */
         void onFailure(IOException e);
     }
@@ -1208,86 +1204,49 @@ public class ApiClient {
     }
 
     /**
-     * Mengirim permintaan untuk mengambil data notifikasi dari server menggunakan websocket.
-     * kirim payload dalam bentuk JSON dengan format berikut:
-     * {
-     * "action": "fetch",
-     * "userId": userId,
-     * "token": token
-     * }
+     * Mengirim permintaan untuk mengambil data notifikasi dari server.
      *
-     * @param token    JWT untuk authentication, sertakan dalam request.
-     * @param userId   ID pengguna yang akan menerima notifikasi
-     * @param endPoint endpoint websocket
+     * @param token    JWT untuk authentication, sertakan dalam request
+     * @param endPoint endpoint untuk mengambil data notifikasi
      * @param callback callback untuk menerima respons dari server
      */
-    public void fetchNotification(String token, int userId, String endPoint, WebSocketCallback callback) {
+
+    public void fetchNotification(String token, String endPoint, NotificationsHelper callback) {
         Request request = new Request.Builder()
-                .url(endPoint)
-                .addHeader("Authorization", "Bearer " + token)
+                .url(BASE_URL + BASE_URL_PUBLIC + endPoint)
+                .addHeader("Authorization", "Bearer" + token)
                 .build();
 
-        webSocket = client.newWebSocket(request, new WebSocketListener() {
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onOpen(WebSocket webSocket, Response response) {
-                try {
-                    JSONObject fetchRequest = new JSONObject();
-                    fetchRequest.put("action", "fetch");
-                    fetchRequest.put("userId", userId);
-                    fetchRequest.put("token", token);
-                    webSocket.send(fetchRequest.toString());
-                } catch (Exception e) {
-                    callback.onFailure(new IOException(e.getMessage()));
-                }
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                callback.onFailure(new IOException("Gagal dalam mengirim request: " + e.getMessage()));
             }
 
             @Override
-            public void onMessage(WebSocket webSocket, String text) {
-                try {
-                    JSONObject json = new JSONObject(text);
-                    List<Notification> notifications = new ArrayList<>();
-                    if (json.getBoolean("success")) {
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String data = response.body().string();
+                    try {
+                        ArrayList<Notification> notifications = new ArrayList<>();
+                        JSONObject json = new JSONObject(data);
                         JSONArray notificationsArray = json.getJSONArray("notifications");
                         for (int i = 0; i < notificationsArray.length(); i++) {
                             JSONObject notificationObject = notificationsArray.getJSONObject(i);
                             String id = notificationObject.getString("notification_id");
                             String pesan = notificationObject.getString("pesan");
                             int isRead = notificationObject.getInt("is_read");
-
                             notifications.add(new Notification(id, pesan, isRead));
                         }
                         callback.onMessageReceived(notifications);
+                    } catch (JSONException e) {
+                        callback.onFailure(new IOException("Gagal saat parsing json: " + e.getMessage()));
                     }
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
+                } else {
+                    callback.onFailure(new IOException("Response gagal dengan status code: " + response.code()));
                 }
             }
-
-            @Override
-            public void onClosing(WebSocket webSocket, int code, String reason) {
-                webSocket.close(1000, null);
-            }
-
-            @Override
-            public void onClosed(WebSocket webSocket, int code, String reason) {
-                Log.d("WebSocket", "Closed: " + reason);
-            }
-
-            @Override
-            public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-                callback.onFailure(new IOException("Failed to send WebSocket request: " + t.getMessage()));
-            }
         });
-    }
-
-
-    /**
-     * Mengirim permintaan untuk menutup koneksi websocket
-     */
-    public void disconnectWebSocket() {
-        if (webSocket != null) {
-            webSocket.close(1000, "User disconnected");
-        }
     }
 
     /**
@@ -1401,8 +1360,6 @@ public class ApiClient {
             json = new JSONObject();
             json.put("userId", userId);
             json.put("notificationId", notificationId);
-            Log.d("test", "isDeletedNotification: notf id" + notificationId);
-            Log.d("test", "isDeletedNotification: user id" + userId);
         } catch (JSONException e) {
             Log.d("Gagal", "Gagal saat membuat body json: " + e.getMessage());
             return;

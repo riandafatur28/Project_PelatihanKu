@@ -3,9 +3,7 @@ package com.example.projectpelatihanku;
 import static com.example.projectpelatihanku.MainActivity.hideBottomNavigationView;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,15 +19,14 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.api.ApiClient;
-import com.example.projectpelatihanku.api.WebSocketService;
 import com.example.projectpelatihanku.helper.FragmentHelper;
 import com.example.projectpelatihanku.helper.GlideHelper;
 import com.example.projectpelatihanku.helper.JwtHelper;
 import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -151,7 +148,6 @@ public class FragmentProfil extends Fragment {
      * Handler untuk tombol logout dan navigasi ke fragment login.
      *
      * @param view profile
-     * @see WebSocketService
      * @see SharedPreferencesHelper#clearToken(Context)
      * @see FragmentHelper#navigateToFragment(FragmentActivity, int, Fragment, boolean, String)
      * @see MainActivity#hideBottomNavigationView()
@@ -159,8 +155,6 @@ public class FragmentProfil extends Fragment {
     private void backButtonHandler(View view) {
         Button txtKembali = view.findViewById(R.id.btnBack);
         txtKembali.setOnClickListener(v -> {
-            Intent serviceIntent = new Intent(requireContext(), WebSocketService.class);
-            requireContext().stopService(serviceIntent);
             SharedPreferencesHelper.clearToken(requireContext());
             FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity,
                     new FragmentLogin(), true, null);
