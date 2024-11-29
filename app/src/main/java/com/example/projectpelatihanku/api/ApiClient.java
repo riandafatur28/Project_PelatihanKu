@@ -38,7 +38,7 @@ import okhttp3.Response;
  */
 public class ApiClient {
     private OkHttpClient client = new OkHttpClient();
-    public static final String BASE_URL = "http://192.168.100.4:8080/";
+    public static final String BASE_URL = "http://192.168.1.6:8080/";
     public static final String BASE_URL_PUBLIC = "api/v1/public";
 
     /**
