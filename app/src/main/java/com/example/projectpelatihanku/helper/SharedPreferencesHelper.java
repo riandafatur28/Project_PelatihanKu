@@ -47,4 +47,34 @@ public class SharedPreferencesHelper {
         editor.apply();
     }
 
+    /**
+     * Menyimpan string ke shared preferences
+     *
+     * @param context    konteks aplikasi
+     * @param preference nama preference
+     * @param keyName    nama key dari preference
+     * @param keyValue   nilai dari key
+     */
+    public static void saveString(Context context, String preference, String keyName,
+                                  String keyValue) {
+        SharedPreferences preferences = context.getSharedPreferences(preference,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(keyName, keyValue);
+        editor.apply();
+    }
+
+    /**
+     * Mengambil data string dari shared preferences
+     *
+     * @param context    konteks aplikasi
+     * @param preference nama preference
+     * @param keyName    nama key dari preference
+     * @return nilai dari key
+     */
+    public static String getString(Context context, String preference, String keyName) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(preference, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(keyName, "Data tidak ditemukan");
+    }
+
 }

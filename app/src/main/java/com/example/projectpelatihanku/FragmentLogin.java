@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.FcmHelper;
 import com.example.projectpelatihanku.helper.FragmentHelper;
 import com.example.projectpelatihanku.helper.JwtHelper;
 import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
@@ -78,9 +79,7 @@ public class FragmentLogin extends Fragment {
                             SharedPreferencesHelper.saveToken(getActivity(), token);
                             Name = JwtHelper.getUserData(token, "users", "username");
                             firstName = Name.split(" ")[0];
-                            if (getActivity() instanceof MainActivity) {
-                                ((MainActivity) getActivity()).startWebSocketService();
-                            }
+                            FcmHelper.subscribeToTopic();
                             FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, new DashboardFragment(), true, "dashboard");
                         });
                     }

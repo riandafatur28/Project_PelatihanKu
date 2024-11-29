@@ -1,9 +1,6 @@
 
 package com.example.projectpelatihanku;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,14 +11,9 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import com.auth0.android.jwt.JWT;
-import com.example.projectpelatihanku.api.WebSocketService;
 import com.example.projectpelatihanku.helper.FragmentHelper;
-import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener, DashboardFragment.OnDashboardVisibleListener {
 
@@ -55,34 +47,6 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
             } else {
                 hideBottomNavigationView();
             }
-        }
-    }
-
-    /**
-     * Memulai layanan WebSocketService untuk menjalankan koneksi WebSocket dengan server.
-     * Layanan ini digunakan untuk menerima notifikasi real-time dari server.
-     * <p>
-     * Metode ini menyiapkan intent untuk memulai WebSocketService dan mengirimkan token autentikasi
-     * serta ID pengguna yang diperlukan untuk membuka koneksi WebSocket.
-     * <p>
-     * Jika perangkat menjalankan versi Android 8.0 (API level 26) atau lebih tinggi, layanan akan dijalankan
-     * sebagai layanan foreground menggunakan `startForegroundService()`. Untuk versi Android yang lebih rendah,
-     * digunakan `startService()` untuk memulai layanan.
-     *
-     * @see WebSocketService
-     * @see SharedPreferencesHelper#getToken(Context)
-     */
-    protected void startWebSocketService() {
-        Intent serviceIntent = new Intent(this, WebSocketService.class);
-        serviceIntent.putExtra("token", SharedPreferencesHelper.getToken(this));
-        JWT jwt = new JWT(SharedPreferencesHelper.getToken(this));
-        Double userIdDouble = (Double) jwt.getClaim("users").asObject(Map.class).get("id");
-        serviceIntent.putExtra("userId", userIdDouble.intValue());
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent);
-        } else {
-            startService(serviceIntent);
         }
     }
 

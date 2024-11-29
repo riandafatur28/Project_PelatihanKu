@@ -103,9 +103,22 @@ public class FragmentProgramRegister extends Fragment {
         backHandler(view);
         token = SharedPreferencesHelper.getToken(getContext());
         JWT jwt = new JWT(token);
-        Double userIdDouble = (Double) jwt.getClaim("users").asObject(Map.class).get("id");
-        userId = userIdDouble.intValue();
+        Object userIdObject = jwt.getClaim("users").asObject(Map.class).get("id");
+
+        if (userIdObject instanceof String) {
+            // Jika id adalah String, ubah menjadi Integer
+            userId = Integer.parseInt((String) userIdObject);
+        } else if (userIdObject instanceof Double) {
+            // Jika id adalah Double, ubah menjadi Integer
+            userId = ((Double) userIdObject).intValue();
+        } else {
+            // Jika tipe data tidak sesuai, lempar exception
+            throw new IllegalArgumentException("Unsupported type for user ID");
+        }
+
+// Ambil username dari JWT (ini sesuai dengan kode Anda sebelumnya)
         username = JwtHelper.getUserData(token, "users", "username");
+
         inputNamaDaftar.setText(username);
         inputProgramDaftar.setText(programName);
         inputKejuruanDaftar.setText(departmentName);

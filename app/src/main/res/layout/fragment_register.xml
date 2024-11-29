@@ -59,7 +59,6 @@
             android:layout_marginEnd="4dp"
             android:backgroundTint="#EEF2F6"
             android:hint="Nama Panjang"
-            android:text="Ridho Nur"
             android:inputType="textPersonName"
             android:padding="12dp"
             android:textColor="@color/font_black" />
@@ -120,7 +119,6 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="4dp"
-            android:text="085675435678"
             android:backgroundTint="#EEF2F6"
             android:hint="No. Telp"
             android:inputType="phone"
@@ -136,7 +134,6 @@
             android:layout_marginEnd="4dp"
             android:backgroundTint="#EEF2F6"
             android:hint="Alamat"
-            android:text="Nganjuk"
             android:inputType="text"
             android:padding="12dp"
             android:textColor="@color/font_black" />
@@ -151,7 +148,7 @@
             android:layout_marginEnd="4dp"
             android:backgroundTint="#EEF2F6"
             android:hint="Email"
-            android:text="ridho@gmail.com"
+
             android:inputType="textEmailAddress"
             android:padding="12dp"
             android:textColor="@color/font_black" />
@@ -172,7 +169,6 @@
                 android:backgroundTint="#EEF2F6"
                 android:focusable="true"
                 android:hint="Kata Sandi"
-                android:text="Ridho123"
                 android:inputType="textPassword"
                 android:padding="12dp"
                 android:paddingEnd="48dp"
@@ -196,7 +192,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:paddingEnd="8dp">
+            android:layout_marginStart="4dp"
+            android:paddingEnd="4dp">
 
             <!-- EditText Konfirmasi Kata Sandi -->
             <EditText
@@ -206,7 +203,6 @@
                 android:backgroundTint="#EEF2F6"
                 android:focusable="true"
                 android:hint="Konfirmasi Kata Sandi"
-                android:text="Ridho123"
                 android:inputType="textPassword"
                 android:padding="12dp"
                 android:paddingEnd="48dp"
@@ -218,7 +214,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="end|center_vertical"
-                android:layout_marginEnd="4dp"
+                android:layout_marginEnd="6dp"
                 app:tint="@color/font_tint"
                 android:clickable="true"
                 android:contentDescription="Toggle Password Visibility"

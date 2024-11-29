@@ -26,7 +26,10 @@ import com.example.projectpelatihanku.helper.FragmentHelper;
 import com.example.projectpelatihanku.helper.FunctionHelper;
 
 import java.io.IOException;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.MultipartBody;
 
@@ -102,23 +105,21 @@ public class FragmentRegister extends Fragment {
 
         boolean isValid = true;
         isValid = FunctionHelper.validateString(getContext(), nama, "Nama", regexNama, 50) && isValid;
-        isValid = FunctionHelper.validateString(getContext(), nomorTelepon, "Nomor Telepon",
-                regexNoHp, 13) && isValid;
-        isValid = FunctionHelper.validateString(getContext(), email, "Email",
-                regexEmail, 70) && isValid;
-        isValid = FunctionHelper.validateString(getContext(), password, "Password",
-                regexPassword, 15) && isValid;
-        isValid = FunctionHelper.validateString(getContext(), alamat, "Alamat",
-                regexAlamat, 100) && isValid;
+        isValid = FunctionHelper.validateString(getContext(), nomorTelepon, "Nomor Telepon", regexNoHp, 13) && isValid;
+        isValid = FunctionHelper.validateString(getContext(), email, "Email", regexEmail, 70) && isValid;
+        isValid = FunctionHelper.validateString(getContext(), password, "Password", regexPassword, 15) && isValid;
+        isValid = FunctionHelper.validateString(getContext(), alamat, "Alamat", regexAlamat, 100) && isValid;
         isValid = genderValidate(selectedGender) && isValid;
         isValid = dateValidate(tanggalLahir) && isValid;
         isValid = passwordValidate(password, konfirmPass) && isValid;
 
         if (isValid) {
+            // Format tanggal
+            String formattedTanggalLahir = formatTanggal(tanggalLahir);
 
             String data[] = new String[7];
             data[0] = nama;
-            data[1] = tanggalLahir;
+            data[1] = formattedTanggalLahir; // Menggunakan tanggal yang sudah diformat
             data[2] = nomorTelepon;
             data[3] = alamat;
             data[4] = email;
@@ -132,16 +133,14 @@ public class FragmentRegister extends Fragment {
                 data[6] = "Perempuan";
             }
 
-            MultipartBody.Part imagePart = FunctionHelper.convertImageToMultipart(getContext(),
-                    imageId);
+            MultipartBody.Part imagePart = FunctionHelper.convertImageToMultipart(getContext(), imageId);
             api.Register(endPoint, imagePart, data, new ApiClient.RegisterAccountHelper() {
                 @Override
                 public void onSuccess(String message) {
                     requireActivity().runOnUiThread(() -> {
                         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
                         FragmentLogin login = new FragmentLogin();
-                        FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, login,
-                                true, null);
+                        FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, login, true, null);
                     });
                 }
 
@@ -177,8 +176,7 @@ public class FragmentRegister extends Fragment {
      */
     private boolean genderValidate(String value) {
         if (value == null || value.isEmpty() || value.trim().equalsIgnoreCase("Jenis Kelamin")) {
-            Toast.makeText(getContext(), "Pilih Opsi Jenis Kelamin yang tersedia!",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Pilih Opsi Jenis Kelamin yang tersedia!", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
@@ -192,8 +190,7 @@ public class FragmentRegister extends Fragment {
      */
     private boolean dateValidate(String value) {
         if (value == null || value.isEmpty() || value.trim().equalsIgnoreCase("Tanggal Lahir")) {
-            Toast.makeText(getContext(), "Tanggal Lahir wajib diisi",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Tanggal Lahir wajib diisi", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
@@ -213,47 +210,69 @@ public class FragmentRegister extends Fragment {
 
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    selectedGender = parent.getItemAtPosition(position).toString();
+                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    selectedGender = parentView.getItemAtPosition(position).toString();
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> parent) {
+                public void onNothingSelected(AdapterView<?> parentView) {
+                    selectedGender = null;
                 }
             });
         }
     }
 
 
+
     /**
-     * Menampilkan dialog DatePicker untuk memilih tanggal lahir.
+     * Mengubah tampilan input password menjadi visible atau invisible.
+     *
+     * @param editText EditText untuk password.
+     * @param imageView ImageView untuk ikon password.
+     */
+    private void togglePasswordVisibility(EditText editText, ImageView imageView) {
+        if (editText.getInputType() == InputType.TYPE_TEXT_VARIATION_PASSWORD) {
+            editText.setInputType(InputType.TYPE_CLASS_TEXT);
+            imageView.setImageResource(R.drawable.vector_eye_open);
+        } else {
+            editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            imageView.setImageResource(R.drawable.vector_eye_close);
+        }
+    }
+
+    /**
+     * Menampilkan date picker untuk memilih tanggal.
      */
     private void showDatePicker() {
         FunctionHelper.datePickerHelper(getContext(), inputTanggal);
     }
 
     /**
-     * Mengatur visibilitas password ketika icon visibilitas ditekan.
+     * Memformat tanggal dari input pengguna menjadi format yang diterima oleh server.
      *
-     * @param passwordField text input password yang akan diubah visibilitasnya.
-     * @param toggleIcon    ikon visibilitas, (icon_eye_open atau icon_eye_close).
+     * @param tanggal Input tanggal pengguna.
+     * @return Tanggal yang sudah diformat.
      */
-    private void togglePasswordVisibility(EditText passwordField, ImageView toggleIcon) {
-        if (passwordField.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
-            passwordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            toggleIcon.setImageResource(R.drawable.vector_eye_close);
-        } else {
-            passwordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            toggleIcon.setImageResource(R.drawable.vector_eye_open);
+    private String formatTanggal(String tanggal) {
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()); // Format input tanggal
+            Date date = inputFormat.parse(tanggal); // Parse input string ke Date object
+            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()); // Format tanggal yang diterima server
+            return outputFormat.format(date); // Mengembalikan tanggal yang sudah diformat
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return ""; // Return empty jika error dalam parsing
         }
-        passwordField.setSelection(passwordField.getText().length());
     }
 
     /**
-     * Metode untuk handle aksi tombol kembali.
+     * Mengatur kembali aksi back pada fragment login.
      */
     private void BackHandler() {
+        // Implementasikan fungsi untuk kembali ke fragment login
         FragmentLogin login = new FragmentLogin();
         FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, login, true, null);
     }
 }
+
+

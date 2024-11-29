@@ -1,7 +1,10 @@
 package com.example.projectpelatihanku;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -19,6 +22,7 @@ import com.auth0.android.jwt.JWT;
 import com.example.projectpelatihanku.Adapter.NotificationAdapter;
 import com.example.projectpelatihanku.Models.Notification;
 import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.JwtHelper;
 import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 
 import java.io.IOException;
@@ -30,9 +34,9 @@ public class FragmentNotifikasi extends Fragment {
     private NotificationAdapter adapter;
     private RecyclerView recyclerView;
     private List<Notification> notifications = new ArrayList<>();
-    private ApiClient apiClient;
     private static String token;
     private static int userId;
+    private BroadcastReceiver notificationReceiver;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -47,48 +51,39 @@ public class FragmentNotifikasi extends Fragment {
         recyclerView.setAdapter(adapter);
         token = SharedPreferencesHelper.getToken(getContext());
         JWT jwt = new JWT(token);
-        Double userIdDouble = (Double) jwt.getClaim("users").asObject(Map.class).get("id");
+        Double userIdDouble = 0.0;
+        try {
+            userIdDouble = Double.parseDouble((String) jwt.getClaim("users").asObject(Map.class).get("id"));
+        } catch (Exception e) {
+            String id = JwtHelper.getUserData(SharedPreferencesHelper.getToken(getContext()), "users", "id");
+            userIdDouble = Double.parseDouble(id);
+        }
         userId = userIdDouble.intValue();
-        connectWebSocket();
+        fetchNotifications(new ApiClient());
+
+        receiverBroadcastHandler();
 
         return view;
     }
 
-    /**
-     * Digunakan untuk melakukan koneksi ke websocket
-     *
-     * @see ApiClient#fetchNotification(String, int, String, ApiClient.WebSocketCallback)
-     */
-    private void connectWebSocket() {
-        apiClient = new ApiClient();
-        apiClient.fetchNotification(token, userId, "ws://192.168.100.4:8000/notifications",
-                new ApiClient.WebSocketCallback() {
-                    @Override
-                    public void onMessageReceived(List<Notification> data) {
-                        requireActivity().runOnUiThread(() -> {
-                            for (Notification newNotification : data) {
-                                boolean isDuplicate = false;
-                                for (Notification existingNotification : notifications) {
-                                    if (existingNotification.getId().equals(newNotification.getId())) {
-                                        isDuplicate = true;
-                                        break;
-                                    }
-                                }
-                                if (!isDuplicate) {
-                                    notifications.add(0, newNotification);
-                                }
-                            }
-                            adapter.notifyDataSetChanged();
-                        });
-                    }
-
-                    @Override
-                    public void onFailure(IOException e) {
-                        requireActivity().runOnUiThread(() -> {
-                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                        });
-                    }
+    private void fetchNotifications(ApiClient apiClient) {
+        apiClient.fetchNotification(token, "/notification/" + userId, new ApiClient.NotificationsHelper() {
+            @Override
+            public void onMessageReceived(List<Notification> data) {
+                requireActivity().runOnUiThread(() -> {
+                    notifications.clear();
+                    notifications.addAll(data);
+                    adapter.notifyDataSetChanged();
                 });
+            }
+
+            @Override
+            public void onFailure(IOException e) {
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
     }
 
     /**
@@ -97,7 +92,7 @@ public class FragmentNotifikasi extends Fragment {
      * @param notification Notifikasi yang akan diupdate
      * @param apiClient    Service class untuk melakukan request ke server
      * @param context      Context dari fragment yang memanggil method
-     * @see ApiClient#isReadNotification(String, String, int, String, ApiClient.notificationUpdateHelper) 
+     * @see ApiClient#isReadNotification(String, String, int, String, ApiClient.notificationUpdateHelper)
      */
     public static void updateIsRead(Notification notification, ApiClient apiClient, Context context) {
         String nofiticationId = notification.getId();
@@ -126,7 +121,7 @@ public class FragmentNotifikasi extends Fragment {
      * @param notification Notifikasi yang akan diupdate
      * @param apiClient    Service class untuk melakukan request ke server
      * @param context      Context dari fragment yang memanggil method
-     * @see ApiClient#isDeletedNotification(String, String, int, String, ApiClient.notificationUpdateHelper) 
+     * @see ApiClient#isDeletedNotification(String, String, int, String, ApiClient.notificationUpdateHelper)
      */
     public static void updateIsDeleted(Notification notification, ApiClient apiClient,
                                        Context context) {
@@ -150,8 +145,29 @@ public class FragmentNotifikasi extends Fragment {
         });
     }
 
+    private void receiverBroadcastHandler(){
+        notificationReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String body = intent.getStringExtra("body");
+                int id = intent.getIntExtra("id", 0);
+                int isRead = intent.getIntExtra("is_read", 0);
+
+                notifications.add(0, new Notification(String.valueOf(id), body, isRead));
+                adapter.notifyItemInserted(0);
+                recyclerView.smoothScrollToPosition(0);
+            }
+        };
+
+        IntentFilter filter = new IntentFilter("NEW_NOTIFICATION");
+        getContext().registerReceiver(notificationReceiver, filter);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (notificationReceiver != null) {
+            getContext().unregisterReceiver(notificationReceiver);
+        }
     }
 }

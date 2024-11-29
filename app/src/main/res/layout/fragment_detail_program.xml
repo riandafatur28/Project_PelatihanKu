@@ -36,6 +36,7 @@
                 android:contentDescription="@string/description_arrow"
                 android:focusable="true"
                 android:padding="8dp"
+                android:tint="@android:color/black"
                 android:src="@drawable/vector_back" />
 
             <TextView
@@ -75,7 +76,7 @@
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/imageDetailProgram"
                         android:layout_width="match_parent"
-                        android:layout_height="175dp"
+                        android:layout_height="200dp"
                         android:layout_gravity="center"
                         android:scaleType="fitXY"
                         android:src="@drawable/balai_img2"
@@ -513,6 +514,7 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="24dp"
                         android:layout_marginEnd="12dp"
+                        android:textColor="@color/white_bg"
                         android:backgroundTint="@color/orange"
                         android:text="Daftar" />
                 </LinearLayout>

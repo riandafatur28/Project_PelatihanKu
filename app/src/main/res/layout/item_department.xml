@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:layout_marginTop="16dp"
-                android:text="@string/detail"
+                android:text="@string/lihat_program"
                 android:textColor="@color/blue"
                 android:textSize="14sp" />
         </LinearLayout>
