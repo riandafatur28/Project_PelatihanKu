@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "192694879344",
-    "project_id": "balailatihankerja-58d58",
-    "storage_bucket": "balailatihankerja-58d58.appspot.com"
+    "project_number": "973482928266",
+    "project_id": "balai-latihan",
+    "storage_bucket": "balai-latihan.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:192694879344:android:a939777383245af08c60b5",
+        "mobilesdk_app_id": "1:973482928266:android:ef8189bfc7521487fd2573",
         "android_client_info": {
           "package_name": "com.example.projectpelatihanku"
         }
       },
       "oauth_client": [
         {
-          "client_id": "192694879344-84e964djodt7tprvefqr5bvfbsat1jru.apps.googleusercontent.com",
+          "client_id": "973482928266-97jpfipu5ljklgrf0hosnhcudvr65nt4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCw0y55gFhn9V88RqpL2fwalSeRnfH-wqY"
+          "current_key": "AIzaSyB-PYO8jw508FeLccmWXQPAX47IREKx0OU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "192694879344-84e964djodt7tprvefqr5bvfbsat1jru.apps.googleusercontent.com",
+              "client_id": "973482928266-97jpfipu5ljklgrf0hosnhcudvr65nt4.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
