@@ -1,7 +1,15 @@
 package com.example.projectpelatihanku;
 
+import static android.app.Activity.RESULT_OK;
+import static com.example.projectpelatihanku.FragmentProfil.address;
+import static com.example.projectpelatihanku.FragmentProfil.birth;
+import static com.example.projectpelatihanku.FragmentProfil.gender;
+import static com.example.projectpelatihanku.FragmentProfil.imagePath;
+import static com.example.projectpelatihanku.FragmentProfil.phone;
+import static com.example.projectpelatihanku.FragmentProfil.userEmail;
+import static com.example.projectpelatihanku.FragmentProfil.username;
+
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -10,7 +18,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +32,14 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
+
+import com.auth0.android.jwt.JWT;
+import com.example.projectpelatihanku.api.ApiClient;
+import com.example.projectpelatihanku.helper.FragmentHelper;
+import com.example.projectpelatihanku.helper.FunctionHelper;
+import com.example.projectpelatihanku.helper.GlideHelper;
+import com.example.projectpelatihanku.helper.JwtHelper;
+import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,24 +47,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
-
-import static android.app.Activity.RESULT_OK;
-import static com.example.projectpelatihanku.FragmentProfil.address;
-import static com.example.projectpelatihanku.FragmentProfil.birth;
-import static com.example.projectpelatihanku.FragmentProfil.gender;
-import static com.example.projectpelatihanku.FragmentProfil.imagePath;
-import static com.example.projectpelatihanku.FragmentProfil.phone;
-import static com.example.projectpelatihanku.FragmentProfil.userEmail;
-import static com.example.projectpelatihanku.FragmentProfil.userId;
-import static com.example.projectpelatihanku.FragmentProfil.username;
-
-import com.auth0.android.jwt.JWT;
-import com.example.projectpelatihanku.helper.FragmentHelper;
-import com.example.projectpelatihanku.helper.FunctionHelper;
-import com.example.projectpelatihanku.helper.GlideHelper;
-import com.example.projectpelatihanku.api.ApiClient;
-import com.example.projectpelatihanku.helper.JwtHelper;
-import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 
 public class FragmentEditProfil extends Fragment {
 
@@ -165,7 +161,6 @@ public class FragmentEditProfil extends Fragment {
         data[1] = editNoTelp.getText().toString().trim();
         data[2] = editAlamat.getText().toString().trim();
 
-        token = SharedPreferencesHelper.getToken(getContext());
         JWT jwt = new JWT(token);
         Double userIdDouble = 0.0;
         try {
