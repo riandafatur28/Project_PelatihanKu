@@ -68,7 +68,7 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ProgramV
     public void onBindViewHolder(@NonNull ProgramViewHolder holder, int position) {
         Program program = programList.get(position);
         holder.textNamaProgram.setText(program.getNama());
-        String deskripsi = FunctionHelper.potongString(program.getDeskripsi(), 4);
+        String deskripsi = FunctionHelper.potongString(program.getDeskripsi(), 3);
         holder.textDeskripsi.setText(deskripsi);
 
         GlideHelper.loadImage(holder.itemView.getContext(), holder.imageProgram, program.getImageUrl());

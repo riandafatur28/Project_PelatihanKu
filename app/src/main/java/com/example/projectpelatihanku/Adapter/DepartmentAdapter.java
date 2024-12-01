@@ -16,6 +16,7 @@ import com.example.projectpelatihanku.MainActivity;
 import com.example.projectpelatihanku.Models.Department;
 import com.example.projectpelatihanku.R;
 import com.example.projectpelatihanku.helper.FragmentHelper;
+import com.example.projectpelatihanku.helper.FunctionHelper;
 import com.example.projectpelatihanku.helper.GlideHelper;
 import com.google.android.material.imageview.ShapeableImageView;
 
@@ -87,7 +88,8 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.In
     public void onBindViewHolder(@NonNull InstitusiViewHolder holder, int position) {
         Department department = departmentList.get(position);
         holder.txtNamaDepartment.setText(department.getNama());
-        holder.textDeskripsi.setText(department.getDeskripsi());
+        String deskripsi = FunctionHelper.potongString(department.getDeskripsi(), 3);
+        holder.textDeskripsi.setText(deskripsi);
 
         GlideHelper.loadImage(context, holder.departmentImage, department.getImageUrl());
 

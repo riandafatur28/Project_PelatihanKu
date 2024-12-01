@@ -9,7 +9,7 @@
     <string name="kirim_ulang"><u>Kirim Ulang</u></string>
     <string name="lebih_banyak"><u>Lebih Banyak</u></string>
     <string name="lihat_program"><u>Lihat Program</u></string>
-    <string name="detail"><u>Detail</u></string>
+    <string name="detail"><u>Detail program</u></string>
     <string name="unduh_bukti"><u>Unduh Bukti Pendaftaran</u></string>
     <string-array name="jenis_kelamin_array">
         <item>Jenis Kelamin</item>
