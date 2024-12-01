@@ -96,9 +96,9 @@
                             android:text="Nama Institusi"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/nama_institusi"/>
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/nama_institusi" />
 
                         <!-- Nama Institusi -->
                         <TextView
@@ -108,9 +108,10 @@
                             android:fontFamily="@font/inter_regular"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toTopOf="@id/label_nama_institusi"
+                            android:text="Nama Institusi yang Sangat Panjang Hingga Perlu Baris Tambahan"
                             app:layout_constraintStart_toEndOf="@id/label_nama_institusi"
-                            app:layout_constraintEnd_toEndOf="parent"/>
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/label_nama_institusi" />
 
                         <!-- Label Nama Pimpinan -->
                         <TextView
@@ -121,9 +122,9 @@
                             android:text="Nama Pimpinan"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@id/label_nama_institusi"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/nama_pimpinan"/>
+                            app:layout_constraintTop_toBottomOf="@id/nama_institusi"
+                            app:layout_constraintEnd_toStartOf="@id/nama_pimpinan" />
 
                         <!-- Nama Pimpinan -->
                         <TextView
@@ -133,9 +134,9 @@
                             android:fontFamily="@font/inter_regular"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@id/nama_institusi"
                             app:layout_constraintStart_toEndOf="@id/label_nama_pimpinan"
-                            app:layout_constraintEnd_toEndOf="parent"/>
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/nama_institusi" />
 
                         <!-- Label No VIN -->
                         <TextView
@@ -146,9 +147,9 @@
                             android:text="Nomor VIN"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@id/label_nama_pimpinan"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/no_vin"/>
+                            app:layout_constraintTop_toBottomOf="@id/nama_pimpinan"
+                            app:layout_constraintEnd_toStartOf="@id/no_vin" />
 
                         <!-- No VIN -->
                         <TextView
@@ -158,9 +159,9 @@
                             android:fontFamily="@font/inter_regular"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@id/nama_pimpinan"
                             app:layout_constraintStart_toEndOf="@id/label_no_vin"
-                            app:layout_constraintEnd_toEndOf="parent"/>
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/nama_pimpinan" />
 
                         <!-- Label Tahun Berdiri -->
                         <TextView
@@ -171,9 +172,9 @@
                             android:text="Tahun Berdiri"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@id/label_no_vin"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/tahun_berdiri"/>
+                            app:layout_constraintTop_toBottomOf="@id/no_vin"
+                            app:layout_constraintEnd_toStartOf="@id/tahun_berdiri" />
 
                         <!-- Tahun Berdiri -->
                         <TextView
@@ -183,9 +184,9 @@
                             android:fontFamily="@font/inter_regular"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@id/no_vin"
                             app:layout_constraintStart_toEndOf="@id/label_tahun_berdiri"
-                            app:layout_constraintEnd_toEndOf="parent"/>
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/no_vin" />
 
                         <!-- Label Status -->
                         <TextView
@@ -196,9 +197,9 @@
                             android:text="Status"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@id/label_tahun_berdiri"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/status_beroperasi"/>
+                            app:layout_constraintTop_toBottomOf="@id/tahun_berdiri"
+                            app:layout_constraintEnd_toStartOf="@id/status_beroperasi" />
 
                         <!-- Status -->
                         <TextView
@@ -208,9 +209,9 @@
                             android:fontFamily="@font/inter_regular"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@id/tahun_berdiri"
                             app:layout_constraintStart_toEndOf="@id/label_status_beroperasi"
-                            app:layout_constraintEnd_toEndOf="parent"/>
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tahun_berdiri" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>

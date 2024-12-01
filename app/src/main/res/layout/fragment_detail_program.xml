@@ -36,8 +36,8 @@
                 android:contentDescription="@string/description_arrow"
                 android:focusable="true"
                 android:padding="8dp"
-                android:tint="@android:color/black"
-                android:src="@drawable/vector_back" />
+                android:src="@drawable/vector_back"
+                app:tint="@android:color/black" />
 
             <TextView
                 android:id="@+id/texttentang"
@@ -78,7 +78,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_gravity="center"
-                        android:scaleType="fitXY"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/balai_img2"
                         app:shapeAppearanceOverlay="@style/RoundedImageView2" />
 
@@ -88,6 +88,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp">
 
+                        <!-- Program -->
                         <TextView
                             android:id="@+id/labelNamaProgram"
                             android:layout_width="0dp"
@@ -96,9 +97,9 @@
                             android:text="Program"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/namaProgram"/>
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/namaProgram" />
 
                         <TextView
                             android:id="@+id/namaProgram"
@@ -107,10 +108,12 @@
                             android:fontFamily="@font/inter_regular"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toTopOf="@id/labelNamaProgram"
+                            android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
                             app:layout_constraintStart_toEndOf="@id/labelNamaProgram"
-                            app:layout_constraintEnd_toEndOf="parent"/>
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/labelNamaProgram" />
 
+                        <!-- Kejuruan -->
                         <TextView
                             android:id="@+id/labelNamaKejuruan"
                             android:layout_width="0dp"
@@ -119,9 +122,9 @@
                             android:text="Kejuruan"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@id/labelNamaProgram"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/namaKejuruan"/>
+                            app:layout_constraintTop_toBottomOf="@id/namaProgram"
+                            app:layout_constraintEnd_toStartOf="@id/namaKejuruan" />
 
                         <TextView
                             android:id="@+id/namaKejuruan"
@@ -130,10 +133,12 @@
                             android:fontFamily="@font/inter_regular"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toTopOf="@id/labelNamaKejuruan"
+                            android:text="Example text for testing."
                             app:layout_constraintStart_toEndOf="@id/labelNamaKejuruan"
-                            app:layout_constraintEnd_toEndOf="parent"/>
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/labelNamaKejuruan" />
 
+                        <!-- Standar -->
                         <TextView
                             android:id="@+id/labelStandar"
                             android:layout_width="0dp"
@@ -142,9 +147,9 @@
                             android:text="Standar"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@id/labelNamaKejuruan"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/standar"/>
+                            app:layout_constraintTop_toBottomOf="@id/namaKejuruan"
+                            app:layout_constraintEnd_toStartOf="@id/standar" />
 
                         <TextView
                             android:id="@+id/standar"
@@ -153,10 +158,11 @@
                             android:fontFamily="@font/inter_regular"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toTopOf="@id/labelStandar"
                             app:layout_constraintStart_toEndOf="@id/labelStandar"
-                            app:layout_constraintEnd_toEndOf="parent"/>
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/labelStandar" />
 
+                        <!-- Peserta -->
                         <TextView
                             android:id="@+id/labelPeserta"
                             android:layout_width="0dp"
@@ -165,9 +171,9 @@
                             android:text="Peserta"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@id/labelStandar"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/peserta"/>
+                            app:layout_constraintTop_toBottomOf="@id/standar"
+                            app:layout_constraintEnd_toStartOf="@id/peserta" />
 
                         <TextView
                             android:id="@+id/peserta"
@@ -176,10 +182,11 @@
                             android:fontFamily="@font/inter_regular"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toTopOf="@id/labelPeserta"
                             app:layout_constraintStart_toEndOf="@id/labelPeserta"
-                            app:layout_constraintEnd_toEndOf="parent"/>
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/labelPeserta" />
 
+                        <!-- Gedung -->
                         <TextView
                             android:id="@+id/labelGedung"
                             android:layout_width="0dp"
@@ -188,9 +195,9 @@
                             android:text="Gedung"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@+id/labelPeserta"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/gedung"/>
+                            app:layout_constraintTop_toBottomOf="@id/peserta"
+                            app:layout_constraintEnd_toStartOf="@id/gedung" />
 
                         <TextView
                             android:id="@+id/gedung"
@@ -199,10 +206,12 @@
                             android:fontFamily="@font/inter_regular"
                             android:textColor="@color/font_black"
                             android:textSize="14sp"
-                            app:layout_constraintTop_toTopOf="@id/labelGedung"
                             app:layout_constraintStart_toEndOf="@id/labelGedung"
-                            app:layout_constraintEnd_toEndOf="parent"/>
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/labelGedung" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
                 </LinearLayout>
 
                 <!-- Garis Horizontal -->
@@ -285,134 +294,137 @@
 
                         <LinearLayout
                             android:id="@+id/container_linear"
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="12dp"
-                            android:layout_weight="1"
                             android:orientation="vertical"
                             android:paddingStart="6dp">
 
                             <!-- Line 1 of Button Text -->
-                            <!--peserta-->
                             <LinearLayout
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
+                                android:baselineAligned="true"
                                 android:orientation="horizontal">
 
                                 <!-- Label di sisi kiri -->
+
+                                <!-- TextView utama -->
+
                                 <TextView
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp"
                                     android:layout_marginEnd="5dp"
+                                    android:layout_weight="1"
                                     android:fontFamily="@font/inter_regular"
-                                    android:text="ID Instruktur :"
+                                    android:text="ID"
                                     android:textColor="@color/font_black"
                                     android:textSize="14sp" />
 
-                                <!-- TextView utama -->
                                 <TextView
                                     android:id="@+id/idInstructor"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp"
+                                    android:layout_weight="2"
                                     android:fontFamily="@font/inter_regular"
-                                    android:text=""
                                     android:textColor="@color/font_black"
                                     android:textSize="14sp" />
                             </LinearLayout>
 
                             <!-- Line 2 of Button Text -->
-                            <!--peserta-->
                             <LinearLayout
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
+                                android:baselineAligned="true"
                                 android:orientation="horizontal">
 
                                 <!-- Label di sisi kiri -->
                                 <TextView
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="5dp"
+                                    android:layout_weight="1"
                                     android:fontFamily="@font/inter_regular"
-                                    android:text="Nama            :"
+                                    android:text="Nama"
                                     android:textColor="@color/font_black"
                                     android:textSize="14sp" />
 
                                 <!-- TextView utama -->
                                 <TextView
                                     android:id="@+id/namaInstructor"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="2"
                                     android:fontFamily="@font/inter_regular"
-                                    android:text=""
                                     android:textColor="@color/font_black"
                                     android:textSize="14sp" />
                             </LinearLayout>
 
                             <!-- Line 3 of Button Text -->
-                            <!--peserta-->
                             <LinearLayout
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
+                                android:baselineAligned="true"
                                 android:orientation="horizontal">
 
                                 <!-- Label di sisi kiri -->
                                 <TextView
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="5dp"
+                                    android:layout_weight="1"
                                     android:fontFamily="@font/inter_regular"
-                                    android:text="Kontak          :"
+                                    android:text="Kontak"
                                     android:textColor="@color/font_black"
                                     android:textSize="14sp" />
 
                                 <!-- TextView utama -->
                                 <TextView
                                     android:id="@+id/kontakInstructor"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="2"
                                     android:fontFamily="@font/inter_regular"
-                                    android:text=""
                                     android:textColor="@color/font_black"
                                     android:textSize="14sp" />
                             </LinearLayout>
 
                             <!-- Line 4 of Button Text -->
-                            <!--peserta-->
                             <LinearLayout
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
+                                android:baselineAligned="true"
                                 android:orientation="horizontal">
 
                                 <!-- Label di sisi kiri -->
                                 <TextView
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="5dp"
+                                    android:layout_weight="1"
                                     android:fontFamily="@font/inter_regular"
-                                    android:text="Alamat          :"
+                                    android:text="Alamat"
                                     android:textColor="@color/font_black"
                                     android:textSize="14sp" />
 
                                 <!-- TextView utama -->
                                 <TextView
                                     android:id="@+id/alamatInstructor"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="2"
                                     android:fontFamily="@font/inter_regular"
-                                    android:text=""
                                     android:textColor="@color/font_black"
                                     android:textSize="14sp" />
                             </LinearLayout>
                         </LinearLayout>
+
                     </LinearLayout>
                 </LinearLayout>
-
                 <!-- Garis Horizontal -->
                 <TextView
                     android:layout_width="match_parent"
@@ -512,11 +524,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginBottom="24dp"
                         android:layout_marginEnd="12dp"
-                        android:textColor="@color/white_bg"
+                        android:layout_marginBottom="24dp"
                         android:backgroundTint="@color/orange"
-                        android:text="Daftar" />
+                        android:text="Daftar"
+                        android:textColor="@color/white_bg" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

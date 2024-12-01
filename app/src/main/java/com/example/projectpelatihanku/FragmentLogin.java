@@ -50,6 +50,7 @@ public class FragmentLogin extends Fragment {
         passwordEditText = view.findViewById(R.id.passwordEditText);
         iconPassword = view.findViewById(R.id.icon_password);
 
+        MainActivity.hideBottomNavigationView();
         loginButtonHandler(new ApiClient());
         changeIconsPassword();
         registerButtonHandler();

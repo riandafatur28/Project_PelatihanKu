@@ -136,10 +136,10 @@ public class FragmentDetailProgram extends Fragment {
                                     departmentName = detailProgram.getDepartmentName();
 
                                     // Detail Instructor
-                                    idInstructor.setText(detailProgram.getInstructorId());
-                                    namaInstructor.setText(detailProgram.getInstructorName());
-                                    kontakInstructor.setText(detailProgram.getInstructorContact());
-                                    alamatInstructor.setText(detailProgram.getInstructorAddress());
+                                    idInstructor.setText(": " +detailProgram.getInstructorId());
+                                    namaInstructor.setText(": " +detailProgram.getInstructorName());
+                                    kontakInstructor.setText(": " +detailProgram.getInstructorContact());
+                                    alamatInstructor.setText(": " +detailProgram.getInstructorAddress());
 
                                     // Load Gambar
                                     GlideHelper.loadImage(getContext(), programImage,
