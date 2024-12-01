@@ -479,7 +479,6 @@
                         <TextView
                             android:id="@+id/text_line_buttonContent"
                             android:layout_width="wrap_content"
-                            android:layout_marginTop="16dp"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/inter_bold"
                             android:text="Balai Latihan Kerja"
@@ -493,7 +492,6 @@
                             android:id="@+id/text_line2_buttonContent"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
                             android:fontFamily="@font/inter_regular"
                             android:text="Unit pelaksanaan teknis dari pemerintah daerah di indonesia yang bertugas melaksanakan pelatihan kerja."
                             android:textColor="@color/font_black"
@@ -509,7 +507,6 @@
                             android:background="@android:color/transparent"
                             android:clickable="true"
                             android:focusable="true"
-                            android:layout_marginBottom="40dp"
                             android:focusableInTouchMode="true"
                             android:text="@string/lebih_banyak"
                             android:textColor="@color/blue"
