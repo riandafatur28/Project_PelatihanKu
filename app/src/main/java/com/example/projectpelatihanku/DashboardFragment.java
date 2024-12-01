@@ -49,7 +49,8 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     private ShapeableImageView imageUser;
     private GoogleMap mMap;
     private ImageView imagePage;
-    private TextView totalDepartments, totalPrograms, totalBuildings, totalInstructors, totalTools, salamText;
+    private TextView totalDepartments, totalPrograms, totalBuildings, totalInstructors,
+    totalTools, salamText, txtLebihBanyak;
     private LatLng initialLocation = new LatLng(-7.600671315258253, 111.88837430296729);
     private int[] images = {R.drawable.slide_1, R.drawable.slide_2, R.drawable.slide_3};
     private int currentIndex = 0;
@@ -80,11 +81,9 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         startAutoSlide();
 
         salamText.setText("Halo, " + FragmentLogin.firstName);
-        getAvatarImage(new ApiClient());
+        getProfileData(new ApiClient());
 
-        view.findViewById(R.id.btn_lebihBanyak).setOnClickListener(v -> {
-            FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, new FragmentInstitute(), true, "institute");
-        });
+        btnLebihBanyakHandler();
 
         fetchData(new ApiClient());
         MainActivity.showBottomNavigationView();
@@ -119,13 +118,13 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     }
 
     /**
-     * Mengambil gambar profil dari server
+     * Mengambil data profil penggua dari server
      *
      * @param api Service Class untuk melakukan request ke server
      * @see SharedPreferencesHelper#getToken(Context)
-     * @see ApiClient#fetchImageProfile(String, String, ApiClient.imageProfile)
+     * @see ApiClient#FetchProfile(String, String, ApiClient.ProfileHelper)
      */
-    private void getAvatarImage(ApiClient api) {
+    private void getProfileData(ApiClient api) {
         token = SharedPreferencesHelper.getToken(getContext());
         JWT jwt = new JWT(token);
         Double userIdDouble = 0.0;
@@ -136,12 +135,15 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
             userIdDouble = Double.parseDouble(id);
         }
         int userId = userIdDouble.intValue();
-        api.fetchImageProfile(token, "/users/image/" + userId, new ApiClient.imageProfile() {
+
+        api.FetchProfile(token, "/users/" + userId, new ApiClient.ProfileHelper() {
             @Override
-            public void onSuccess(String uri) {
+            public void onSuccess(String name, String jk, String ttl, String tlp, String email, String alamat, String imageUri) {
                 requireActivity().runOnUiThread(() -> {
-                    GlideHelper.loadImage(getContext(), imageUser, uri);
+                    salamText.setText("Halo, " + name.split(" ")[0]);
+                    GlideHelper.loadImage(getContext(), imageUser, imageUri);
                 });
+
             }
 
             @Override
@@ -186,6 +188,12 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         totalTools.setText("Error");
     }
 
+    private void btnLebihBanyakHandler(){
+        txtLebihBanyak.setOnClickListener(v -> {
+            FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity, new FragmentInstitute(), true, "institute");
+        });
+    }
+
     private void initializeUI(View view) {
         imageUser = view.findViewById(R.id.imageUser);
         salamText = view.findViewById(R.id.salamText);
@@ -196,6 +204,7 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         totalBuildings = view.findViewById(R.id.totalBuilding);
         totalInstructors = view.findViewById(R.id.totalInstructor);
         totalTools = view.findViewById(R.id.totalTools);
+        txtLebihBanyak = view.findViewById(R.id.btn_lebihBanyak);
     }
 
     private void initializeMap() {

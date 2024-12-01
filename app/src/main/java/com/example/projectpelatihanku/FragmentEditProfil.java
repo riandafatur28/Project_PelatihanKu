@@ -171,20 +171,16 @@ public class FragmentEditProfil extends Fragment {
         }
         int userId = userIdDouble.intValue();
 
-        // Siapkan file jika ada gambar yang dipilih
         File file = null;
         if (imageUri != null) {
             file = FunctionHelper.getFileFromUriImage(imageUri, getContext());
         }
 
-        // Kirim request ke API dengan userId yang valid
         api.updateProfile(token, "/users/auth/" + userId, data, file, new ApiClient.updateProfileHelper() {
             @Override
             public void onSuccess(String message) {
-                // Menangani respons sukses
                 requireActivity().runOnUiThread(() -> {
                     showToast(message, 3000);
-                    // Arahkan ke fragment profil setelah berhasil memperbarui profil
                     FragmentHelper.navigateToFragment(getActivity(), R.id.navActivity,
                             new FragmentProfil(), true, null);
                     MainActivity.showBottomNavigationView();
@@ -193,7 +189,6 @@ public class FragmentEditProfil extends Fragment {
 
             @Override
             public void onFailed(IOException e) {
-                // Menangani kegagalan request
                 requireActivity().runOnUiThread(() -> {
                     showToast(e.getMessage(), 3000);
                 });
