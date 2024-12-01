@@ -38,7 +38,7 @@ import okhttp3.Response;
  */
 public class ApiClient {
     private OkHttpClient client = new OkHttpClient();
-    public static final String BASE_URL = "http://192.168.1.6:8080/";
+    public static final String BASE_URL = "https://pelatihanku.pbltifnganjuk.com/";
     public static final String BASE_URL_PUBLIC = "api/v1/public";
 
     /**
@@ -1250,11 +1250,14 @@ public class ApiClient {
     }
 
     /**
-     * Mengirim permintaan untuk mengambil gambar profil dari server
-     *
      * @param token    token JWT untuk otorisasi, sertakan dalam header Authorization
      * @param endPoint endpoint untuk mengambil gambar profil
      * @param callback callback untuk menerima respons dari server
+     * @deprecated Metode ini sudah tidak disarankan untuk digunakan. Gunakan
+     * {@link #FetchProfile(String, String, ProfileHelper)} sebagai pengganti untuk mendapatkan
+     * data profile pengguna secara lengkap.
+     * <p>
+     * Mengirim permintaan untuk mengambil gambar profil dari server
      */
     public void fetchImageProfile(String token, String endPoint, imageProfile callback) {
         String url = BASE_URL + BASE_URL_PUBLIC + endPoint;
