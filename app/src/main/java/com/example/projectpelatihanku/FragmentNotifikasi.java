@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -160,7 +161,11 @@ public class FragmentNotifikasi extends Fragment {
         };
 
         IntentFilter filter = new IntentFilter("NEW_NOTIFICATION");
-        getContext().registerReceiver(notificationReceiver, filter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            getContext().registerReceiver(notificationReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getContext().registerReceiver(notificationReceiver, filter);
+        }
     }
 
     @Override
