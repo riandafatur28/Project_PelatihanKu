@@ -845,7 +845,7 @@ public class ApiClient {
 
     /**
      * Service Metode untuk mengirim permintaan ke server
-     * Gunakan untuk mengambil data daftar program dari berdasarkan deparment id
+     * Gunakan untuk mengambil data daftar program berdasarkan deparment id
      * Kirim token ke header Authorization untuk mengakses endpoint
      *
      * @param token    token JWT, sertakan dalam header Authorization
@@ -868,31 +868,30 @@ public class ApiClient {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String data = response.body().string();
-                    try {
+                String data = response.body().string();
+                try {
+                    JSONObject jsonObject = new JSONObject(data);
+
+                    if (response.isSuccessful() && !jsonObject.getBoolean("isEmpty")) {
+                        JSONArray programs = jsonObject.getJSONArray("programs");
                         ArrayList<Program> dataPrograms = new ArrayList<>();
-                        JSONObject jsonObject = new JSONObject(data);
-                        if (!jsonObject.getBoolean("isEmpty")) {
-                            JSONArray programs = jsonObject.getJSONArray("programs");
-                            for (int i = 0; i < programs.length(); i++) {
-                                JSONObject program = programs.getJSONObject(i);
-                                String id = program.getString("id");
-                                String nama = program.getString("nama");
-                                String deskripsi = program.getString("deskripsi");
-                                String imageUri = BASE_URL + program.getString("image_path");
-                                String departmentId = program.getString("department_id");
-                                dataPrograms.add(new Program(id, nama, deskripsi, imageUri, departmentId));
-                            }
-                            callback.onSuccess(dataPrograms);
-                        } else {
-                            callback.onFailed(new IOException("No departments found."));
+
+                        for (int i = 0; i < programs.length(); i++) {
+                            JSONObject program = programs.getJSONObject(i);
+                            String id = program.getString("id");
+                            String nama = program.getString("nama");
+                            String deskripsi = program.getString("deskripsi");
+                            String imageUri = BASE_URL + program.getString("image_path");
+                            String departmentId = program.getString("department_id");
+                            dataPrograms.add(new Program(id, nama, deskripsi, imageUri, departmentId));
                         }
-                    } catch (JSONException e) {
-                        callback.onFailed(new IOException("Gagal saat parsing JSON: " + e.getMessage()));
+                        callback.onSuccess(dataPrograms);
+                    } else {
+                        callback.onFailed(new IOException("Data program pada kejuruan terkait " +
+                                "kosong atau tidak ditemukan"));
                     }
-                } else {
-                    callback.onFailed(new IOException("Gagal dengan kode response: " + response.code()));
+                } catch (JSONException e) {
+                    callback.onFailed(new IOException("Gagal saat parsing JSON: " + e.getMessage()));
                 }
             }
         });

@@ -111,7 +111,7 @@ public class FragmentProgram extends Fragment {
             @Override
             public void onFailed(IOException e) {
                 requireActivity().runOnUiThread(() -> {
-                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
         });
