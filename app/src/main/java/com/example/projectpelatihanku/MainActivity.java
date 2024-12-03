@@ -111,12 +111,14 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     public void onBackPressed() {
 
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.navActivity);
-        if (isMainFragment(currentFragment)) {
+
+        if (currentFragment instanceof FragmentLogin) {
+            finish();
+        } else if (isMainFragment(currentFragment)) {
             showBottomNavigationView();
         } else {
             hideBottomNavigationView();
         }
-
         super.onBackPressed();
     }
 
