@@ -222,22 +222,21 @@ public class FragmentRegister extends Fragment {
         }
     }
 
-
-
     /**
      * Mengubah tampilan input password menjadi visible atau invisible.
      *
-     * @param editText EditText untuk password.
+     * @param editText  EditText untuk password.
      * @param imageView ImageView untuk ikon password.
      */
     private void togglePasswordVisibility(EditText editText, ImageView imageView) {
-        if (editText.getInputType() == InputType.TYPE_TEXT_VARIATION_PASSWORD) {
-            editText.setInputType(InputType.TYPE_CLASS_TEXT);
+        if ((editText.getInputType() & InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
+            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             imageView.setImageResource(R.drawable.vector_eye_open);
         } else {
-            editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             imageView.setImageResource(R.drawable.vector_eye_close);
         }
+        editText.setSelection(editText.getText().length());
     }
 
     /**
