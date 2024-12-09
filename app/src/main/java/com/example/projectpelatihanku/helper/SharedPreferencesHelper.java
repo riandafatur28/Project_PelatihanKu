@@ -76,5 +76,4 @@ public class SharedPreferencesHelper {
         SharedPreferences sharedPreferences = context.getSharedPreferences(preference, Context.MODE_PRIVATE);
         return sharedPreferences.getString(keyName, "Data tidak ditemukan");
     }
-
 }

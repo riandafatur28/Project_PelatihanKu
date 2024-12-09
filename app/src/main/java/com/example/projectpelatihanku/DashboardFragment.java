@@ -198,7 +198,6 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         imageUser = view.findViewById(R.id.imageUser);
         salamText = view.findViewById(R.id.salamText);
         imagePage = view.findViewById(R.id.imagepage);
-
         totalDepartments = view.findViewById(R.id.totalDepartment);
         totalPrograms = view.findViewById(R.id.totalProgram);
         totalBuildings = view.findViewById(R.id.totalBuilding);

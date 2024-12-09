@@ -22,9 +22,7 @@ import com.example.projectpelatihanku.helper.FragmentHelper;
 import com.example.projectpelatihanku.helper.JwtHelper;
 import com.example.projectpelatihanku.helper.SharedPreferencesHelper;
 
-
 import org.json.JSONException;
-
 import java.io.IOException;
 
 public class FragmentLogin extends Fragment {

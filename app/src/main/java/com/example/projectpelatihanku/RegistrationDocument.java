@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Build;
@@ -12,12 +13,10 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
 
 import com.example.projectpelatihanku.helper.FragmentHelper;
 
@@ -66,6 +65,7 @@ public class RegistrationDocument extends AppCompatActivity {
         alamat = intent.getStringExtra("alamat");
         namaProgram = intent.getStringExtra("program");
         namaKejuruan = intent.getStringExtra("kejuruan");
+
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String tglPendaftaran = format.format(new Date());
 
@@ -85,42 +85,39 @@ public class RegistrationDocument extends AppCompatActivity {
         });
     }
 
-    /**
-     * Menyimpan dokumen sebagai PDF
-     *
-     * @see FragmentHelper#backNavigation(FragmentActivity, ImageView, Button, String, int, boolean)
-     */
     private void saveDocumentAsPdf() {
-        int pageWidth = 595;
-        int pageHeight = 842;
+        int pageWidth = 2480;  // A4 width in pixels
+        int pageHeight = 3508; // A4 height in pixels
 
+        // Mengukur ukuran layout sesuai lebar halaman
         layoutDocument.measure(View.MeasureSpec.makeMeasureSpec(pageWidth, View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
         layoutDocument.layout(0, 0, layoutDocument.getMeasuredWidth(), layoutDocument.getMeasuredHeight());
 
-        int totalHeight = layoutDocument.getMeasuredHeight();
-
         PdfDocument pdfDocument = new PdfDocument();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create();
+        PdfDocument.Page page = pdfDocument.startPage(pageInfo);
 
-        int currentPageTop = 0;
-        int pageNumber = 1;
-        while (currentPageTop < totalHeight) {
-            PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create();
-            PdfDocument.Page page = pdfDocument.startPage(pageInfo);
+        Canvas canvas = page.getCanvas();
 
-            Canvas pageCanvas = page.getCanvas();
-            pageCanvas.translate(0, -currentPageTop);
-            layoutDocument.draw(pageCanvas);
+        // Menentukan skala berdasarkan ukuran layout dan ukuran A4
+        float scaleX = (float) pageWidth / layoutDocument.getMeasuredWidth();
+        float scaleY = (float) pageHeight / layoutDocument.getMeasuredHeight();
 
-            pdfDocument.finishPage(page);
+        // Menyesuaikan skala untuk layout agar pas dengan satu halaman A4
+        float scale = Math.min(scaleX, scaleY);  // Menggunakan skala terkecil agar semua muat
+        canvas.scale(scale, scale);
 
-            currentPageTop += pageHeight;
-            pageNumber++;
-        }
+        // Menggambar layout ke dalam canvas PDF
+        layoutDocument.draw(canvas);
+
+        pdfDocument.finishPage(page);
 
         try {
             String filePath = getFilePath("bukti_pendaftaran.pdf");
+
             if (filePath != null && filePath.startsWith("content://")) {
+                // Jika menggunakan MediaStore (Android 10 dan lebih tinggi)
                 Uri uri = Uri.parse(filePath);
                 try (OutputStream outputStream = getContentResolver().openOutputStream(uri)) {
                     if (outputStream != null) {
@@ -131,6 +128,7 @@ public class RegistrationDocument extends AppCompatActivity {
                     }
                 }
             } else {
+                // Jika menggunakan penyimpanan langsung (Android 9 dan lebih rendah)
                 File file = new File(filePath);
                 if (!file.getParentFile().exists()) {
                     file.getParentFile().mkdirs();
@@ -148,12 +146,6 @@ public class RegistrationDocument extends AppCompatActivity {
         }
     }
 
-    /**
-     * Mendapatkan path uri file PDF
-     *
-     * @param fileName Nama file PDF
-     * @return Path uri file PDF
-     */
     private String getFilePath(String fileName) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ContentValues values = new ContentValues();
@@ -169,6 +161,7 @@ public class RegistrationDocument extends AppCompatActivity {
                 return null;
             }
         } else {
+            // Untuk Android versi lama, menggunakan penyimpanan langsung
             File directory = new File(Environment.getExternalStorageDirectory(), "Documents/BuktiPendaftaran");
             if (!directory.exists()) {
                 directory.mkdirs();

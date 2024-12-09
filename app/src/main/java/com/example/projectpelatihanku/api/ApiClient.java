@@ -525,7 +525,6 @@ public class ApiClient {
         }
 
         RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json; charset=utf-8"));
-
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
